@@ -8,10 +8,8 @@ Created on  Jul 25 15:23:36 2024
 testing matrix stuff... mueller, rotation, etc
 """
 
-
-import math, numpy as np
-from logging_setup import logging
-
+import math
+import numpy as np
 
 def direction_vector(theta, phi):
     ''' Return the direction vector corresponding to a direction. '''
@@ -25,12 +23,10 @@ def direction_vector(theta, phi):
 
     return np.array([(x, y, z)])
 
-
 def dot_product(a, b):
     ''' Take the dot product of two vectors. '''
 
     return np.sum(a*b)
-
 
 def normalize(vec_in):
     ''' return a normalized unit vector from an input np vector '''
@@ -40,7 +36,6 @@ def normalize(vec_in):
     vec_out = (1.0/magnitude) * vec_in
 
     return vec_out
-
 
 def rayleigh_matrix(scattering_angle_degrees):
     ''' give the Rayleigh mueller matrix for this angle '''
@@ -59,7 +54,6 @@ def rayleigh_matrix(scattering_angle_degrees):
 
     return mueller
 
-
 def rotation_matrix(rotation_angle_degrees):
     ''' give the rotation matrix for this angle '''
 
@@ -75,7 +69,6 @@ def rotation_matrix(rotation_angle_degrees):
     mueller[2,1] = -mueller[1,2]
 
     return mueller
-
 
 def rotation_angles(k_i, k_f):
     ''' Calculate rotation angles and scattering angle for two
@@ -125,7 +118,6 @@ def rotation_angles(k_i, k_f):
 
     return (phi, psi, theta)
 
-
 def my_main():
     ''' do stuff here... '''
 
@@ -138,15 +130,15 @@ def my_main():
     rotation = rotation_matrix(rotation_angle)
     scattering = rayleigh_matrix(scattering_angle)
 
-    logging.info("\nStokes Vector\n", stokes_vector)
-    logging.info("\nRotation Matrix\n", rotation)
-    logging.info("\nScattering Matrix\n", scattering)
+    print("\nStokes Vector\n", stokes_vector)
+    print("\nRotation Matrix\n", rotation)
+    print("\nScattering Matrix\n", scattering)
 
     rotated_stokes = np.dot(rotation, stokes_vector)
     scattered_stokes = np.dot(scattering, stokes_vector)
 
-    logging.info("\nStokes Vector Rotated\n", rotated_stokes)
-    logging.info("\nStokes Vector Scattered\n", scattered_stokes)
+    print("\nStokes Vector Rotated\n", rotated_stokes)
+    print("\nStokes Vector Scattered\n", scattered_stokes)
 
     # direction vector takes theta and phi
     theta_1 = 45.0
@@ -158,11 +150,11 @@ def my_main():
     u_1 = direction_vector(theta_1, phi_1)
     u_2 = direction_vector(theta_2, phi_2)
     u_3 = direction_vector(theta_3, phi_3)
-    logging.info("1 ", theta_1, phi_1)
-    logging.info("2 ", theta_2, phi_2)
-    logging.info("3 ", theta_3, phi_3)
-    logging.info("angle : ", rotation_angles(u_1, u_2))
-    logging.info("angle : ", rotation_angles(u_1, u_3))
+    print("1 ", theta_1, phi_1)
+    print("2 ", theta_2, phi_2)
+    print("3 ", theta_3, phi_3)
+    print("angle : ", rotation_angles(u_1, u_2))
+    print("angle : ", rotation_angles(u_1, u_3))
 
 
 if __name__ == '__main__':

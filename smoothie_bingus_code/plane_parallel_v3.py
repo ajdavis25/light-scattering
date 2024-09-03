@@ -12,11 +12,11 @@ model using a standard Rayleigh phase function for scattering.
 The ground is completely absorbing.
 """
 
-import math, numpy as np
+import math
+import numpy as np
 from vector_operations import rayleigh_matrix
 from vector_operations import rotation_angles
 from vector_operations import rotation_matrix
-
 
 def rayleigh(psi):
     ''' Rayleigh phase function '''
@@ -28,20 +28,6 @@ def rayleigh(psi):
     phase_function = (3.0/(16.0*math.pi))*(1.0 + math.pow(math.cos(psi_rad), 2))
 
     return phase_function
-
-
-def scattering_angle(vector_1, vector_2):
-    ''' find angle between two vectors '''
-
-    if np.dot(vector_1, vector_2) > 1.0:
-        return 0.0
-    elif np.dot(vector_1, vector_2) < -1.0:
-        return 180.0
-    else:
-        psi = math.acos(np.dot(vector_1, vector_2))
-
-    return math.degrees(psi)
-
 
 def photon_unit_vector(theta, phi):
     ''' Create the direction vector for a photon heading in the
@@ -55,71 +41,6 @@ def photon_unit_vector(theta, phi):
     u_y = math.sin(theta_rad)*math.sin(phi_rad)
 
     return np.array([u_x, u_y, u_z])
-
-
-def scattered_intensity_reflected(theta_0, theta, tau_max):
-    ''' Give the scattered intensity (without the phase function) of
-        light at the top of the atmosphere. '''
-
-    mu_obs = abs(math.cos(math.radians(theta)))
-    mu_0 = abs(math.cos(math.radians(theta_0)))
-
-    if theta_0 != theta:
-        factor1 = mu_0/(mu_0 + mu_obs)
-        arg_inter = tau_max*(1.0/mu_obs + 1.0/mu_0)
-        factor2 = 1.0 - math.exp(-arg_inter)
-        return factor1 * factor2
-
-    return tau_max*math.exp(-tau_max/mu_0)/mu_obs
-
-
-def scattered_intensity_transmitted(theta_0, theta, tau_max):
-    ''' Give the scattered intensity (without the phase function) of
-        light at the bottom of the atmosphere. '''
-
-    mu_obs = abs(math.cos(math.radians(theta)))
-    mu_0 = abs(math.cos(math.radians(theta_0)))
-
-    if theta_0 != theta:
-        factor1 = mu_0*math.exp(-tau_max/mu_0)/(mu_0 - mu_obs)
-        arg_inter = tau_max*(1.0/mu_obs - 1.0/mu_0)
-        factor2 = 1.0 - math.exp(-arg_inter)
-        return factor1 * factor2
-
-    return tau_max*math.exp(-tau_max/mu_0)/mu_obs
-
-
-def intensity_at_ground(theta_0, theta, phi, tau_max):
-    ''' Give the scattered intensity of
-        light at the bottom of the atmosphere
-        in the direction theta, phi. '''
-
-    u_0 = photon_unit_vector(theta_0, 0.0)
-    u_1 = photon_unit_vector(theta, phi)
-
-    scatter_angle = scattering_angle(u_0, u_1)
-
-    base_intensity = scattered_intensity_transmitted(theta_0, theta, tau_max) * \
-                     rayleigh(scatter_angle)
-
-    return base_intensity
-
-
-def intensity_at_top(theta_0, theta, phi, tau_max):
-    ''' Give the scattered intensity of
-        light at the top of the atmosphere
-        in the direction theta, phi. '''
-
-    u_0 = photon_unit_vector(theta_0, 0.0)
-    u_1 = photon_unit_vector(theta, phi)
-
-    scatter_angle = scattering_angle(u_0, u_1)
-
-    top_intensity = scattered_intensity_reflected(theta_0, theta, tau_max) * \
-                     rayleigh(scatter_angle)
-
-    return top_intensity
-
 
 def scattered_intensity_at_tau(theta_0, theta_obs, tau, tau_max):
     ''' Give the scattered intensity (without the phase function) of
@@ -146,7 +67,6 @@ def scattered_intensity_at_tau(theta_0, theta_obs, tau, tau_max):
 
     return (tau_max - tau) * math.exp(-(tau_max-tau)/mu_obs)/mu_obs 
 
-
 def intensity_at_tau(theta_0, theta_obs, phi_obs, tau, tau_max):
     ''' Give the scattered intensity of
         light in the atmosphere
@@ -171,7 +91,6 @@ def intensity_at_tau(theta_0, theta_obs, phi_obs, tau, tau_max):
 
     return intensity * scattered_stokes
 
-
 def main():
     ''' Function main. '''
 
@@ -183,38 +102,81 @@ def main():
     u_0 = photon_unit_vector(theta_0, phi_0)
     u_1 = photon_unit_vector(theta_1, phi_1)
 
-    print("angle between is ", scattering_angle(u_0, u_1))
+    (phi, psi, theta) = rotation_angles(u_0, u_1)
+
+    print("angle between is ", theta)
 
     print("Test scattered intensity")
-    print(scattered_intensity_transmitted(theta_0, theta_1 - 0.1, 0.5))
-    print(scattered_intensity_transmitted(theta_0, theta_1, 0.5))
-    print(scattered_intensity_transmitted(theta_0, theta_1 + 0.1, 0.5))
+    print("A")
+    print(intensity_at_tau(130.0, 131.0, 30.0, 0.0, 0.5))
+    print(intensity_at_tau(170.0, 170.0, 180.0, 0.0, 1.0))
+    print(intensity_at_tau(170.0, 157.0, 180.0, 0.0, 1.0))
 
-    print(intensity_at_ground(130.0, 131.0, 30.0, 0.5))
-    print(intensity_at_ground(170.0, 170.0, 180.0, 1.0))
-    print(intensity_at_ground(170.0, 157.0, 180.0, 1.0))
+    print("B")
+    print(scattered_intensity_at_tau(170.0, 171.0, 0.0, 1.0))
 
-    theta_0 = 150.0
+    print("getting symmetery down. ")
+    print(intensity_at_tau(170.0, 160.0, 40.0, 0.0, 1.0))
+    print(intensity_at_tau(170.0, 160.0, -40.0, 0.0, 1.0))
+
+    print("Looking at mu = mu_obs ")
+    print(intensity_at_tau(160.0, 158.0, 40.0, 0.0, 1.0))
+    print(intensity_at_tau(160.0, 159.0, 40.0, 0.0, 1.0))
+    print(intensity_at_tau(160.0, 160.0, 40.0, 0.0, 1.0))
+    print(intensity_at_tau(160.0, 161.0, 40.0, 0.0, 1.0))
+    print(intensity_at_tau(160.0, 162.0, 40.0, 0.0, 1.0))
+
+    print("Scattered Looking at mu = mu_obs ")
+    print(scattered_intensity_at_tau(160.0, 158.0, 0.0, 1.0))
+    print(scattered_intensity_at_tau(160.0, 159.0, 0.0, 1.0))
+    print(scattered_intensity_at_tau(160.0, 160.0, 0.0, 1.0))
+    print(scattered_intensity_at_tau(160.0, 161.0, 0.0, 1.0))
+    print(scattered_intensity_at_tau(160.0, 162.0, 0.0, 1.0))
+
+    print("Yoohoo")
+    print(scattered_intensity_at_tau(162.0, 161.0, 0.0, 1.0))
+    print(scattered_intensity_at_tau(162.0, 162.0, 0.0, 1.0))
+    print(scattered_intensity_at_tau(162.0, 163.0, 0.0, 1.0))
+    print(intensity_at_tau(162.0, 161.0, 0.0, 0.0, 1.0))
+    print(intensity_at_tau(162.0, 162.0, 0.0, 0.0, 1.0))
+    print(intensity_at_tau(162.0, 163.0, 0.0, 0.0, 1.0))
+    '''
+    theta_0 = 130.000
     tau = 0.125
     phi = 0.0
 
-    print("\nResults")
-
+    print("\nTransmitted Results")
     for i in range(0, 70, 5):
         theta = float(i)
-        intensity = intensity_at_ground(theta_0, 180.0 - theta, phi, tau)
-        print(theta_0, theta, phi, intensity)
+        intensity = intensity_at_tau(theta_0, 180.0 - theta, phi, 0.0, tau)
+        print("%.6f %.6f %.6f %.6f" % (theta_0, 180.0 - theta, phi, intensity))
 
     for i in range(71, 80, 1):
         theta = float(i)
-        intensity = intensity_at_ground(theta_0, 180.0 - theta, phi, tau)
-        print(theta_0, theta, phi, intensity)
+        intensity = intensity_at_tau(theta_0, 180.0 - theta, phi, 0.0, tau)
+        print("%.6f %.6f %.6f %.6f" % (theta_0, 180.0 - theta, phi, intensity))
 
     for i in [82, 84, 86, 88, 89]:
         theta = float(i)
-        intensity = intensity_at_ground(theta_0, 180.0 - theta, phi, tau)
-        print(theta_0, theta, phi, intensity)
+        intensity = intensity_at_tau(theta_0, 180.0 - theta, phi, 0.0, tau)
+        print("%.6f %.6f %.6f %.6f" % (theta_0, 180.0 - theta, phi, intensity))
 
+    print("\n Reflected Results")
+    for i in range(0, 70, 5):
+        theta = float(i)
+        intensity = intensity_at_tau(theta_0, theta, phi, tau, tau)
+        print("%.6f %.6f %.6f %.6f" % (theta_0, theta, phi, intensity))
+
+    for i in range(71, 80, 1):
+        theta = float(i)
+        intensity = intensity_at_tau(theta_0, theta, phi, tau, tau)
+        print("%.6f %.6f %.6f %.6f" % (theta_0, theta, phi, intensity))
+
+    for i in [82, 84, 86, 88, 89]:
+        theta = float(i)
+        intensity = intensity_at_tau(theta_0, theta, phi, tau, tau)
+        print("%.6f %.6f %.6f %.6f" % (theta_0, theta, phi, intensity))
+    '''
 
 if __name__ == '__main__':
 

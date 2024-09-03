@@ -3,7 +3,7 @@
 
 import math
 # from PIL import Image, ImageDraw
-from src.plane_parallel import intensity_at_tau
+from plane_parallel_v3 import intensity_at_tau
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm

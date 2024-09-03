@@ -1,16 +1,21 @@
 # this will generate a plot showing the intensity of light vs the theta angle which the observer looks into the sky
 
-
-import os, numpy as np, matplotlib.pyplot as plt
-from plane_parallel import intensity_at_ground
-
-
-def plot_intensity_vs_theta(tau_atm=0.5, theta_0=145, save_path='./plots', save_name='intensity_vs_theta.png'):
-
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
+import math
+from PIL import Image, ImageDraw
+from plane_parallel_v3 import intensity_at_ground
+import numpy as np
+import matplotlib.pyplot as plt
+theta = range(181)
+#x = [theta]
+#y = [range(181)]
+#im = Image.new('L', (256, 256), 255)
+#draw = ImageDraw.Draw(im)
+#extend this to phi 0, 45, 90
+def main():
+    tau_atm = 0.5
+    theta_0 = 145
     
-    # theta_obs1 intensity1 generation
+    #Theta_obs1 Intensity1 generation
     phi = 0
     theta_obs1 = list()
     intensity1 = list()
@@ -22,7 +27,7 @@ def plot_intensity_vs_theta(tau_atm=0.5, theta_0=145, save_path='./plots', save_
         theta_obs1.append(180-theta)
         intensity1.append(intensity_at_ground(theta_0, float(theta), phi, tau_atm))
     
-    # theta_obs2 intensity2 generation
+    #Theta_obs2 Intensity2 generation
     phi = 45
     theta_obs2 = list()
     intensity2 = list()
@@ -34,7 +39,7 @@ def plot_intensity_vs_theta(tau_atm=0.5, theta_0=145, save_path='./plots', save_
         theta_obs2.append(180-theta)
         intensity2.append(intensity_at_ground(theta_0, float(theta), phi, tau_atm))
 
-    # theta_obs3 intensity3 generation
+    #Theta_obs3 Intensity3 generation
     phi = 90
     theta_obs3 = list()
     intensity3 = list()
@@ -54,5 +59,15 @@ def plot_intensity_vs_theta(tau_atm=0.5, theta_0=145, save_path='./plots', save_
     plt.xlabel('Theta')
     plt.ylabel('Intensity')
     plt.draw()
-    plt.savefig(os.path.join(save_path, save_name))
     plt.show()
+
+if __name__ == '__main__':
+    main()
+
+#for i in range(190):
+#    plt.title('Test Plot')
+#    plt.xlabel('0')
+#    plt.ylabel('I')
+#    plt.plot(x,y)
+#    plt.show()
+#im.save('test.png')
