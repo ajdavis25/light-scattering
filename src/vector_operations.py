@@ -138,15 +138,15 @@ def my_main():
     rotation = rotation_matrix(rotation_angle)
     scattering = rayleigh_matrix(scattering_angle)
 
-    logging.info("\nStokes Vector\n", stokes_vector)
-    logging.info("\nRotation Matrix\n", rotation)
-    logging.info("\nScattering Matrix\n", scattering)
+    print("\nStokes Vector\n", stokes_vector)
+    print("\nRotation Matrix\n", rotation)
+    print("\nScattering Matrix\n", scattering)
 
     rotated_stokes = np.dot(rotation, stokes_vector)
     scattered_stokes = np.dot(scattering, stokes_vector)
 
-    logging.info("\nStokes Vector Rotated\n", rotated_stokes)
-    logging.info("\nStokes Vector Scattered\n", scattered_stokes)
+    print("\nStokes Vector Rotated\n", rotated_stokes)
+    print("\nStokes Vector Scattered\n", scattered_stokes)
 
     # direction vector takes theta and phi
     theta_1 = 45.0
@@ -158,11 +158,11 @@ def my_main():
     u_1 = direction_vector(theta_1, phi_1)
     u_2 = direction_vector(theta_2, phi_2)
     u_3 = direction_vector(theta_3, phi_3)
-    logging.info("1 ", theta_1, phi_1)
-    logging.info("2 ", theta_2, phi_2)
-    logging.info("3 ", theta_3, phi_3)
-    logging.info("angle : ", rotation_angles(u_1, u_2))
-    logging.info("angle : ", rotation_angles(u_1, u_3))
+    print("1 ", theta_1, phi_1)
+    print("2 ", theta_2, phi_2)
+    print("3 ", theta_3, phi_3)
+    print("angle : ", rotation_angles(u_1, u_2))
+    print("angle : ", rotation_angles(u_1, u_3))
 
 
 if __name__ == '__main__':
