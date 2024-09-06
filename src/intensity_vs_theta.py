@@ -1,4 +1,4 @@
-import os, numpy as np, matplotlib.pyplot as plt
+import os, matplotlib.pyplot as plt
 from typing import List, Tuple
 from plane_parallel import intensity_at_ground
 
