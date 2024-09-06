@@ -231,7 +231,7 @@ def intensity_at_tau(theta_0: float, theta_obs: float, phi_obs: float, tau: floa
     intensity = scattered_intensity_at_tau(theta_0, theta_obs, tau, tau_max) * \
                 rayleigh_phase_function(theta)
 
-    # mueller matrix and rotation matrix calculations for Stokes parameters
+    # mueller matrix and rotation matrix calculations for stokes parameters
     mueller_scatter = rayleigh_matrix(theta)
     mueller_rotation = rotation_matrix(psi)
     stokes_init = np.array([1.0, 0.0, 0.0, 0.0])

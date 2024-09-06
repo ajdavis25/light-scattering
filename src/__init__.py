@@ -12,17 +12,16 @@ setup_logging()
 
 
 # Imports for easy access
-# remove intensity_at_ground and intensity_at_top when intensity_at_tau works in intensity_vs_theta.py
 from .plane_parallel import (
-    rayleigh,
+    rayleigh_phase_function,
     scattering_angle,
     photon_unit_vector,
     scattered_intensity_reflected,
     scattered_intensity_transmitted,
+    intensity_at_ground,
+    intensity_at_top,
     scattered_intensity_at_tau,
     intensity_at_tau,
-    intensity_at_ground,
-    intensity_at_top
 )
 
 
@@ -38,7 +37,7 @@ from .vector_operations import (
 
 
 # Import plotting functions
-from intensity_vs_theta import plot_intensity_vs_theta
+from intensity_vs_theta import plot_intensity_vs_theta, generate_intensity
 from polarization_vs_theta import plot_polarization_vs_theta
 
 
@@ -48,11 +47,13 @@ from .utils import format_sig_figs
 
 # Expose certain names to package level for easier access
 __all__ = [
-    'rayleigh',
+    'rayleigh_phase_function',
     'scattering_angle',
     'photon_unit_vector',
     'scattered_intensity_reflected',
     'scattered_intensity_transmitted',
+    'intensity_at_ground',
+    'intensity_at_top',
     'scattered_intensity_at_tau',
     'intensity_at_tau',
     'direction_vector',
@@ -61,9 +62,8 @@ __all__ = [
     'rayleigh_matrix',
     'rotation_matrix',
     'rotation_angles',
+    'generate_intensity',
     'plot_intensity_vs_theta',
     'plot_polarization_vs_theta',
-    'format_sig_figs',
-    'intensity_at_ground',
-    'intensity_at_top'
+    'format_sig_figs'
 ]
