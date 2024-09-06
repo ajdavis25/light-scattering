@@ -42,7 +42,7 @@ def plot_intensity_vs_theta(
     """
     plot intensity vs. theta for different observation angles and save the plot
 
-    Args:
+    args:
         tau_atm: the atmospheric tau value (default: 0.5)
         theta_0: initial angle of light (default: 145)
         save_path: directory to save the plot (default: './plots')
@@ -71,7 +71,3 @@ def plot_intensity_vs_theta(
     # save and display the plot
     plt.savefig(os.path.join(save_path, save_name))
     plt.show()
-
-
-if __name__ == "__main__":
-    plot_intensity_vs_theta()
