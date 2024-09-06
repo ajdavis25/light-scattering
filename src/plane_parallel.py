@@ -245,19 +245,3 @@ def intensity_at_tau(theta_0: float, theta_obs: float, phi_obs: float, tau: floa
 
     # general case for in-between tau
     return intensity * scattered_stokes
-
-
-def main():
-    """Main function to test intensity calculations."""
-    theta_0 = 130.0
-    tau = 0.5
-    phi = 0.0
-
-    print("Test scattered intensity at ground:")
-    for theta in np.linspace(0, 89, 10):
-        intensity = intensity_at_ground(theta_0, 180.0 - theta, phi, tau)
-        print(f"Theta_0: {theta_0}, Theta: {theta}, Phi: {phi}, Intensity: {intensity}")
-
-
-if __name__ == '__main__':
-    main()
