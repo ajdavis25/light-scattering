@@ -15,7 +15,7 @@ def main():
     2. demonstrates rotation and scattering of a Stokes vector using matrices
     3. calculates direction vectors based on theta and phi angles
     4. calculates rotation angles between different direction vectors
-    5. calls external functions to plot intensity and polarization vs. theta (likely requiring separate implementations)
+    5. calls external functions to plot intensity and polarization vs. theta
     """
     # define simulation parameters
     theta_0 = 130.0 # initial scattering angle (degrees)
