@@ -78,17 +78,19 @@ def main():
     solar_zenith_angle = 35.0
     theta_0 = 180.0 - solar_zenith_angle
 
-    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "upwelling")
-    # make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('Pol', theta_0, tau_atm, tau_atm, "upwelling")
-    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling")
+    # upwelling plots
+    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "upwelling", save_name='single_scatter_plot_I_upwelling')
+    # make_contour_plot('Pol', theta_0, tau_atm, tau_atm, "upwelling", save_name='single_scatter_plot_Pol_upwelling')
+    # make_contour_plot('Q', theta_0, tau_obs, tau_atm, "upwelling", save_name='single_scatter_plot_Q_upwelling')
+    # make_contour_plot('U', theta_0, tau_obs, tau_atm, "upwelling", save_name='single_scatter_plot_U_upwelling')
+    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "upwelling", save_name='single_scatter_plot_nlines_upwelling')
 
-    make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_I')
-    make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_Pol')
-    # make_contour_plot('Q', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('U', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling")
+    # downwelling plots
+    make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_I_downwelling')
+    make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_Pol_downwelling')
+    # make_contour_plot('Q', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_Q_downwelling')
+    # make_contour_plot('U', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_U_downwelling')
+    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_nlines_downwelling')
 
     # print(intensity_at_tau(135.0, 120.0, 30.0, 0.0, 0.125))
     # print(intensity_at_tau(135.0, 120.0, -30.0, 0.0, 0.125))
