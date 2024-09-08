@@ -2,7 +2,13 @@ import numpy as np
 from intensity_vs_theta import plot_intensity_vs_theta
 from polarization_vs_theta import plot_polarization_vs_theta
 from plane_parallel import intensity_at_ground
-from vector_operations import rotation_matrix, rayleigh_matrix, direction_vector, rotation_angles
+from single_scatter_plot import make_contour_plot
+from vector_operations import (
+    rotation_matrix,
+    rayleigh_matrix,
+    direction_vector,
+    rotation_angles
+)
 
 
 def main():
@@ -12,10 +18,10 @@ def main():
     this script performs the following tasks:
 
     1. calculates and prints scattered intensity at the ground for a range of angles
-    2. demonstrates rotation and scattering of a Stokes vector using matrices
+    2. demonstrates rotation and scattering of a stokes vector using matrices
     3. calculates direction vectors based on theta and phi angles
     4. calculates rotation angles between different direction vectors
-    5. calls external functions to plot intensity and polarization vs. theta
+    5. calls external functions to plot intensity and polarization vs. theta, and generates contour plots
     """
     # define simulation parameters
     theta_0 = 130.0 # initial scattering angle (degrees)
@@ -65,6 +71,27 @@ def main():
 
     plot_intensity_vs_theta()
     plot_polarization_vs_theta()
+
+    # call make_contour_plot with relevant parameters
+    tau_obs = 0.0
+    tau_atm = 0.5
+    solar_zenith_angle = 35.0
+    theta_0 = 180.0 - solar_zenith_angle
+
+    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling")
+    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "upwelling")
+    # make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling")
+    # make_contour_plot('Pol', theta_0, tau_atm, tau_atm, "upwelling")
+    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling")
+
+    make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_I')
+    make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling", save_name='single_scatter_plot_Pol')
+    # make_contour_plot('Q', theta_0, tau_obs, tau_atm, "downwelling")
+    # make_contour_plot('U', theta_0, tau_obs, tau_atm, "downwelling")
+    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling")
+
+    # print(intensity_at_tau(135.0, 120.0, 30.0, 0.0, 0.125))
+    # print(intensity_at_tau(135.0, 120.0, -30.0, 0.0, 0.125))
 
 
 if __name__ == '__main__':

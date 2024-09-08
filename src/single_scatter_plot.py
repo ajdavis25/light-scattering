@@ -1,56 +1,81 @@
 #!/usr/bin/python3
 ''' This code produces a view of the sky at one wavelength. '''
 
-import math, numpy as np, matplotlib.pyplot as plt
-# from PIL import Image, ImageDraw
-from plane_parallel import intensity_at_tau
+import os, math, numpy as np, matplotlib.pyplot as plt
+from typing import List
 from matplotlib import cm
-# from matplotlib.patches import Circle
+from matplotlib.patches import Circle
+from plane_parallel import intensity_at_tau
+# from PIL import Image, ImageDraw
 
 
-def make_contour_plot(optical_quantity, theta_0, tau_obs, tau_atm, direction):
-    ''' use matplotlib contour capability '''
+def calculate_quantity(
+    intensity: List[float], optical_quantity: str
+) -> float:
+    """
+    calculate the desired optical quantity based on intensity
 
-    #-- Generate Data -----------------------------------------
-    # Using linspace so that the endpoint of 360 is included...
-    azimuths = np.radians(np.linspace(0, 360, 181))
-    zeniths = np.arange(0, 91, 2)
+    args:
+        intensity: list of four stokes parameters [I, Q, U, V]
+        optical_quantity: optical quantity to calculate ('I', 'Pol', 'Q', 'U', 'n_lines')
+
+    returns:
+        calculated optical quantity
+    """
+    if optical_quantity == 'I':
+        return intensity[0]
+    elif optical_quantity == 'Pol':
+        if intensity[0] > 0.0:
+            return math.sqrt(intensity[1] ** 2 + intensity[2] ** 2) / intensity[0]
+    elif optical_quantity == 'Q':
+        return intensity[1]
+    elif optical_quantity == 'U':
+        return intensity[2]
+    elif optical_quantity == 'n_lines':
+        if optical_quantity[1] > 0:
+            return 4.0 if intensity[2] > 0 else 1.0
+        else:
+            return 3.0 if intensity[2] > 0 else 2.0
+    return 0.0
+
+
+def make_contour_plot(
+    optical_quantity: str,
+    theta_0: float,
+    tau_obs: float,
+    tau_atm: float,
+    direction: str,
+    save_name: str,
+    save_path: str = './plots'
+) -> None:
+    '''
+    generate a polar contour polot of the optical quantity
+
+    args:
+        optical_quantity: the type of optical quantity to plot ('I', 'Pol', 'Q', 'U', 'n_lines')
+        theta_0: solar zenity angle (in degrees)
+        tau_obs: optical depty at observation level
+        tau_atm: optical depth of the atmosphere
+        direction: direction of the light ('downwelling' or 'upwelling')
+    '''
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    # generate data for the plot using linspace so that the endpoint of 360 is included
+    azimuths = np.radians(np.linspace(0, 360, 181)) # 0 to 360 degrees
+    zeniths = np.arange(0, 91, 2) # 0 to 90 degrees (zenith)
     r, theta = np.meshgrid(zeniths, azimuths)
-    values = np.random.random((azimuths.size, zeniths.size))
+    values = np.zeros((azimuths.size, zeniths.size))
 
-
-    for i in range(len(azimuths)):
-        for j in range(len(zeniths)):
-            phi = math.degrees(azimuths[i])
-            if direction == "downwelling":
-                theta_p = 180.0 - zeniths[j]
-            else:
-                theta_p = zeniths[j]
-            quantity = 0.0
+    # compute the optical quantity for each (zenith, azimuth) pair
+    for azimuth in range(len(azimuths)):
+        for zenith in range(len(zeniths)):
+            phi = math.degrees(azimuths[azimuth])
+            theta_p = 180.0 - zeniths[zenith] if direction == "downwelling" else zeniths[zenith]
             intensity = intensity_at_tau(theta_0, theta_p, phi, tau_obs, tau_atm)
-            if optical_quantity == 'I':
-                quantity = intensity[0]
-            elif optical_quantity == 'Pol':
-                if intensity[0] > 0.0:
-                    quantity = math.sqrt(math.pow(intensity[1], 2) + math.pow(intensity[2], 2))/intensity[0]
-            elif optical_quantity == 'Q':
-                quantity = intensity[1]
-            elif optical_quantity == 'U':
-                quantity = intensity[2]
-            elif optical_quantity == 'n_lines':
-                if intensity[1] > 0:
-                    if intensity[2] > 0:
-                        quantity = 4.0
-                    else:
-                        quantity = 1.0
-                else:
-                    if intensity[2] > 0:
-                        quantity = 3.0
-                    else:
-                        quantity = 2.0
-            values[i,j] = quantity
+            values[azimuth, zenith] = calculate_quantity(intensity, optical_quantity)
 
-    #-- Plot... ------------------------------------------------
+    # create polar contour plot
     fig, ax = plt.subplots(subplot_kw=dict(projection='polar'))
 
     # ax.contourf(theta, r, values, 30, cmap=cm.gray)
@@ -59,47 +84,15 @@ def make_contour_plot(optical_quantity, theta_0, tau_obs, tau_atm, direction):
 
     ax.set_theta_zero_location("N")
     # or ax.set_theta_offset(pi)
-    ax.set(xticks = np.arange(0, 2*math.pi, math.pi/6.0),
+    ax.set(xticks = np.arange(0, 2 * math.pi, math.pi / 6.0),
            yticks = np.arange(0, 91, 30) )
     
-    # Try to add the circle of the sun
-    sun = plt.Circle((0, (180 - theta_0)), 1.5, transform=ax.transData._b, color='yellow')
-    if direction == 'upwelling':
-        sun = plt.Circle((0, -(180 - theta_0)), 1.5, transform=ax.transData._b, color='red')
+    # add the circle of the sun
+    sun_position = (0, (180 - theta_0) if direction == "downwelling" else - (180 - theta_0))
+    sun = Circle(sun_position, 1.5, transform=ax.transData._b, color='yellow' if direction == "downwelling" else 'red')
     ax.add_artist(sun)
 
+    # save and display the plot
+    plt.savefig(os.path.join(save_path, save_name))
+    plt.title(f'Single Scatter Plot - {optical_quantity}')
     plt.show()
-    # plt.savefig('sky_intensity.png', dpi = 200)
-
-
-def my_main():
-    ''' Main function '''
-
-    tau_atm = 0.5
-    tau_obs = 0.00
-    solar_zenith_angle = 35.0
-
-    theta_0 = 180.0 - solar_zenith_angle
-
-    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('I', theta_0, tau_obs, tau_atm, "upwelling")
-    # make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('Pol', theta_0, tau_atm, tau_atm, "upwelling")
-    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling")
-
-    make_contour_plot('I', theta_0, tau_obs, tau_atm, "downwelling")
-    make_contour_plot('Pol', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('Q', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('U', theta_0, tau_obs, tau_atm, "downwelling")
-    # make_contour_plot('n_lines', theta_0, tau_obs, tau_atm, "downwelling")
-
-
-    # print(intensity_at_tau(135.0, 120.0, 30.0, 0.0, 0.125))
-    # print(intensity_at_tau(135.0, 120.0, -30.0, 0.0, 0.125))
-
-    return 0
-
-
-if __name__ == '__main__':
-
-    my_main()

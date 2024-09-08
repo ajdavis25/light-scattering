@@ -37,8 +37,9 @@ from .vector_operations import (
 
 
 # Import plotting functions
-from intensity_vs_theta import generate_intensity, plot_intensity_vs_theta
-from polarization_vs_theta import calculate_polarization, generate_polarization_data, plot_polarization_vs_theta
+from .intensity_vs_theta import generate_intensity, plot_intensity_vs_theta
+from .polarization_vs_theta import calculate_polarization, generate_polarization_data, plot_polarization_vs_theta
+from .single_scatter_plot import make_contour_plot
 
 
 # Import utils if there are any general utility functions
@@ -67,5 +68,6 @@ __all__ = [
     'calculate_polarization',
     'generate_polarization_data',
     'plot_polarization_vs_theta',
+    'make_contour_plot',
     'format_sig_figs'
 ]
