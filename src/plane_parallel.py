@@ -3,7 +3,7 @@
 """
 Created on Sat Jan 15 15:23:36 2022
 
-Refactored version: Best practices applied.
+refactored version: best practices applied
 
 This code simulates the downwelling light field for an observer
 standing at the base of a plane-parallel atmosphere. This is a scalar
@@ -15,6 +15,7 @@ The ground is completely absorbing.
 
 import math, numpy as np
 from vector_operations import rayleigh_matrix, rotation_angles, rotation_matrix
+
 
 # constants
 PI = math.pi

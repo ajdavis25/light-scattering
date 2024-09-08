@@ -3,7 +3,7 @@
 """
 Created on Jul 25, 2024
 
-Refactored version: Best practices applied.
+refactored version: best practices applied
 
 This script tests matrix operations including Mueller and rotation matrices 
 in the context of light scattering simulations.
@@ -13,7 +13,6 @@ in the context of light scattering simulations.
 
 import math, numpy as np
 from typing import Tuple
-# from logging_setup import logging
 
 
 def direction_vector(theta: float, phi: float) -> np.ndarray:
