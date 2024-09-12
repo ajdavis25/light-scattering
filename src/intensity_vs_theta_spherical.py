@@ -1,6 +1,12 @@
-import os, math, matplotlib.pyplot as plt, numpy as np
+""" single scattering of intensity vs. theta using a spherical model of the earth and a sun that isn't an infinitely small point """
+
+import os, math, numpy as np, matplotlib.pyplot as plt
 from typing import List, Tuple
-from spherical_model import photon_unit_vector_spherical, sun_position_vector, scattering_angle_spherical, rayleigh_phase_function
+from spherical_model import (
+    photon_unit_vector_spherical,
+    sun_position_vector,
+    rayleigh_phase_function
+)
 
 
 def intensity_at_ground_spherical(
