@@ -81,23 +81,26 @@ def intensity_at_ground_spherical(
     solar_declination: float,
     hour_angle: float,
     tau_max: float,
-    num_layers: int = 100
+    num_layers: int = 100,
+    scattering_angle: float = None # scattering angle parameter
 ) -> float:
     """
-    calculate the intensity at the ground level based on the spherical Earth model and atmospheric scattering effects
-    by integrating across multiple atmospheric layers
+    calculate the intensity at the ground level based on the spherical earth model and atmospheric scattering effects
+    by integrating across multiple atmospheric layers, considering the scattering angle
 
     args:
         latitude: the observer's latitude
         longitude: the observer's longitude
-        solar_declination: the sun's hour angle
+        solar_declination: the sun's declination angle
         hour_angle: the sun's hour angle
         tau_max: maximum optical depth
-        num_layers: number of layers in the atmosphere for integration (default is 10)
+        num_layers: number of layers in the atmosphere for integration
+        scattering_angle: the angle between the sun and the observer's location for scattering
 
     returns:
         the scattered intensity at the ground level
     """
+
     # calculate the earth's surface normal vector at the observer's location
     earth_surface_vector = photon_unit_vector_spherical(latitude, longitude)
 
@@ -130,8 +133,14 @@ def intensity_at_ground_spherical(
         if mu < 1e-5: # small threshold to prevent division by very small numbers
             continue
 
-        # calculate the phase function and air mass adjustment for scattering at this layer
-        layer_intensity = rayleigh_phase_function(zenith_angle) * math.exp(-tau_layer / (mu * airmass_factor)) * delta_tau
+        # incorporate the scattering angle into the phase function (rayleigh scattering)
+        if scattering_angle is not None:
+            phase_function_value = rayleigh_phase_function(scattering_angle)
+        else:
+            phase_function_value = rayleigh_phase_function(zenith_angle) # fallback to zenith angle if scattering angle is not provided
+
+        # calculate the intensity contribution from this atmospheric layer
+        layer_intensity = phase_function_value * math.exp(-tau_layer / (mu * airmass_factor)) * delta_tau
 
         # accumulate the intensity from this layer
         intensity += layer_intensity
@@ -140,7 +149,11 @@ def intensity_at_ground_spherical(
 
 
 def generate_intensity_spherical(
-        latitude: float, longitude: float, solar_declination: float, tau_atm: float, num_layers: int
+    latitude: float,
+    longitude: float,
+    solar_declination: float,
+    tau_atm: float,
+    num_layers: int
 ) -> Tuple[List[float], List[float]]:
     """
     generate the intensity of light at ground level for a range of theta angles, given a latitude and longitude
@@ -170,13 +183,13 @@ def generate_intensity_spherical(
 
 
 def plot_intensity_vs_theta_spherical(
-        latitude: float = 30.0, # example latitude
-        longitude: float = 0.0, # example longitude
-        solar_declination: float = 23.5, # example solar declination (approx for summer solstice)
-        tau_atm: float = 0.5,
-        num_layers: int = 20,
-        save_path: str = './plots',
-        save_name: str = 'intensity_vs_theta_spherical.png'
+    latitude: float = 30.0,
+    longitude: float = 0.0,
+    solar_declination: float = 23.5, # approx for summer solstice
+    tau_atm: float = 0.5,
+    num_layers: int = 20,
+    save_path: str = './plots',
+    save_name: str = 'intensity_vs_theta_spherical.png'
 ) -> None:
     """
     plot intensity vs. theta (hour angle) for a given latitude, longitude, and solar declination
