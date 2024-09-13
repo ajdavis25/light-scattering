@@ -1,5 +1,5 @@
 import numpy as np
-from intensity_vs_theta import plot_intensity_vs_theta
+from plane_parallel.intensity_vs_theta import plot_intensity_vs_theta
 from polarization_vs_theta import plot_polarization_vs_theta
 from plane_parallel import intensity_at_ground
 from single_scatter_plot import make_contour_plot

@@ -1,5 +1,5 @@
 import os, pytest, numpy as np
-from src.single_scatter_plot import (
+from plane_parallel.single_scatter_plot import (
     calculate_quantity,
     make_contour_plot
 )
