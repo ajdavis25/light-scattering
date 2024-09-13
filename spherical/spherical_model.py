@@ -1,4 +1,5 @@
 import math, numpy as np
+from typing import Tuple
 
 
 # constants
@@ -83,6 +84,7 @@ def rayleigh_phase_function(psi: float) -> float:
 
     return phase_function
 
+
 def mie_phase_function(psi: float) -> float:
     """
     calculate the mie phase function for a given scattering angle
@@ -98,3 +100,69 @@ def mie_phase_function(psi: float) -> float:
     phase_function = (1 - g**2) / (4 * math.pi * (1 + g**2 - 2 * g * math.cos(psi_rad))**(3/2))
 
     return phase_function
+
+
+def calculate_sun_position(latitude: float, solar_declination: float, hour_angle: float) -> Tuple[float, float]:
+    """
+    calculate the sun's position (zenith angle and azimuth angle) based on the latitude, solar declination, and hour angle
+
+    args:
+        latitude: the observer's latitude in degrees
+        solar_declination: the sun's declination in degrees
+        hour_angle: the sun's hour angle relative to the observer's meridian in degrees
+
+    returns:
+        tuple of (zenith_angle, azimuth_angle) in degrees
+    """
+    # convert angles to radians for calculation
+    latitude_rad = np.radians(latitude)
+    declination_rad = np.radians(solar_declination)
+    hour_angle_rad = np.radians(hour_angle)
+
+    # compute the cosine of the zenith angle using the spherical trigonometry formula
+    cos_zenith_angle = (np.sin(latitude_rad) * np.sin(declination_rad) +
+                        np.cos(latitude_rad) * np.cos(declination_rad) * np.cos(hour_angle_rad))
+
+    # ensure the value is within [-1, 1] to avoid numerical errors
+    cos_zenith_angle = np.clip(cos_zenith_angle, -1.0, 1.0)
+
+    # zenith angle is the arccos of the cosine value
+    zenith_angle = np.degrees(np.arccos(cos_zenith_angle))
+
+    # azimuth angle (can approximate directly from the hour angle)
+    azimuth_angle = hour_angle
+
+    return zenith_angle, azimuth_angle
+
+
+def calculate_scattering_angle(zenith1: float, azimuth1: float, zenith2: float, azimuth2: float) -> float:
+    """
+    calculate the scattering angle between two points on the celestial sphere
+
+    args:
+        zenith1: zenith angle of the first point (degrees)
+        azimuth1: azimuth angle of the first point (degrees)
+        zenith2: zenith angle of the second point (degrees)
+        azimuth2: azimuth angle of the second point (degrees)
+
+    returns:
+        the scattering angle (in degrees) between the two points
+    """
+    # convert angles to radians for calculation
+    zenith1_rad = np.radians(zenith1)
+    azimuth1_rad = np.radians(azimuth1)
+    zenith2_rad = np.radians(zenith2)
+    azimuth2_rad = np.radians(azimuth2)
+
+    # apply spherical trigonometry to calculate the scattering angle
+    cos_scattering_angle = (np.sin(zenith1_rad) * np.sin(zenith2_rad) *
+                            np.cos(azimuth1_rad - azimuth2_rad) +
+                            np.cos(zenith1_rad) * np.cos(zenith2_rad))
+
+    # clip the result to avoid numerical issues with arccos
+    cos_scattering_angle = np.clip(cos_scattering_angle, -1.0, 1.0)
+
+    # convert to degrees
+    scattering_angle = np.degrees(np.arccos(cos_scattering_angle))
+
+    return scattering_angle

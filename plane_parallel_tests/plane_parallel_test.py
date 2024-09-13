@@ -1,5 +1,5 @@
 import pytest, numpy as np
-from src.plane_parallel import (
+from plane_parallel.plane_parallel import (
     rayleigh_phase_function,
     scattering_angle,
     photon_unit_vector,

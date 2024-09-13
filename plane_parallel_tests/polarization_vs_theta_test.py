@@ -1,5 +1,5 @@
 import os, pytest, numpy as np
-from src.polarization_vs_theta import (
+from plane_parallel.polarization_vs_theta import (
     calculate_polarization,
     generate_polarization_data,
     plot_polarization_vs_theta

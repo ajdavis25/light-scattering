@@ -1,5 +1,5 @@
 import pytest, numpy as np
-from src.vector_operations import (
+from plane_parallel.vector_operations import (
     direction_vector,
     dot_product,
     normalize,

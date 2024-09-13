@@ -1,5 +1,5 @@
 import os, pytest
-from src.intensity_vs_theta import (
+from plane_parallel.intensity_vs_theta import (
     generate_intensity,
     plot_intensity_vs_theta
 )
