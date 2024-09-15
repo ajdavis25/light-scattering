@@ -1,57 +1,14 @@
 import numpy as np
 from typing import Tuple, List
+from spherical.v1.atmospheric_model import (
+    rayleigh_phase_function
+)
 from spherical_model import (
-    rayleigh_phase_function,
     calculate_scattering_angle
 )
 
 
-def calculate_scattering_angle_for_polarization(
-    latitude: float,
-    solar_declination: float,
-    observer_azimuth: float,
-    sun_azimuth: float,
-    sun_zenith: float
-) -> float:
-    """
-    calculate the scattering angle for rayleigh scattering based on the observer's location,
-    the sun's position, and the azimuth angle of observation
-
-    args:
-        latitude: observer's latitude in degrees
-        solar_declination: sun's declination angle in degrees
-        observer_azimuth: azimuth angle of the observation point in degrees
-        sun_azimuth: azimuth angle of the sun in degrees
-        sun_zenith: zenith angle of the sun in degrees
-
-    returns:
-        scattering angle (in radians) between the sun and the point in the sky
-    """
-    # observer's zenith angle (Z_o)
-    observer_zenith = np.radians(90 - latitude) # convert latitude to zenith angle
-
-    # convert angles to radians
-    sun_zenith_rad = np.radians(sun_zenith)
-    observer_azimuth_rad = np.radians(observer_azimuth)
-    sun_azimuth_rad = np.radians(sun_azimuth)
-
-    # use spherical trigonometry to calculate the cosine of the scattering angle
-    cos_scattering_angle = (
-        np.sin(observer_zenith) * np.sin(sun_zenith_rad) +
-        np.cos(observer_zenith) * np.cos(sun_zenith_rad) *
-        np.cos(observer_azimuth_rad - sun_azimuth_rad)
-    )
-
-    # clip the value to ensure it lies within [-1, 1] to avoid numerical issues with arccos
-    cos_scattering_angle = np.clip(cos_scattering_angle, -1.0, 1.0)
-
-    # calculate the scattering angle in radians
-    scattering_angle = np.arccos(cos_scattering_angle)
-
-    return scattering_angle
- 
-
-def polarized_intensity_at_ground_spherical(
+def polarized_intensity(
     latitude: float, 
     longitude: float, 
     solar_declination: float, 
@@ -66,9 +23,10 @@ def polarized_intensity_at_ground_spherical(
 
     returns a list of four stokes parameters: [I, Q, U, V]
     """
+    zenith_angle = 90 - latitude
     # calculate the scattering angle based on solar and observer geometry
-    scattering_angle = calculate_scattering_angle_for_polarization(
-        latitude, solar_declination, azimuth, sun_azimuth, sun_zenith
+    scattering_angle = calculate_scattering_angle(
+        zenith_angle, azimuth, sun_azimuth, sun_zenith
     )
 
     # rayleigh scattering phase function for total intensity
@@ -140,7 +98,7 @@ def calculate_polarization_stokes(
             scattering_angle = calculate_scattering_angle(zenith, np.degrees(azimuth), sun_zenith, np.degrees(sun_azimuth))
             phase_function_value = rayleigh_phase_function(scattering_angle)
             
-            stokes_parameters = polarized_intensity_at_ground_spherical(
+            stokes_parameters = polarized_intensity(
                 latitude, longitude, solar_declination, np.degrees(azimuth) - 180, tau_atm, num_layers, sun_azimuth, sun_zenith
             )
             
