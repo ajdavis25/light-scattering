@@ -1,27 +1,29 @@
 """ single scattering of intensity vs. theta using a spherical model of the earth and a sun that isn't an infinitely small point """
 
-import os, math, numpy as np, matplotlib.pyplot as plt
+import math, numpy as np
 from typing import List, Tuple
-from utils import (
-    apply_gaussian_smoothing,
+from spherical.v1.signal_processing import (
+    apply_gaussian_smoothing
+)
+from spherical.v1.atmospheric_model import (
     air_mass,
-    refraction_correction
+    refraction_correction,
+    rayleigh_phase_function
 )
 from spherical_model import (
     photon_unit_vector_spherical,
-    sun_position_vector,
-    rayleigh_phase_function
+    sun_position_vector
 )
 
 
 def intensity_at_ground_spherical(
-    latitude: float,
-    longitude: float,
-    solar_declination: float,
-    hour_angle: float,
-    tau_max: float,
-    num_layers: int = 100,
-    scattering_angle: float = None # scattering angle parameter
+        latitude: float,
+        longitude: float,
+        solar_declination: float,
+        hour_angle: float,
+        tau_max: float,
+        num_layers: int = 100,
+        scattering_angle: float = None # scattering angle parameter
 ) -> float:
     """
     calculate the intensity at the ground level based on the spherical earth model and atmospheric scattering effects
@@ -88,11 +90,11 @@ def intensity_at_ground_spherical(
 
 
 def generate_intensity_spherical(
-    latitude: float,
-    longitude: float,
-    solar_declination: float,
-    tau_atm: float,
-    num_layers: int
+        latitude: float,
+        longitude: float,
+        solar_declination: float,
+        tau_atm: float,
+        num_layers: int
 ) -> Tuple[List[float], List[float]]:
     """
     generate the intensity of light at ground level for a range of theta angles, given a latitude and longitude
@@ -119,45 +121,3 @@ def generate_intensity_spherical(
     smoothed_intensities = apply_gaussian_smoothing(intensities, sigma=2)
 
     return theta_obs, smoothed_intensities
-
-
-def plot_intensity_vs_theta_spherical(
-    latitude: float = 30.0,
-    longitude: float = 0.0,
-    solar_declination: float = 23.5, # approx for summer solstice
-    tau_atm: float = 0.5,
-    num_layers: int = 20,
-    save_path: str = './plots',
-    save_name: str = 'intensity_vs_theta_spherical.png'
-) -> None:
-    """
-    plot intensity vs. theta (hour angle) for a given latitude, longitude, and solar declination
-
-    args:
-        latitude: observer's latitude
-        longitude: observer's longitude
-        solar_declination: sun's declination angle
-        tau_atm: atmospheric tau value (default: 0.5)
-        num_layers: number of layers in the atmosphere for integration (default: 10)
-        save_path: directory to save the plot
-        save_name: file name for the saved plot
-    """
-
-    # create directory if it doesn't exist
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
-
-    # generate intensity data for a range of hour angles (theta values)
-    theta_obs, intensity = generate_intensity_spherical(latitude, longitude, solar_declination, tau_atm, num_layers)
-
-    # plot the data
-    plt.plot(theta_obs, intensity, label=f'Lat: {latitude}, Solar Dec: {solar_declination}')
-
-    plt.legend()
-    plt.title('Intensity vs. Hour Angle (Spherical Model)')
-    plt.xlabel('Hour Angle (Degrees)')
-    plt.ylabel('Intensity')
-
-    # save and display the plot
-    plt.savefig(os.path.join(save_path, save_name))
-    plt.show()

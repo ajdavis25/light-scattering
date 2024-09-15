@@ -1,5 +1,22 @@
+import os, numpy as np, matplotlib.pyplot as plt
+from typing import Dict, List, Tuple
 from matplotlib.colors import LinearSegmentedColormap
-from typing import Tuple, List, Dict
+
+
+def save_plot(fig, save_path: str, save_name: str) -> None:
+    """
+    saves a plot figure to a specified location and optionally displays it
+
+    args:
+        fig (matplotlib.figure.Figure): the Matplotlib figure object to save
+        save_path (str): the path to the directory where the plot will be saved
+        save_name (str): the filename for the saved plot
+    """
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    plt.savefig(os.path.join(save_path, save_name))
+    plt.show()
+
 
 def create_twilight_colormap() -> LinearSegmentedColormap:
     """
