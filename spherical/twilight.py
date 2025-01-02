@@ -71,7 +71,7 @@ def make_contour_plot(optical_quantity, solar_zenith_angle, tau_obs, tau_atm, di
         for j in range(len(zeniths)):
             phi = math.degrees(azimuths[i])
             if direction == "downwelling":
-                theta_p = 180.0 - zeniths[j]  # Downwelling for sunset
+                theta_p = 180.0 - zeniths[j]  # downwelling for sunset
             else:
                 theta_p = zeniths[j]
             
@@ -124,9 +124,9 @@ def my_main():
 
     tau_atm = 0.4 # atmospheric optical depth (adjusted for twilight)
     tau_obs = 0.02 # observer's optical depth during twilight
-    solar_zenith_angle = 96.0 # Sun's zenith angle, which controls the sun's position
+    solar_zenith_angle = 96.0 # sun's zenith angle, which controls the sun's position
 
-    # Generate contour plots for intensity and polarization
+    # generate contour plots for intensity and polarization
     make_contour_plot('I', solar_zenith_angle, tau_obs, tau_atm, "downwelling")
     make_contour_plot('Pol', solar_zenith_angle, tau_obs, tau_atm, "downwelling")
 
