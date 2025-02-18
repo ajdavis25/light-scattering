@@ -23,6 +23,8 @@ monte_carlo_cpp/
 │   ├── Atmosphere.hpp
 │   ├── Parallelization.cpp
 │   ├── Parallelization.hpp
+│   ├── MonteCarloDriver.cpp
+│   ├── MonteCarloDriver.hpp
 │   └── ...
 │
 └── tests/
@@ -108,7 +110,7 @@ monte_carlo_cpp/
 
 2. Make a build directory `/monte_carlo_cpp/build/`
 
-3. In /monte_carlo_cpp/ run `cmake -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DC_MAKE_CXX_COMPILER=g++ ..`
+3. In /monte_carlo_cpp/ run `cmake -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ ..`
 
 3. Navigate to the build folder and run `cmake --build`
 

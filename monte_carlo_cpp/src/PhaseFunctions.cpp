@@ -15,10 +15,20 @@ double henyeyGreenstein(double cosTheta, double g)
     return (1.0 - g2)/std::pow(denom, 1.5);
 }
 
-double combinedPhase(double cosTheta, double fracRay, double g)
+double miePhase(double cosTheta, double wavelength_nm)
 {
-    // Weighted sum of Rayleigh & HG
+    // TODO: read from a LUT or do some approximate formula 
+    // For demonstration, let's do a placeholder forward-lobe:
+    double factor = (550.0 / wavelength_nm);
+    double peak = 5.0 * factor;  // bigger forward peak if shorter wavelength?
+    double val = 1.0 + peak * cosTheta;
+    return std::max(0.0, val);
+}
+
+double combinedPhase(double cosTheta, double fracRay, double fracMie)
+{
+    // ignoring normalization for brevity
     double pRay = rayleighPhase(cosTheta);
-    double pHG  = henyeyGreenstein(cosTheta, g);
-    return fracRay*pRay + (1.0 - fracRay)*pHG;
+    double pMie = miePhase(cosTheta, 550.0/*placeholder*/);
+    return fracRay * pRay + fracMie * pMie;
 }

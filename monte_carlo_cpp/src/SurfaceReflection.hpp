@@ -2,10 +2,7 @@
 #ifndef SURFACEREFLECTION_HPP
 #define SURFACEREFLECTION_HPP
 
-struct Vec3
-{
-    double x,y,z;
-};
+#include "Vec3.hpp" // Use the single definition
 
 struct ReflectionResult
 {
@@ -13,9 +10,12 @@ struct ReflectionResult
     double weightMultiplier;
 };
 
-// Simple lambertian reflection
 ReflectionResult reflectLambertian(double albedo);
 
-// TODO: function for BRDF-based reflection if needed
+/**
+ * Attempt a simple Fresnel reflection if we have 
+ * water index of refraction ~1.33 or so.
+ */
+ReflectionResult reflectFresnelWater(const Vec3 &incoming);
 
 #endif

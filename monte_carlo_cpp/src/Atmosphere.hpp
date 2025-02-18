@@ -2,16 +2,51 @@
 #ifndef ATMOSPHERE_HPP
 #define ATMOSPHERE_HPP
 
-/**
- * Returns a dimensionless "density" at altitude (m).
- * For example: exponential atmosphere.
- */
-double atmosphericDensity(double altitude_m);
+#include <vector>
+#include <string>
 
-/**
- * Returns an approximate absorption coefficient at altitude (m).
- * Could represent O2, O3, H2O, etc.
- */
-double absorptionCoefficient(double altitude_m);
+struct Layer
+{
+    double altBottom;     // bottom altitude (m)
+    double altTop;        // top altitude (m)
+    double densityRay;    // Rayleigh reference
+    double densityAero;   // aerosol reference
+    double absorptionO3;  // or combined absorption
+    // possibly temperature, pressure, etc.
+};
 
-#endif
+class Atmosphere
+{
+public:
+    /**
+     * Load layering from a file or set default exponentials
+     */
+    void loadLayerData(const std::string &filename);
+
+    /**
+     * Returns Rayleigh density at altitude
+     */
+    double rayleighDensity(double alt) const;
+
+    /**
+     * Returns aerosol density at altitude
+     */
+    double aerosolDensity(double alt) const;
+
+    /**
+     * Returns absorption coefficient at altitude
+     */
+    double absorptionCoeff(double alt) const;
+
+    /**
+     * Returns *total* atmospheric density at altitude,
+     * or some other combined measure. You can define
+     * how you want this to sum or combine.
+     */
+    double atmosphericDensity(double alt) const;
+
+private:
+    std::vector<Layer> layers;
+};
+
+#endif // ATMOSPHERE_HPP

@@ -15,5 +15,7 @@ add_executable(MonteCarloCPP
     src/Atmosphere.cpp
     src/WavelengthHandling.cpp
     src/AccelerationTechniques.cpp
+    src/MonteCarloDriver.cpp
+    src/Parallelization.cpp
     # etc...
 )
