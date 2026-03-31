@@ -1,0 +1,3 @@
+altitude_m,pressure_pa,temperature_k,molecular_number_density_m3,ozone_number_density_m3,aerosol_extinction_550_m_inv,aerosol_single_scattering_albedo,aerosol_asymmetry
+0.0,1.013250e+05,288.150,4.587156e+24,0.0,0.0,0.0,0.0
+20000.0,1.013250e+05,288.150,4.587156e+24,0.0,0.0,0.0,0.0

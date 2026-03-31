@@ -1,0 +1,24 @@
+{
+  "case_id": "frozen_marseille_twilight_20220815_191413z",
+  "source_reference_csv": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference.csv",
+  "subset_reference_csv": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference_strict_subset.csv",
+  "target_count": 48,
+  "rows_written": 48,
+  "region_counts": {
+    "solar_vertical_midzen": 12,
+    "antisolar_midzen": 8,
+    "bright_horizon_arc": 10,
+    "near_zenith": 6,
+    "aop_flip_relaz_45_sector": 5,
+    "aop_flip_relaz_215_sector": 6,
+    "global_fill": 1
+  },
+  "region_targets": {
+    "solar_vertical_midzen": 12,
+    "antisolar_midzen": 8,
+    "bright_horizon_arc": 10,
+    "near_zenith": 6,
+    "aop_flip_relaz_45_sector": 6,
+    "aop_flip_relaz_215_sector": 6
+  }
+}

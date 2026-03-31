@@ -1,0 +1,3667 @@
+{
+  "status": "OK",
+  "data": {
+    "id": 196780,
+    "identifier": "9L2YUB",
+    "persistentUrl": "https://doi.org/10.57745/9L2YUB",
+    "protocol": "doi",
+    "authority": "10.57745",
+    "publisher": "Recherche Data Gouv",
+    "publicationDate": "2024-05-07",
+    "storageIdentifier": "espace-generique://10.57745/9L2YUB",
+    "metadataLanguage": "en",
+    "latestVersion": {
+      "id": 271925,
+      "datasetId": 196780,
+      "datasetPersistentId": "doi:10.57745/9L2YUB",
+      "storageIdentifier": "espace-generique://10.57745/9L2YUB",
+      "versionNumber": 1,
+      "versionMinorNumber": 1,
+      "versionState": "RELEASED",
+      "lastUpdateTime": "2024-06-03T13:47:18Z",
+      "releaseTime": "2024-06-03T13:47:18Z",
+      "createTime": "2024-06-03T07:28:51Z",
+      "publicationDate": "2024-05-07",
+      "citationDate": "2024-05-07",
+      "termsOfUse": "<p xmlns:cc=\"http://creativecommons.org/ns#\" >This work is licensed under <a href=\"http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1\" target=\"_blank\" rel=\"license noopener noreferrer\" style=\"display:inline-block;\">CC BY 4.0<img style=\"height:22px!important;margin-left:3px;vertical-align:text-bottom;\" src=\"https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1\"><img style=\"height:22px!important;margin-left:3px;vertical-align:text-bottom;\" src=\"https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1\"><img style=\"height:22px!important;margin-left:3px;vertical-align:text-bottom;\" src=\"https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1\"></a></p>",
+      "fileAccessRequest": false,
+      "metadataBlocks": {
+        "citation": {
+          "displayName": "Citation Metadata",
+          "name": "citation",
+          "fields": [
+            {
+              "typeName": "title",
+              "multiple": false,
+              "typeClass": "primitive",
+              "value": "A 2 month-long annotated skylight polarization images database."
+            },
+            {
+              "typeName": "datasetContact",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "datasetContactName": {
+                    "typeName": "datasetContactName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "POUGHON, Leo"
+                  },
+                  "datasetContactAffiliation": {
+                    "typeName": "datasetContactAffiliation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Aix Marseille Universit\u00e9"
+                  },
+                  "datasetContactEmail": {
+                    "typeName": "datasetContactEmail",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "leo.POUGHON@univ-amu.fr"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "author",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "authorName": {
+                    "typeName": "authorName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "POUGHON, Leo"
+                  },
+                  "authorAffiliation": {
+                    "typeName": "authorAffiliation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "CNRS ISM Aix Marseille Univ, Marseille, France"
+                  },
+                  "authorIdentifierScheme": {
+                    "typeName": "authorIdentifierScheme",
+                    "multiple": false,
+                    "typeClass": "controlledVocabulary",
+                    "value": "ORCID"
+                  },
+                  "authorIdentifier": {
+                    "typeName": "authorIdentifier",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "0009-0005-9552-4994"
+                  }
+                },
+                {
+                  "authorName": {
+                    "typeName": "authorName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "AUBRY, Vincent"
+                  },
+                  "authorAffiliation": {
+                    "typeName": "authorAffiliation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Stellantis, Velizy, France"
+                  }
+                },
+                {
+                  "authorName": {
+                    "typeName": "authorName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "MONNOYER, Jocelyn"
+                  },
+                  "authorAffiliation": {
+                    "typeName": "authorAffiliation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Stellantis, Velizy, France"
+                  }
+                },
+                {
+                  "authorName": {
+                    "typeName": "authorName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "VIOLLET, St\u00e9phane"
+                  },
+                  "authorAffiliation": {
+                    "typeName": "authorAffiliation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "CNRS ISM Aix Marseille Univ, Marseille, France"
+                  },
+                  "authorIdentifierScheme": {
+                    "typeName": "authorIdentifierScheme",
+                    "multiple": false,
+                    "typeClass": "controlledVocabulary",
+                    "value": "ORCID"
+                  },
+                  "authorIdentifier": {
+                    "typeName": "authorIdentifier",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "0000-0003-1585-9822"
+                  }
+                },
+                {
+                  "authorName": {
+                    "typeName": "authorName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "SERRES, Julien"
+                  },
+                  "authorAffiliation": {
+                    "typeName": "authorAffiliation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "CNRS ISM Aix Marseille Univ, Marseille, France"
+                  },
+                  "authorIdentifierScheme": {
+                    "typeName": "authorIdentifierScheme",
+                    "multiple": false,
+                    "typeClass": "controlledVocabulary",
+                    "value": "ORCID"
+                  },
+                  "authorIdentifier": {
+                    "typeName": "authorIdentifier",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "0000-0002-2840-7932"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "producer",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "producerName": {
+                    "typeName": "producerName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Aix-Marseille Universit\u00e9"
+                  },
+                  "producerAbbreviation": {
+                    "typeName": "producerAbbreviation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "AMU"
+                  },
+                  "producerURL": {
+                    "typeName": "producerURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://www.univ-amu.fr/"
+                  },
+                  "producerLogoURL": {
+                    "typeName": "producerLogoURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://www.univ-amu.fr/system/files/2021-01/DIRCOM-Logo_AMU_CMJN.png"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "productionPlace",
+              "multiple": true,
+              "typeClass": "primitive",
+              "value": [
+                "La Timone, Marseille, France"
+              ]
+            },
+            {
+              "typeName": "distributor",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "distributorName": {
+                    "typeName": "distributorName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Entrep\u00f4t-Catalogue Recherche Data Gouv"
+                  },
+                  "distributorURL": {
+                    "typeName": "distributorURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://entrepot.recherche.data.gouv.fr"
+                  },
+                  "distributorLogoURL": {
+                    "typeName": "distributorLogoURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://s3.fr-par.scw.cloud/rdg-portal/logos-macarons/Macarons%20Recherche%20Data%20Gouv_Entrep%C3%B4t.png"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "dsDescription",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "dsDescriptionValue": {
+                    "typeName": "dsDescriptionValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "A public database composed of real-world color polarimetric images of the sky in various weather condition over two month (07/08-2022) in La Timone, Marseille, with improved calibration in regard of previous work (https://doi.org/10.57745/610QTS) and manual annotation of weather conditions.<br>\n<br>\nAssociated code on github : <a href=\"https://github.com/mol-1/A-2-month-long-annotated-skylight-polarization-images-database---associated-code\">https://github.com/mol-1/A-2-month-long-annotated-skylight-polarization-images-database---associated-code</a><br>"
+                  },
+                  "dsDescriptionLanguage": {
+                    "typeName": "dsDescriptionLanguage",
+                    "multiple": false,
+                    "typeClass": "controlledVocabulary",
+                    "value": "English"
+                  },
+                  "dsDescriptionDate": {
+                    "typeName": "dsDescriptionDate",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "2024"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "language",
+              "multiple": true,
+              "typeClass": "controlledVocabulary",
+              "value": [
+                "English"
+              ]
+            },
+            {
+              "typeName": "subject",
+              "multiple": true,
+              "typeClass": "controlledVocabulary",
+              "value": [
+                "Computer and Information Science",
+                "Engineering",
+                "Physics"
+              ]
+            },
+            {
+              "typeName": "keyword",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Polarization"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://data.loterre.fr/ark:/67375/QJP-M9LTLZHP-8"
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Engineering sciences vocabulary"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://skosmos.loterre.fr/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "polarimetry"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://data.loterre.fr/ark:/67375/26L-FRDB723K-9"
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Earth Sciences"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://skosmos.loterre.fr/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "The Sun"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://astrothesaurus.org/uat/1693"
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Unified Astronomy Thesaurus"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://uat.wolba.ch/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Sky surveys"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://astrothesaurus.org/uat/1464"
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Unified Astronomy Thesaurus"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://uat.wolba.ch/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Cameras"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://data.loterre.fr/ark:/67375/QJP-GFXFLFQ5-X"
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Engineering sciences vocabulary"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://skosmos.loterre.fr/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "machine learning"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://opendata.inrae.fr/thesaurusINRAE/c_14751",
+                    "expandedvalue": {
+                      "@id": "http://opendata.inrae.fr/thesaurusINRAE/c_14751",
+                      "termName": {
+                        "en": "machine learning",
+                        "fr": "apprentissage automatique"
+                      },
+                      "vocabularyUri": "https://data.agroportal.lirmm.fr/ontologies/INRAETHES",
+                      "synonyms": {
+                        "fr": [
+                          "apprentissage statistique",
+                          "apprentissage artificiel",
+                          "apprentissage machine"
+                        ]
+                      }
+                    }
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "INRAE Thesaurus"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://thesaurus.inrae.fr/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "database"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://opendata.inrae.fr/thesaurusINRAE/c_15301",
+                    "expandedvalue": {
+                      "@id": "http://opendata.inrae.fr/thesaurusINRAE/c_15301",
+                      "termName": {
+                        "fr": "base de donn\u00e9es",
+                        "en": "database"
+                      },
+                      "vocabularyUri": "https://data.agroportal.lirmm.fr/ontologies/INRAETHES",
+                      "synonyms": {
+                        "en": [
+                          "data base"
+                        ]
+                      }
+                    }
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "INRAE Thesaurus"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://thesaurus.inrae.fr/"
+                  }
+                },
+                {
+                  "keywordValue": {
+                    "typeName": "keywordValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "deep learning"
+                  },
+                  "keywordTermURL": {
+                    "typeName": "keywordTermURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "http://opendata.inrae.fr/thesaurusINRAE/c_c32077c4",
+                    "expandedvalue": {
+                      "@id": "http://opendata.inrae.fr/thesaurusINRAE/c_c32077c4",
+                      "termName": {
+                        "fr": "apprentissage profond",
+                        "en": "deep learning"
+                      },
+                      "vocabularyUri": "https://data.agroportal.lirmm.fr/ontologies/INRAETHES",
+                      "synonyms": []
+                    }
+                  },
+                  "keywordVocabulary": {
+                    "typeName": "keywordVocabulary",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "INRAE Thesaurus"
+                  },
+                  "keywordVocabularyURI": {
+                    "typeName": "keywordVocabularyURI",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://thesaurus.inrae.fr/"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "kindOfData",
+              "multiple": true,
+              "typeClass": "controlledVocabulary",
+              "value": [
+                "Dataset",
+                "Image"
+              ]
+            },
+            {
+              "typeName": "dataOrigin",
+              "multiple": true,
+              "typeClass": "controlledVocabulary",
+              "value": [
+                "observational data"
+              ]
+            },
+            {
+              "typeName": "software",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "softwareName": {
+                    "typeName": "softwareName",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Python"
+                  },
+                  "softwareVersion": {
+                    "typeName": "softwareVersion",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "3.9.6"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "relatedDataset",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "relatedDatasetCitation": {
+                    "typeName": "relatedDatasetCitation",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "POUGHON, Leo; AUBRY, Vincent; MONNOYER, Jocelyn; VIOLLET, St\u00e9phane; SERRES, Julien, 2024, \"1 Month-long skylight polarization images dataset\", https://doi.org/10.57745/610QTS, Recherche Data Gouv, V1"
+                  },
+                  "relatedDatasetIDType": {
+                    "typeName": "relatedDatasetIDType",
+                    "multiple": false,
+                    "typeClass": "controlledVocabulary",
+                    "value": "doi"
+                  },
+                  "relatedDatasetIDNumber": {
+                    "typeName": "relatedDatasetIDNumber",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "10.57745/610QTS"
+                  },
+                  "relatedDatasetURL": {
+                    "typeName": "relatedDatasetURL",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "https://doi.org/10.57745/610QTS"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "grantNumber",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "grantNumberValue": {
+                    "typeName": "grantNumberValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Cifre #2019/0658"
+                  }
+                },
+                {
+                  "grantNumberValue": {
+                    "typeName": "grantNumberValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "Excellence Initiative of Aix-Marseille Universit\u00e9 - A*MidexAMX-21-ERC-02 & AMX-20-TRA-043"
+                  }
+                },
+                {
+                  "grantNumberValue": {
+                    "typeName": "grantNumberValue",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "SUD Provence-Alpes-C\u00f4te d\u2019Azur Region (PACA) (Grant #2021/08135)."
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "timePeriodCovered",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "timePeriodCoveredStart": {
+                    "typeName": "timePeriodCoveredStart",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "2022-07-06"
+                  },
+                  "timePeriodCoveredEnd": {
+                    "typeName": "timePeriodCoveredEnd",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "2022-08-29"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "dateOfCollection",
+              "multiple": true,
+              "typeClass": "compound",
+              "value": [
+                {
+                  "dateOfCollectionStart": {
+                    "typeName": "dateOfCollectionStart",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "2022-07-06"
+                  },
+                  "dateOfCollectionEnd": {
+                    "typeName": "dateOfCollectionEnd",
+                    "multiple": false,
+                    "typeClass": "primitive",
+                    "value": "2022-08-29"
+                  }
+                }
+              ]
+            },
+            {
+              "typeName": "depositor",
+              "multiple": false,
+              "typeClass": "primitive",
+              "value": "POUGHON, Leo"
+            },
+            {
+              "typeName": "dateOfDeposit",
+              "multiple": false,
+              "typeClass": "primitive",
+              "value": "2024-04-23"
+            }
+          ]
+        },
+        "computationalworkflow": {
+          "displayName": "Computational Workflow Metadata",
+          "name": "computationalworkflow",
+          "fields": [
+            {
+              "typeName": "workflowType",
+              "multiple": true,
+              "typeClass": "controlledVocabulary",
+              "value": [
+                "Other Python-based workflow"
+              ]
+            },
+            {
+              "typeName": "workflowCodeRepository",
+              "multiple": true,
+              "typeClass": "primitive",
+              "value": [
+                "https://github.com/mol-1/A-2-month-long-annotated-skylight-polarization-images-database---associated-code"
+              ]
+            }
+          ]
+        }
+      },
+      "files": [
+        {
+          "description": "",
+          "label": "2022-07-06_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196814,
+            "persistentId": "doi:10.57745/79MOIX",
+            "pidURL": "https://doi.org/10.57745/79MOIX",
+            "filename": "2022-07-06_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 11358,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdca8e7-5a4930064e56",
+            "rootDataFileId": -1,
+            "md5": "bdb160d58608b3ddfd6337e3980397a3",
+            "checksum": {
+              "type": "MD5",
+              "value": "bdb160d58608b3ddfd6337e3980397a3"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-06_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196791,
+            "persistentId": "doi:10.57745/3T8FNE",
+            "pidURL": "https://doi.org/10.57745/3T8FNE",
+            "filename": "2022-07-06_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 2023480503,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd8c226-e49ba7049edb",
+            "rootDataFileId": -1,
+            "md5": "1fff6b9877745814c29c7965d434835c",
+            "checksum": {
+              "type": "MD5",
+              "value": "1fff6b9877745814c29c7965d434835c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-07_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196799,
+            "persistentId": "doi:10.57745/2UEL5K",
+            "pidURL": "https://doi.org/10.57745/2UEL5K",
+            "filename": "2022-07-07_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22017,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda3156-d36b726a4b11",
+            "rootDataFileId": -1,
+            "md5": "866ea70d90f0b74b6297affbee3bf4c2",
+            "checksum": {
+              "type": "MD5",
+              "value": "866ea70d90f0b74b6297affbee3bf4c2"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-07_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196864,
+            "persistentId": "doi:10.57745/2K9GPW",
+            "pidURL": "https://doi.org/10.57745/2K9GPW",
+            "filename": "2022-07-07_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3875661577,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be7eb4a-e393a1fd1c73",
+            "rootDataFileId": -1,
+            "md5": "ea4bff5e3bef4c7d1ac6bfe9625d21c0",
+            "checksum": {
+              "type": "MD5",
+              "value": "ea4bff5e3bef4c7d1ac6bfe9625d21c0"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-08_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196886,
+            "persistentId": "doi:10.57745/4O6P9I",
+            "pidURL": "https://doi.org/10.57745/4O6P9I",
+            "filename": "2022-07-08_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22956,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bed7778-056b93abdcad",
+            "rootDataFileId": -1,
+            "md5": "04d63e5444b8883d9925b7cec899d181",
+            "checksum": {
+              "type": "MD5",
+              "value": "04d63e5444b8883d9925b7cec899d181"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-08_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196885,
+            "persistentId": "doi:10.57745/ICJTUD",
+            "pidURL": "https://doi.org/10.57745/ICJTUD",
+            "filename": "2022-07-08_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4036255322,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bed12ab-6fa49f75fb35",
+            "rootDataFileId": -1,
+            "md5": "aff46e8f7da3354697acf72a1aaf26ef",
+            "checksum": {
+              "type": "MD5",
+              "value": "aff46e8f7da3354697acf72a1aaf26ef"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-09_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196785,
+            "persistentId": "doi:10.57745/1WMORH",
+            "pidURL": "https://doi.org/10.57745/1WMORH",
+            "filename": "2022-07-09_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23443,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7f43a-35e59e4e2cc4",
+            "rootDataFileId": -1,
+            "md5": "e484fbac5c275f7fbd100eda1c40c979",
+            "checksum": {
+              "type": "MD5",
+              "value": "e484fbac5c275f7fbd100eda1c40c979"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-09_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196882,
+            "persistentId": "doi:10.57745/E4VLNT",
+            "pidURL": "https://doi.org/10.57745/E4VLNT",
+            "filename": "2022-07-09_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4121905257,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bebc1b9-2c2b777964ab",
+            "rootDataFileId": -1,
+            "md5": "65aae3cf4e1901c4176b83baeb00cc75",
+            "checksum": {
+              "type": "MD5",
+              "value": "65aae3cf4e1901c4176b83baeb00cc75"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-10_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196798,
+            "persistentId": "doi:10.57745/FIILMT",
+            "pidURL": "https://doi.org/10.57745/FIILMT",
+            "filename": "2022-07-10_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 20839,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda2f48-55fa97052456",
+            "rootDataFileId": -1,
+            "md5": "6d3614b8250abacc161856a5d8d61dae",
+            "checksum": {
+              "type": "MD5",
+              "value": "6d3614b8250abacc161856a5d8d61dae"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-10_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196870,
+            "persistentId": "doi:10.57745/KREBAU",
+            "pidURL": "https://doi.org/10.57745/KREBAU",
+            "filename": "2022-07-10_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3672242790,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be92b83-8ae1117c0af6",
+            "rootDataFileId": -1,
+            "md5": "b5ae0a0b4732bf77a6df8a821c00d55f",
+            "checksum": {
+              "type": "MD5",
+              "value": "b5ae0a0b4732bf77a6df8a821c00d55f"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-11_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196784,
+            "persistentId": "doi:10.57745/OYIGUS",
+            "pidURL": "https://doi.org/10.57745/OYIGUS",
+            "filename": "2022-07-11_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21645,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7f1ea-1763daed26f7",
+            "rootDataFileId": -1,
+            "md5": "67d52526da7e39f9b8189b4ff14ef9ff",
+            "checksum": {
+              "type": "MD5",
+              "value": "67d52526da7e39f9b8189b4ff14ef9ff"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-11_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196874,
+            "persistentId": "doi:10.57745/8ZAO9Z",
+            "pidURL": "https://doi.org/10.57745/8ZAO9Z",
+            "filename": "2022-07-11_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3811424008,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bea0a9c-420fc71017b9",
+            "rootDataFileId": -1,
+            "md5": "21128576dfe1e62642f7488d0c5934a1",
+            "checksum": {
+              "type": "MD5",
+              "value": "21128576dfe1e62642f7488d0c5934a1"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-12_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196854,
+            "persistentId": "doi:10.57745/KLVQP2",
+            "pidURL": "https://doi.org/10.57745/KLVQP2",
+            "filename": "2022-07-12_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22496,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be6391c-7f1f93afd2f6",
+            "rootDataFileId": -1,
+            "md5": "7dd67808ef3a24ad600824b773569dbb",
+            "checksum": {
+              "type": "MD5",
+              "value": "7dd67808ef3a24ad600824b773569dbb"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-12_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196826,
+            "persistentId": "doi:10.57745/19STTV",
+            "pidURL": "https://doi.org/10.57745/19STTV",
+            "filename": "2022-07-12_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3950605223,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be00ccb-a410afe1ded8",
+            "rootDataFileId": -1,
+            "md5": "51c030861fd6fef1d98d5aba815549c8",
+            "checksum": {
+              "type": "MD5",
+              "value": "51c030861fd6fef1d98d5aba815549c8"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-13_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196868,
+            "persistentId": "doi:10.57745/439TUC",
+            "pidURL": "https://doi.org/10.57745/439TUC",
+            "filename": "2022-07-13_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22033,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be8b68f-c747e1a8f53f",
+            "rootDataFileId": -1,
+            "md5": "392170415761488b2f692c9d4addacb2",
+            "checksum": {
+              "type": "MD5",
+              "value": "392170415761488b2f692c9d4addacb2"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-13_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196815,
+            "persistentId": "doi:10.57745/V5OLKE",
+            "pidURL": "https://doi.org/10.57745/V5OLKE",
+            "filename": "2022-07-13_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3800717775,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdcabf3-88115abc34be",
+            "rootDataFileId": -1,
+            "md5": "38b4d369364ba053d7cad9dbc24eb76d",
+            "checksum": {
+              "type": "MD5",
+              "value": "38b4d369364ba053d7cad9dbc24eb76d"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-14_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196847,
+            "persistentId": "doi:10.57745/QVHSJP",
+            "pidURL": "https://doi.org/10.57745/QVHSJP",
+            "filename": "2022-07-14_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22998,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be55a45-b3af3d81d94d",
+            "rootDataFileId": -1,
+            "md5": "77d8f49c3442df88ef14f7e3fd65e604",
+            "checksum": {
+              "type": "MD5",
+              "value": "77d8f49c3442df88ef14f7e3fd65e604"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-14_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196807,
+            "persistentId": "doi:10.57745/X1JNUP",
+            "pidURL": "https://doi.org/10.57745/X1JNUP",
+            "filename": "2022-07-14_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4036255219,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdb6db0-5d1ec35ea12c",
+            "rootDataFileId": -1,
+            "md5": "632e9c65922c95e7503115e6da2d8c4a",
+            "checksum": {
+              "type": "MD5",
+              "value": "632e9c65922c95e7503115e6da2d8c4a"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-15_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196813,
+            "persistentId": "doi:10.57745/TSXHWT",
+            "pidURL": "https://doi.org/10.57745/TSXHWT",
+            "filename": "2022-07-15_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23084,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdca632-8fe73731005f",
+            "rootDataFileId": -1,
+            "md5": "2b5f667620ec8a6644b2891db900e0b4",
+            "checksum": {
+              "type": "MD5",
+              "value": "2b5f667620ec8a6644b2891db900e0b4"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-15_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196865,
+            "persistentId": "doi:10.57745/3D460C",
+            "pidURL": "https://doi.org/10.57745/3D460C",
+            "filename": "2022-07-15_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4030902151,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be84a22-7784d00a347a",
+            "rootDataFileId": -1,
+            "md5": "9b249b15cb54a349f6de8de3942b9c39",
+            "checksum": {
+              "type": "MD5",
+              "value": "9b249b15cb54a349f6de8de3942b9c39"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-16_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196859,
+            "persistentId": "doi:10.57745/FOEJNI",
+            "pidURL": "https://doi.org/10.57745/FOEJNI",
+            "filename": "2022-07-16_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21933,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be70a07-2fa71ced90df",
+            "rootDataFileId": -1,
+            "md5": "7ceddd8a3c40388b7bde9ee113998eb3",
+            "checksum": {
+              "type": "MD5",
+              "value": "7ceddd8a3c40388b7bde9ee113998eb3"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-16_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196792,
+            "persistentId": "doi:10.57745/6S8PVA",
+            "pidURL": "https://doi.org/10.57745/6S8PVA",
+            "filename": "2022-07-16_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3843542816,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd90de9-b2c169516248",
+            "rootDataFileId": -1,
+            "md5": "1ecb0554bea39c8c3d583e65ad06087d",
+            "checksum": {
+              "type": "MD5",
+              "value": "1ecb0554bea39c8c3d583e65ad06087d"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-17_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196801,
+            "persistentId": "doi:10.57745/EGT5QJ",
+            "pidURL": "https://doi.org/10.57745/EGT5QJ",
+            "filename": "2022-07-17_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22646,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda9819-2fd17419a8c8",
+            "rootDataFileId": -1,
+            "md5": "a8d92187a196ac70456c44381b279810",
+            "checksum": {
+              "type": "MD5",
+              "value": "a8d92187a196ac70456c44381b279810"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-17_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196817,
+            "persistentId": "doi:10.57745/QVIFDP",
+            "pidURL": "https://doi.org/10.57745/QVIFDP",
+            "filename": "2022-07-17_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3950605226,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdd0bc7-42cfc20c849a",
+            "rootDataFileId": -1,
+            "md5": "3b23eef3baea424687b347255ba74c7e",
+            "checksum": {
+              "type": "MD5",
+              "value": "3b23eef3baea424687b347255ba74c7e"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-18_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196879,
+            "persistentId": "doi:10.57745/XO0HX8",
+            "pidURL": "https://doi.org/10.57745/XO0HX8",
+            "filename": "2022-07-18_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23513,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beb521b-466dc5c5ae97",
+            "rootDataFileId": -1,
+            "md5": "07b130781dfec2c96538bd432e5e3cf5",
+            "checksum": {
+              "type": "MD5",
+              "value": "07b130781dfec2c96538bd432e5e3cf5"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-18_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196821,
+            "persistentId": "doi:10.57745/ZBL8F8",
+            "pidURL": "https://doi.org/10.57745/ZBL8F8",
+            "filename": "2022-07-18_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4030902095,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdecc4d-bd9d569a75a0",
+            "rootDataFileId": -1,
+            "md5": "8475aea37cb3e17dad63d852e3f75083",
+            "checksum": {
+              "type": "MD5",
+              "value": "8475aea37cb3e17dad63d852e3f75083"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-19_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196858,
+            "persistentId": "doi:10.57745/W04ZMX",
+            "pidURL": "https://doi.org/10.57745/W04ZMX",
+            "filename": "2022-07-19_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21788,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be70795-1f4f7ea9f291",
+            "rootDataFileId": -1,
+            "md5": "01a565e428f6e80113e100e1b9ad4353",
+            "checksum": {
+              "type": "MD5",
+              "value": "01a565e428f6e80113e100e1b9ad4353"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-19_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196830,
+            "persistentId": "doi:10.57745/XEHFVH",
+            "pidURL": "https://doi.org/10.57745/XEHFVH",
+            "filename": "2022-07-19_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3806070887,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be14fda-2f4224b51a0d",
+            "rootDataFileId": -1,
+            "md5": "52c7891e6c2b674a8a9cbffb0062c6d3",
+            "checksum": {
+              "type": "MD5",
+              "value": "52c7891e6c2b674a8a9cbffb0062c6d3"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-20_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196786,
+            "persistentId": "doi:10.57745/CUG4UW",
+            "pidURL": "https://doi.org/10.57745/CUG4UW",
+            "filename": "2022-07-20_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22095,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7f751-1cec9157e73d",
+            "rootDataFileId": -1,
+            "md5": "89c2a56ed9978e81e1660c0e4b71740c",
+            "checksum": {
+              "type": "MD5",
+              "value": "89c2a56ed9978e81e1660c0e4b71740c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-20_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196794,
+            "persistentId": "doi:10.57745/UI2EDY",
+            "pidURL": "https://doi.org/10.57745/UI2EDY",
+            "filename": "2022-07-20_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3811424052,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd96f9a-8a92e4f14910",
+            "rootDataFileId": -1,
+            "md5": "2d9a0a2cc9019414f04b0b3dc2b9c351",
+            "checksum": {
+              "type": "MD5",
+              "value": "2d9a0a2cc9019414f04b0b3dc2b9c351"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-21_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196861,
+            "persistentId": "doi:10.57745/M1X0I5",
+            "pidURL": "https://doi.org/10.57745/M1X0I5",
+            "filename": "2022-07-21_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23618,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be77393-41e6a9da1d75",
+            "rootDataFileId": -1,
+            "md5": "9c4ae2087bdbc61c03da76a66be3f359",
+            "checksum": {
+              "type": "MD5",
+              "value": "9c4ae2087bdbc61c03da76a66be3f359"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-21_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196819,
+            "persistentId": "doi:10.57745/XN0W66",
+            "pidURL": "https://doi.org/10.57745/XN0W66",
+            "filename": "2022-07-21_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4143317670,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bddd5a1-0fc1df783d6f",
+            "rootDataFileId": -1,
+            "md5": "d5f6206278614d44063029e93ee9b2d7",
+            "checksum": {
+              "type": "MD5",
+              "value": "d5f6206278614d44063029e93ee9b2d7"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-22_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196848,
+            "persistentId": "doi:10.57745/YQHRFN",
+            "pidURL": "https://doi.org/10.57745/YQHRFN",
+            "filename": "2022-07-22_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 24470,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be55dd8-f06bc4d2029a",
+            "rootDataFileId": -1,
+            "md5": "421013936226182607debec5440ab7db",
+            "checksum": {
+              "type": "MD5",
+              "value": "421013936226182607debec5440ab7db"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-22_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196889,
+            "persistentId": "doi:10.57745/2PSNXM",
+            "pidURL": "https://doi.org/10.57745/2PSNXM",
+            "filename": "2022-07-22_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4175436375,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bed8d1d-fe477891274e",
+            "rootDataFileId": -1,
+            "md5": "32ebfb4f01c204b9c4098ba7fae6cb88",
+            "checksum": {
+              "type": "MD5",
+              "value": "32ebfb4f01c204b9c4098ba7fae6cb88"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-23_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196841,
+            "persistentId": "doi:10.57745/RPPIG9",
+            "pidURL": "https://doi.org/10.57745/RPPIG9",
+            "filename": "2022-07-23_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23026,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be3ba51-8b84a2c3a4e1",
+            "rootDataFileId": -1,
+            "md5": "3e314adbf566bf274697aca87fa6a86b",
+            "checksum": {
+              "type": "MD5",
+              "value": "3e314adbf566bf274697aca87fa6a86b"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-23_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196809,
+            "persistentId": "doi:10.57745/CEDK35",
+            "pidURL": "https://doi.org/10.57745/CEDK35",
+            "filename": "2022-07-23_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4025549068,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdbd862-079f7ca430b4",
+            "rootDataFileId": -1,
+            "md5": "88735258e79850a724a03fbf88ca7085",
+            "checksum": {
+              "type": "MD5",
+              "value": "88735258e79850a724a03fbf88ca7085"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-24_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196867,
+            "persistentId": "doi:10.57745/Q4OD7B",
+            "pidURL": "https://doi.org/10.57745/Q4OD7B",
+            "filename": "2022-07-24_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23463,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be8b2d6-0305b7c76dd6",
+            "rootDataFileId": -1,
+            "md5": "bed45324b2bc2e668ac36dc92cc1e181",
+            "checksum": {
+              "type": "MD5",
+              "value": "bed45324b2bc2e668ac36dc92cc1e181"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-24_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196851,
+            "persistentId": "doi:10.57745/7YWCDG",
+            "pidURL": "https://doi.org/10.57745/7YWCDG",
+            "filename": "2022-07-24_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4116551974,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be5ca49-0489d3da2ce1",
+            "rootDataFileId": -1,
+            "md5": "9e84634d4f181db37a85372c354400a2",
+            "checksum": {
+              "type": "MD5",
+              "value": "9e84634d4f181db37a85372c354400a2"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-25_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196816,
+            "persistentId": "doi:10.57745/EHRLES",
+            "pidURL": "https://doi.org/10.57745/EHRLES",
+            "filename": "2022-07-25_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23412,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdd0948-845e532706c7",
+            "rootDataFileId": -1,
+            "md5": "8f5bac6f541fe59dbce8395b2ff435a9",
+            "checksum": {
+              "type": "MD5",
+              "value": "8f5bac6f541fe59dbce8395b2ff435a9"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-25_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196820,
+            "persistentId": "doi:10.57745/I7IE8O",
+            "pidURL": "https://doi.org/10.57745/I7IE8O",
+            "filename": "2022-07-25_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3972017736,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bde678f-b81764c6e7ed",
+            "rootDataFileId": -1,
+            "md5": "9f8bd32ea6fac12e668cc601fcaf5345",
+            "checksum": {
+              "type": "MD5",
+              "value": "9f8bd32ea6fac12e668cc601fcaf5345"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-26_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196878,
+            "persistentId": "doi:10.57745/TCLLP0",
+            "pidURL": "https://doi.org/10.57745/TCLLP0",
+            "filename": "2022-07-26_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22684,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beb4f34-44710ce3a228",
+            "rootDataFileId": -1,
+            "md5": "62c335f691d0df6fee6cfae5b4cecffc",
+            "checksum": {
+              "type": "MD5",
+              "value": "62c335f691d0df6fee6cfae5b4cecffc"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-26_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196806,
+            "persistentId": "doi:10.57745/6DJBUA",
+            "pidURL": "https://doi.org/10.57745/6DJBUA",
+            "filename": "2022-07-26_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3961311350,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdb0bb1-783095f9ea66",
+            "rootDataFileId": -1,
+            "md5": "c8f8a290dfc7daa58fdd8b54ac3514cc",
+            "checksum": {
+              "type": "MD5",
+              "value": "c8f8a290dfc7daa58fdd8b54ac3514cc"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-27_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196797,
+            "persistentId": "doi:10.57745/A7YM1J",
+            "pidURL": "https://doi.org/10.57745/A7YM1J",
+            "filename": "2022-07-27_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 24307,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda2d05-9265f17d888b",
+            "rootDataFileId": -1,
+            "md5": "c662e7729e23f88e3b1d26e9e3dbf94c",
+            "checksum": {
+              "type": "MD5",
+              "value": "c662e7729e23f88e3b1d26e9e3dbf94c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-27_raw_annotationst.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196853,
+            "persistentId": "doi:10.57745/AVMP4W",
+            "pidURL": "https://doi.org/10.57745/AVMP4W",
+            "filename": "2022-07-27_raw_annotationst.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 24112,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be635f1-d2ace6606b80",
+            "rootDataFileId": -1,
+            "md5": "dd2d2fb0806d0e9f753f8d94013e510a",
+            "checksum": {
+              "type": "MD5",
+              "value": "dd2d2fb0806d0e9f753f8d94013e510a"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-27_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196872,
+            "persistentId": "doi:10.57745/TW06K6",
+            "pidURL": "https://doi.org/10.57745/TW06K6",
+            "filename": "2022-07-27_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4234320670,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be98d57-bb286b4492d5",
+            "rootDataFileId": -1,
+            "md5": "4e881db7daf28e302ec241bf91c52484",
+            "checksum": {
+              "type": "MD5",
+              "value": "4e881db7daf28e302ec241bf91c52484"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-28_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196862,
+            "persistentId": "doi:10.57745/GQ1WYH",
+            "pidURL": "https://doi.org/10.57745/GQ1WYH",
+            "filename": "2022-07-28_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23841,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be77632-f5f5c4f6cf9d",
+            "rootDataFileId": -1,
+            "md5": "fea3adb1075528845057eea6b2ef56cd",
+            "checksum": {
+              "type": "MD5",
+              "value": "fea3adb1075528845057eea6b2ef56cd"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-28_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196810,
+            "persistentId": "doi:10.57745/WPDPTE",
+            "pidURL": "https://doi.org/10.57745/WPDPTE",
+            "filename": "2022-07-28_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4020195900,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdc3c51-e9be95c0da8b",
+            "rootDataFileId": -1,
+            "md5": "36bbbb5fad3d86fc681e00cc5a8ff809",
+            "checksum": {
+              "type": "MD5",
+              "value": "36bbbb5fad3d86fc681e00cc5a8ff809"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-29_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196880,
+            "persistentId": "doi:10.57745/NTOOWQ",
+            "pidURL": "https://doi.org/10.57745/NTOOWQ",
+            "filename": "2022-07-29_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 24402,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beb562b-9272287e00c5",
+            "rootDataFileId": -1,
+            "md5": "cee3cf10d31cb749bf0207fe150f54de",
+            "checksum": {
+              "type": "MD5",
+              "value": "cee3cf10d31cb749bf0207fe150f54de"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-29_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196869,
+            "persistentId": "doi:10.57745/RGY1O5",
+            "pidURL": "https://doi.org/10.57745/RGY1O5",
+            "filename": "2022-07-29_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4164730186,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be8ba8b-11389378d155",
+            "rootDataFileId": -1,
+            "md5": "c1bd92115880db87781307c9c89c7e63",
+            "checksum": {
+              "type": "MD5",
+              "value": "c1bd92115880db87781307c9c89c7e63"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-30_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196837,
+            "persistentId": "doi:10.57745/FKXPCH",
+            "pidURL": "https://doi.org/10.57745/FKXPCH",
+            "filename": "2022-07-30_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22422,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be2f26e-93433de6e41f",
+            "rootDataFileId": -1,
+            "md5": "092978669f5a680883b32b1b6e75d362",
+            "checksum": {
+              "type": "MD5",
+              "value": "092978669f5a680883b32b1b6e75d362"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-30_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196836,
+            "persistentId": "doi:10.57745/MJL8TL",
+            "pidURL": "https://doi.org/10.57745/MJL8TL",
+            "filename": "2022-07-30_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3891720666,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be29092-1672ed1c068b",
+            "rootDataFileId": -1,
+            "md5": "8db19c74cdb48e14434410699f2d38ad",
+            "checksum": {
+              "type": "MD5",
+              "value": "8db19c74cdb48e14434410699f2d38ad"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-31_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196802,
+            "persistentId": "doi:10.57745/0MSWMR",
+            "pidURL": "https://doi.org/10.57745/0MSWMR",
+            "filename": "2022-07-31_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22883,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda9d06-4dbb904f9034",
+            "rootDataFileId": -1,
+            "md5": "02a2a9d669cb848fdefbbfc81851aef3",
+            "checksum": {
+              "type": "MD5",
+              "value": "02a2a9d669cb848fdefbbfc81851aef3"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-07-31_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196856,
+            "persistentId": "doi:10.57745/EFI4JN",
+            "pidURL": "https://doi.org/10.57745/EFI4JN",
+            "filename": "2022-07-31_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3998783176,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be63f17-61be07061cb9",
+            "rootDataFileId": -1,
+            "md5": "8f3e733b5bcbe04dd92e0955b8ed26b4",
+            "checksum": {
+              "type": "MD5",
+              "value": "8f3e733b5bcbe04dd92e0955b8ed26b4"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-01_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196808,
+            "persistentId": "doi:10.57745/MF55JI",
+            "pidURL": "https://doi.org/10.57745/MF55JI",
+            "filename": "2022-08-01_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 20225,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdbd51f-fad2fb43db49",
+            "rootDataFileId": -1,
+            "md5": "2d219cafd1b822b88e4468b5786980ef",
+            "checksum": {
+              "type": "MD5",
+              "value": "2d219cafd1b822b88e4468b5786980ef"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-01_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196832,
+            "persistentId": "doi:10.57745/SJJGQO",
+            "pidURL": "https://doi.org/10.57745/SJJGQO",
+            "filename": "2022-08-01_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3517002103,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be1b817-4b8266292ffb",
+            "rootDataFileId": -1,
+            "md5": "d0c55692e448a1acc10509267a74d585",
+            "checksum": {
+              "type": "MD5",
+              "value": "d0c55692e448a1acc10509267a74d585"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-02_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196812,
+            "persistentId": "doi:10.57745/QJ8CTG",
+            "pidURL": "https://doi.org/10.57745/QJ8CTG",
+            "filename": "2022-08-02_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22300,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdca386-209e1b50c7c3",
+            "rootDataFileId": -1,
+            "md5": "d0cfed5a9d3257355d9909d1f7baed9f",
+            "checksum": {
+              "type": "MD5",
+              "value": "d0cfed5a9d3257355d9909d1f7baed9f"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-02_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196857,
+            "persistentId": "doi:10.57745/U58SIH",
+            "pidURL": "https://doi.org/10.57745/U58SIH",
+            "filename": "2022-08-02_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3913133235,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be6a49b-5dc05cef7e47",
+            "rootDataFileId": -1,
+            "md5": "7b2f013d3bb99da4b947ee2bc0e7bfed",
+            "checksum": {
+              "type": "MD5",
+              "value": "7b2f013d3bb99da4b947ee2bc0e7bfed"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-03_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196871,
+            "persistentId": "doi:10.57745/EUTYLL",
+            "pidURL": "https://doi.org/10.57745/EUTYLL",
+            "filename": "2022-08-03_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21623,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be9898f-bf6599f32fa1",
+            "rootDataFileId": -1,
+            "md5": "f89bdea89f5c92ed8b63c0e8347c37a0",
+            "checksum": {
+              "type": "MD5",
+              "value": "f89bdea89f5c92ed8b63c0e8347c37a0"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-03_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196795,
+            "persistentId": "doi:10.57745/99GJIS",
+            "pidURL": "https://doi.org/10.57745/99GJIS",
+            "filename": "2022-08-03_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3806070775,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd9cd5a-c327dadf0a3a",
+            "rootDataFileId": -1,
+            "md5": "4cc3acb2ba1c140a36c0f9df796f77a4",
+            "checksum": {
+              "type": "MD5",
+              "value": "4cc3acb2ba1c140a36c0f9df796f77a4"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-04_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196796,
+            "persistentId": "doi:10.57745/VQTOYP",
+            "pidURL": "https://doi.org/10.57745/VQTOYP",
+            "filename": "2022-08-04_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22412,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda2b14-cd59f3fa9898",
+            "rootDataFileId": -1,
+            "md5": "6f8e9a8c77108a866d45f853ecb50b0b",
+            "checksum": {
+              "type": "MD5",
+              "value": "6f8e9a8c77108a866d45f853ecb50b0b"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-04_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196787,
+            "persistentId": "doi:10.57745/TDEDAS",
+            "pidURL": "https://doi.org/10.57745/TDEDAS",
+            "filename": "2022-08-04_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3934545857,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7f9cc-c728be0be464",
+            "rootDataFileId": -1,
+            "md5": "10d8b9dc615629e0f8691325091c7957",
+            "checksum": {
+              "type": "MD5",
+              "value": "10d8b9dc615629e0f8691325091c7957"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-05_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196831,
+            "persistentId": "doi:10.57745/UXZM9Z",
+            "pidURL": "https://doi.org/10.57745/UXZM9Z",
+            "filename": "2022-08-05_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22176,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be1b373-028bab046305",
+            "rootDataFileId": -1,
+            "md5": "5db37181198c39f62aacdad06c10412b",
+            "checksum": {
+              "type": "MD5",
+              "value": "5db37181198c39f62aacdad06c10412b"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-05_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196839,
+            "persistentId": "doi:10.57745/UJKT1S",
+            "pidURL": "https://doi.org/10.57745/UJKT1S",
+            "filename": "2022-08-05_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3811424093,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be35601-29b2028ccdda",
+            "rootDataFileId": -1,
+            "md5": "afa463ee3aaa94db7564179e8f54ec00",
+            "checksum": {
+              "type": "MD5",
+              "value": "afa463ee3aaa94db7564179e8f54ec00"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-06_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196811,
+            "persistentId": "doi:10.57745/3SYJBD",
+            "pidURL": "https://doi.org/10.57745/3SYJBD",
+            "filename": "2022-08-06_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23064,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdca101-7fe1eb659246",
+            "rootDataFileId": -1,
+            "md5": "ea7a0a6cd5c0b1df5cc3b4c56250f5f4",
+            "checksum": {
+              "type": "MD5",
+              "value": "ea7a0a6cd5c0b1df5cc3b4c56250f5f4"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-06_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196860,
+            "persistentId": "doi:10.57745/BMICDY",
+            "pidURL": "https://doi.org/10.57745/BMICDY",
+            "filename": "2022-08-06_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4004136441,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be70e21-2957738f9de8",
+            "rootDataFileId": -1,
+            "md5": "0862449ce06d93d6cae1102b1a221a2c",
+            "checksum": {
+              "type": "MD5",
+              "value": "0862449ce06d93d6cae1102b1a221a2c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-07_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196840,
+            "persistentId": "doi:10.57745/CAYHCV",
+            "pidURL": "https://doi.org/10.57745/CAYHCV",
+            "filename": "2022-08-07_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22813,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be3b6ec-7732a6ba694b",
+            "rootDataFileId": -1,
+            "md5": "ee069389942154e4281b5176c23bf972",
+            "checksum": {
+              "type": "MD5",
+              "value": "ee069389942154e4281b5176c23bf972"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-07_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196891,
+            "persistentId": "doi:10.57745/8KPGL9",
+            "pidURL": "https://doi.org/10.57745/8KPGL9",
+            "filename": "2022-08-07_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3929192689,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bedfa45-1eaab7b297e2",
+            "rootDataFileId": -1,
+            "md5": "6905f75229cc1d922da925085237bb15",
+            "checksum": {
+              "type": "MD5",
+              "value": "6905f75229cc1d922da925085237bb15"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-08_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196781,
+            "persistentId": "doi:10.57745/LS0QQZ",
+            "pidURL": "https://doi.org/10.57745/LS0QQZ",
+            "filename": "2022-08-08_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22004,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7e994-0cdb2817bc83",
+            "rootDataFileId": -1,
+            "md5": "fc93306d3fb3b49f28561fd0eb4d9cbf",
+            "checksum": {
+              "type": "MD5",
+              "value": "fc93306d3fb3b49f28561fd0eb4d9cbf"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-08_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196789,
+            "persistentId": "doi:10.57745/IPN4MJ",
+            "pidURL": "https://doi.org/10.57745/IPN4MJ",
+            "filename": "2022-08-08_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3870308341,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd85dbb-1077930509e2",
+            "rootDataFileId": -1,
+            "md5": "3d306fb4404f1353563c289ee7132ea9",
+            "checksum": {
+              "type": "MD5",
+              "value": "3d306fb4404f1353563c289ee7132ea9"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-09_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196822,
+            "persistentId": "doi:10.57745/78IK0Q",
+            "pidURL": "https://doi.org/10.57745/78IK0Q",
+            "filename": "2022-08-09_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21579,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdf3112-8a284fed3524",
+            "rootDataFileId": -1,
+            "md5": "4a4d7cc52b61096428f8307c223bb70b",
+            "checksum": {
+              "type": "MD5",
+              "value": "4a4d7cc52b61096428f8307c223bb70b"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-09_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196838,
+            "persistentId": "doi:10.57745/BSW5RV",
+            "pidURL": "https://doi.org/10.57745/BSW5RV",
+            "filename": "2022-08-09_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3795364739,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be2f66c-09d7f4c69d67",
+            "rootDataFileId": -1,
+            "md5": "ca92b80308aac747fa14adcce4ace9fd",
+            "checksum": {
+              "type": "MD5",
+              "value": "ca92b80308aac747fa14adcce4ace9fd"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-10_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196824,
+            "persistentId": "doi:10.57745/FX7OUI",
+            "pidURL": "https://doi.org/10.57745/FX7OUI",
+            "filename": "2022-08-10_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23066,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdfa11e-2966de95f477",
+            "rootDataFileId": -1,
+            "md5": "5c8727ea6a2fb38d83d5f37c3d84d176",
+            "checksum": {
+              "type": "MD5",
+              "value": "5c8727ea6a2fb38d83d5f37c3d84d176"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-10_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196876,
+            "persistentId": "doi:10.57745/2LUURX",
+            "pidURL": "https://doi.org/10.57745/2LUURX",
+            "filename": "2022-08-10_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3934546007,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beae26b-4c47cfe138d1",
+            "rootDataFileId": -1,
+            "md5": "a646a68e0a41de99ce8880c6ea938243",
+            "checksum": {
+              "type": "MD5",
+              "value": "a646a68e0a41de99ce8880c6ea938243"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-11_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196782,
+            "persistentId": "doi:10.57745/JLKOHB",
+            "pidURL": "https://doi.org/10.57745/JLKOHB",
+            "filename": "2022-08-11_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22648,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7ece5-1dd71cb1c841",
+            "rootDataFileId": -1,
+            "md5": "aa07d2ad3a79acc150582ea64c28c054",
+            "checksum": {
+              "type": "MD5",
+              "value": "aa07d2ad3a79acc150582ea64c28c054"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-11_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196818,
+            "persistentId": "doi:10.57745/W8YVCM",
+            "pidURL": "https://doi.org/10.57745/W8YVCM",
+            "filename": "2022-08-11_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3800717907,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdd6f11-91486935ea6b",
+            "rootDataFileId": -1,
+            "md5": "54b30e0b7ab3d048ec3a943ca2aaf2a9",
+            "checksum": {
+              "type": "MD5",
+              "value": "54b30e0b7ab3d048ec3a943ca2aaf2a9"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-12_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196845,
+            "persistentId": "doi:10.57745/IOAFU3",
+            "pidURL": "https://doi.org/10.57745/IOAFU3",
+            "filename": "2022-08-12_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22342,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be4f2c3-f86dd9066af6",
+            "rootDataFileId": -1,
+            "md5": "2f292c9f7cf4a8513db5c4dc464d8e3f",
+            "checksum": {
+              "type": "MD5",
+              "value": "2f292c9f7cf4a8513db5c4dc464d8e3f"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-12_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196827,
+            "persistentId": "doi:10.57745/H0DZNC",
+            "pidURL": "https://doi.org/10.57745/H0DZNC",
+            "filename": "2022-08-12_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3913133335,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be07b1a-20f505ae2474",
+            "rootDataFileId": -1,
+            "md5": "8635bff3cc2762b4b68e0132fbf22fee",
+            "checksum": {
+              "type": "MD5",
+              "value": "8635bff3cc2762b4b68e0132fbf22fee"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-13_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196793,
+            "persistentId": "doi:10.57745/XK152A",
+            "pidURL": "https://doi.org/10.57745/XK152A",
+            "filename": "2022-08-13_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22907,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd96d23-8d0a9949d9d2",
+            "rootDataFileId": -1,
+            "md5": "8ca8507ff5f1e95447d7765c3c5b4fd7",
+            "checksum": {
+              "type": "MD5",
+              "value": "8ca8507ff5f1e95447d7765c3c5b4fd7"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-13_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196825,
+            "persistentId": "doi:10.57745/MZZ143",
+            "pidURL": "https://doi.org/10.57745/MZZ143",
+            "filename": "2022-08-13_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3886367745,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdfa619-7875ea8e770d",
+            "rootDataFileId": -1,
+            "md5": "e53912595ea443e6759956b443034898",
+            "checksum": {
+              "type": "MD5",
+              "value": "e53912595ea443e6759956b443034898"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-14_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196852,
+            "persistentId": "doi:10.57745/HYJRDC",
+            "pidURL": "https://doi.org/10.57745/HYJRDC",
+            "filename": "2022-08-14_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23024,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be6328d-e302e406f099",
+            "rootDataFileId": -1,
+            "md5": "ec807b7781cb9cccc30bb3f392aa9f2a",
+            "checksum": {
+              "type": "MD5",
+              "value": "ec807b7781cb9cccc30bb3f392aa9f2a"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-14_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196803,
+            "persistentId": "doi:10.57745/9DJFZV",
+            "pidURL": "https://doi.org/10.57745/9DJFZV",
+            "filename": "2022-08-14_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4014842727,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda9fbd-19e6468a0492",
+            "rootDataFileId": -1,
+            "md5": "1b7265ceb4276587114046b2648cb563",
+            "checksum": {
+              "type": "MD5",
+              "value": "1b7265ceb4276587114046b2648cb563"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-15_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196828,
+            "persistentId": "doi:10.57745/TYNMPA",
+            "pidURL": "https://doi.org/10.57745/TYNMPA",
+            "filename": "2022-08-15_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23174,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be0e1d8-330564d41155",
+            "rootDataFileId": -1,
+            "md5": "3ebb971cb005ea009bf1517c88f8cdea",
+            "checksum": {
+              "type": "MD5",
+              "value": "3ebb971cb005ea009bf1517c88f8cdea"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-15_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196844,
+            "persistentId": "doi:10.57745/IWKNUU",
+            "pidURL": "https://doi.org/10.57745/IWKNUU",
+            "filename": "2022-08-15_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4063020841,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be48b09-c3b12db42616",
+            "rootDataFileId": -1,
+            "md5": "5385a29296403aa250fc91f6d6e763e7",
+            "checksum": {
+              "type": "MD5",
+              "value": "5385a29296403aa250fc91f6d6e763e7"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-16_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196790,
+            "persistentId": "doi:10.57745/SYJMS2",
+            "pidURL": "https://doi.org/10.57745/SYJMS2",
+            "filename": "2022-08-16_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22182,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd8bfad-06a109e5553d",
+            "rootDataFileId": -1,
+            "md5": "f819487c235cfe5b6cb37bd677db4564",
+            "checksum": {
+              "type": "MD5",
+              "value": "f819487c235cfe5b6cb37bd677db4564"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-16_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196842,
+            "persistentId": "doi:10.57745/1OJUCS",
+            "pidURL": "https://doi.org/10.57745/1OJUCS",
+            "filename": "2022-08-16_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3859602055,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be3bd65-026e42d63e3b",
+            "rootDataFileId": -1,
+            "md5": "5cddc4cce74627f776c4ea9719460678",
+            "checksum": {
+              "type": "MD5",
+              "value": "5cddc4cce74627f776c4ea9719460678"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-17_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196805,
+            "persistentId": "doi:10.57745/CMLE31",
+            "pidURL": "https://doi.org/10.57745/CMLE31",
+            "filename": "2022-08-17_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 26353,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdb098e-e7dbb556e4e6",
+            "rootDataFileId": -1,
+            "md5": "5a26740a02bc6fd15e2bb7c4924c6578",
+            "checksum": {
+              "type": "MD5",
+              "value": "5a26740a02bc6fd15e2bb7c4924c6578"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-17_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196835,
+            "persistentId": "doi:10.57745/72MP49",
+            "pidURL": "https://doi.org/10.57745/72MP49",
+            "filename": "2022-08-17_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4619745113,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be21749-92f34914cb2a",
+            "rootDataFileId": -1,
+            "md5": "6eeae75ef0afd4d3694ab0ee9790ff35",
+            "checksum": {
+              "type": "MD5",
+              "value": "6eeae75ef0afd4d3694ab0ee9790ff35"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-18_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196890,
+            "persistentId": "doi:10.57745/LKYQZH",
+            "pidURL": "https://doi.org/10.57745/LKYQZH",
+            "filename": "2022-08-18_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 25169,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bedf6c6-614b80b8ce80",
+            "rootDataFileId": -1,
+            "md5": "083486ab497d13cb611780919aea7f8a",
+            "checksum": {
+              "type": "MD5",
+              "value": "083486ab497d13cb611780919aea7f8a"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-18_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196884,
+            "persistentId": "doi:10.57745/EFLNQG",
+            "pidURL": "https://doi.org/10.57745/EFLNQG",
+            "filename": "2022-08-18_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4271792393,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beca2d9-fb58493d1018",
+            "rootDataFileId": -1,
+            "md5": "3a1b8e76b07dc02686d0d9f994251e05",
+            "checksum": {
+              "type": "MD5",
+              "value": "3a1b8e76b07dc02686d0d9f994251e05"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-19_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196788,
+            "persistentId": "doi:10.57745/FYYFWY",
+            "pidURL": "https://doi.org/10.57745/FYYFWY",
+            "filename": "2022-08-19_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23416,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd85b32-8c2be6106de7",
+            "rootDataFileId": -1,
+            "md5": "9b6c4eec12fd834b2acd241a5a00fc40",
+            "checksum": {
+              "type": "MD5",
+              "value": "9b6c4eec12fd834b2acd241a5a00fc40"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-19_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196846,
+            "persistentId": "doi:10.57745/Y1Y9XI",
+            "pidURL": "https://doi.org/10.57745/Y1Y9XI",
+            "filename": "2022-08-19_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3961311347,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be4f733-3541d71dde44",
+            "rootDataFileId": -1,
+            "md5": "59dc592a54fe493837a56b06aa984a05",
+            "checksum": {
+              "type": "MD5",
+              "value": "59dc592a54fe493837a56b06aa984a05"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-20_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196866,
+            "persistentId": "doi:10.57745/OXQKXF",
+            "pidURL": "https://doi.org/10.57745/OXQKXF",
+            "filename": "2022-08-20_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 24817,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be8af0a-f166c64e077c",
+            "rootDataFileId": -1,
+            "md5": "1080f8bc5c9c7567af2b66e7e426d36c",
+            "checksum": {
+              "type": "MD5",
+              "value": "1080f8bc5c9c7567af2b66e7e426d36c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-20_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196875,
+            "persistentId": "doi:10.57745/XZTNEV",
+            "pidURL": "https://doi.org/10.57745/XZTNEV",
+            "filename": "2022-08-20_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4319970455,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bea71e7-68cabc019af4",
+            "rootDataFileId": -1,
+            "md5": "04e1313340c3b8a3e13ca5e5799eaa8f",
+            "checksum": {
+              "type": "MD5",
+              "value": "04e1313340c3b8a3e13ca5e5799eaa8f"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-21_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196783,
+            "persistentId": "doi:10.57745/T5EGYP",
+            "pidURL": "https://doi.org/10.57745/T5EGYP",
+            "filename": "2022-08-21_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23679,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bd7ef57-d597aa9381f0",
+            "rootDataFileId": -1,
+            "md5": "da4252890e9feb82112957dce60ccbc9",
+            "checksum": {
+              "type": "MD5",
+              "value": "da4252890e9feb82112957dce60ccbc9"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-21_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196823,
+            "persistentId": "doi:10.57745/GADHFZ",
+            "pidURL": "https://doi.org/10.57745/GADHFZ",
+            "filename": "2022-08-21_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4073726877,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdf3390-6dcc057e4c8b",
+            "rootDataFileId": -1,
+            "md5": "e9df8e7c9669149807b759fc95aa3fbb",
+            "checksum": {
+              "type": "MD5",
+              "value": "e9df8e7c9669149807b759fc95aa3fbb"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-22_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196804,
+            "persistentId": "doi:10.57745/WR3U6T",
+            "pidURL": "https://doi.org/10.57745/WR3U6T",
+            "filename": "2022-08-22_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23302,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bdb0715-a102561e9596",
+            "rootDataFileId": -1,
+            "md5": "12f046778bb507d4625dae05fe86ee6a",
+            "checksum": {
+              "type": "MD5",
+              "value": "12f046778bb507d4625dae05fe86ee6a"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-22_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196843,
+            "persistentId": "doi:10.57745/MPBREQ",
+            "pidURL": "https://doi.org/10.57745/MPBREQ",
+            "filename": "2022-08-22_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4089786181,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be41fea-475d7a9eddf3",
+            "rootDataFileId": -1,
+            "md5": "c9166b752cdd5f611f5deb06ddfb7841",
+            "checksum": {
+              "type": "MD5",
+              "value": "c9166b752cdd5f611f5deb06ddfb7841"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-23_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196873,
+            "persistentId": "doi:10.57745/DDSF5A",
+            "pidURL": "https://doi.org/10.57745/DDSF5A",
+            "filename": "2022-08-23_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 25294,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bea060f-24795d8ac51d",
+            "rootDataFileId": -1,
+            "md5": "2b6f29787efab49da6c8af0a37ff11d9",
+            "checksum": {
+              "type": "MD5",
+              "value": "2b6f29787efab49da6c8af0a37ff11d9"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-23_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196863,
+            "persistentId": "doi:10.57745/EWCPOH",
+            "pidURL": "https://doi.org/10.57745/EWCPOH",
+            "filename": "2022-08-23_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4282498529,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be7794c-bc053442b945",
+            "rootDataFileId": -1,
+            "md5": "146a6b78169d450aec5170cb3077c72d",
+            "checksum": {
+              "type": "MD5",
+              "value": "146a6b78169d450aec5170cb3077c72d"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-24_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196887,
+            "persistentId": "doi:10.57745/2Q9MQK",
+            "pidURL": "https://doi.org/10.57745/2Q9MQK",
+            "filename": "2022-08-24_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 24005,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bed7b95-36e21e5f8bf1",
+            "rootDataFileId": -1,
+            "md5": "42d4f8dd9e11ab6e8ac20bb2d68e81a7",
+            "checksum": {
+              "type": "MD5",
+              "value": "42d4f8dd9e11ab6e8ac20bb2d68e81a7"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-24_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196883,
+            "persistentId": "doi:10.57745/635EL3",
+            "pidURL": "https://doi.org/10.57745/635EL3",
+            "filename": "2022-08-24_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4191495523,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bec2bfb-66106103a329",
+            "rootDataFileId": -1,
+            "md5": "ed72649099ce5a7ea54a5c30e875ea04",
+            "checksum": {
+              "type": "MD5",
+              "value": "ed72649099ce5a7ea54a5c30e875ea04"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-25_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196833,
+            "persistentId": "doi:10.57745/6BZOK9",
+            "pidURL": "https://doi.org/10.57745/6BZOK9",
+            "filename": "2022-08-25_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23987,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be2113e-1c3d87ab377d",
+            "rootDataFileId": -1,
+            "md5": "12817178e5a9244b3ab31500cd18391b",
+            "checksum": {
+              "type": "MD5",
+              "value": "12817178e5a9244b3ab31500cd18391b"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-25_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196881,
+            "persistentId": "doi:10.57745/XKF46B",
+            "pidURL": "https://doi.org/10.57745/XKF46B",
+            "filename": "2022-08-25_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4111198653,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beb5928-be51d964d5a3",
+            "rootDataFileId": -1,
+            "md5": "c1aed0c0162c8c44cc679a2984a1debb",
+            "checksum": {
+              "type": "MD5",
+              "value": "c1aed0c0162c8c44cc679a2984a1debb"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-26_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196849,
+            "persistentId": "doi:10.57745/TBPBKQ",
+            "pidURL": "https://doi.org/10.57745/TBPBKQ",
+            "filename": "2022-08-26_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 22775,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be56130-9291843830df",
+            "rootDataFileId": -1,
+            "md5": "3420dc75cc37cb608b7aee7d4a3dd600",
+            "checksum": {
+              "type": "MD5",
+              "value": "3420dc75cc37cb608b7aee7d4a3dd600"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-26_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196850,
+            "persistentId": "doi:10.57745/AATUFW",
+            "pidURL": "https://doi.org/10.57745/AATUFW",
+            "filename": "2022-08-26_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 3998783023,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be563ca-f4d8eeaeac3a",
+            "rootDataFileId": -1,
+            "md5": "4adee84e2aacae7ba1d1982b4d37b9e5",
+            "checksum": {
+              "type": "MD5",
+              "value": "4adee84e2aacae7ba1d1982b4d37b9e5"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-27_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196834,
+            "persistentId": "doi:10.57745/YWMQQL",
+            "pidURL": "https://doi.org/10.57745/YWMQQL",
+            "filename": "2022-08-27_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23213,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be21434-5cca4a91aeba",
+            "rootDataFileId": -1,
+            "md5": "faf531846693c9336552d5c66fbe484a",
+            "checksum": {
+              "type": "MD5",
+              "value": "faf531846693c9336552d5c66fbe484a"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-27_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196829,
+            "persistentId": "doi:10.57745/YRPLZU",
+            "pidURL": "https://doi.org/10.57745/YRPLZU",
+            "filename": "2022-08-27_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4079079845,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be0e681-2323f45c16d0",
+            "rootDataFileId": -1,
+            "md5": "ba0288427074e3a6c3d54f10739a7429",
+            "checksum": {
+              "type": "MD5",
+              "value": "ba0288427074e3a6c3d54f10739a7429"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-28_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196877,
+            "persistentId": "doi:10.57745/EUCCM5",
+            "pidURL": "https://doi.org/10.57745/EUCCM5",
+            "filename": "2022-08-28_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 23213,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0beb4b35-79987dbd27d9",
+            "rootDataFileId": -1,
+            "md5": "bfb40c83853304af7a296ab5430bcc3d",
+            "checksum": {
+              "type": "MD5",
+              "value": "bfb40c83853304af7a296ab5430bcc3d"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-28_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196800,
+            "persistentId": "doi:10.57745/APNZYH",
+            "pidURL": "https://doi.org/10.57745/APNZYH",
+            "filename": "2022-08-28_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 4079079795,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bda33ce-78750c892a1b",
+            "rootDataFileId": -1,
+            "md5": "dc52dcde0dfb425b6fd8e34f7ed65bb1",
+            "checksum": {
+              "type": "MD5",
+              "value": "dc52dcde0dfb425b6fd8e34f7ed65bb1"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-29_raw_annotations.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196855,
+            "persistentId": "doi:10.57745/FWUGDS",
+            "pidURL": "https://doi.org/10.57745/FWUGDS",
+            "filename": "2022-08-29_raw_annotations.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 1612,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0be63c0b-22835d77e168",
+            "rootDataFileId": -1,
+            "md5": "1d38f6708c51a57072c54b50be69746e",
+            "checksum": {
+              "type": "MD5",
+              "value": "1d38f6708c51a57072c54b50be69746e"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "2022-08-29_raw.npy",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196888,
+            "persistentId": "doi:10.57745/QSOYCY",
+            "pidURL": "https://doi.org/10.57745/QSOYCY",
+            "filename": "2022-08-29_raw.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 251596318,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bed8020-c3d9b7627f3b",
+            "rootDataFileId": -1,
+            "md5": "23ff26925521d7dd04b9e78a3bba458c",
+            "checksum": {
+              "type": "MD5",
+              "value": "23ff26925521d7dd04b9e78a3bba458c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "alpha_crop.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196896,
+            "persistentId": "doi:10.57745/GSSDFE",
+            "pidURL": "https://doi.org/10.57745/GSSDFE",
+            "filename": "alpha_crop.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21412096,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf3a508-ac3dc002562e",
+            "rootDataFileId": -1,
+            "md5": "feb8f47086ceed113dbd24aac777cbcc",
+            "checksum": {
+              "type": "MD5",
+              "value": "feb8f47086ceed113dbd24aac777cbcc"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "dist_center.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196901,
+            "persistentId": "doi:10.57745/VCWZWE",
+            "pidURL": "https://doi.org/10.57745/VCWZWE",
+            "filename": "dist_center.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 144,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf3bad7-8b9a7546ab65",
+            "rootDataFileId": -1,
+            "md5": "b41af030c99c1fc54e624e47a5e38bfc",
+            "checksum": {
+              "type": "MD5",
+              "value": "b41af030c99c1fc54e624e47a5e38bfc"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "drift.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196900,
+            "persistentId": "doi:10.57745/YUAFRG",
+            "pidURL": "https://doi.org/10.57745/YUAFRG",
+            "filename": "drift.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 380,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf3b67d-cb0fcdcf8aee",
+            "rootDataFileId": -1,
+            "md5": "474229916ad06a42cb02ac91d819e624",
+            "checksum": {
+              "type": "MD5",
+              "value": "474229916ad06a42cb02ac91d819e624"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "f.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196898,
+            "persistentId": "doi:10.57745/T6H6QR",
+            "pidURL": "https://doi.org/10.57745/T6H6QR",
+            "filename": "f.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 136,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf3af15-0af633346952",
+            "rootDataFileId": -1,
+            "md5": "a1e89e2ae6f72024481e64e400301433",
+            "checksum": {
+              "type": "MD5",
+              "value": "a1e89e2ae6f72024481e64e400301433"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "lat_lon.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196897,
+            "persistentId": "doi:10.57745/FSS2UY",
+            "pidURL": "https://doi.org/10.57745/FSS2UY",
+            "filename": "lat_lon.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 144,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf3ab56-4d751f6609a2",
+            "rootDataFileId": -1,
+            "md5": "739d3477379fd6778d5c394e8a1f8b6c",
+            "checksum": {
+              "type": "MD5",
+              "value": "739d3477379fd6778d5c394e8a1f8b6c"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "orientation_pixels_ENU.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196893,
+            "persistentId": "doi:10.57745/S6KMTK",
+            "pidURL": "https://doi.org/10.57745/S6KMTK",
+            "filename": "orientation_pixels_ENU.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 80216192,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf38d71-dcda4852a2e2",
+            "rootDataFileId": -1,
+            "md5": "09912e4481d39901af7dbbcc7a7fbbdf",
+            "checksum": {
+              "type": "MD5",
+              "value": "09912e4481d39901af7dbbcc7a7fbbdf"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "params_crop.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196899,
+            "persistentId": "doi:10.57745/ZBIKYH",
+            "pidURL": "https://doi.org/10.57745/ZBIKYH",
+            "filename": "params_crop.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 160,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf3b2ef-0445fe9a5de8",
+            "rootDataFileId": -1,
+            "md5": "dcd7bfc1c086c80f4c88602d03c87c3f",
+            "checksum": {
+              "type": "MD5",
+              "value": "dcd7bfc1c086c80f4c88602d03c87c3f"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "Fichier readme",
+          "label": "README.md",
+          "restricted": false,
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 197223,
+            "persistentId": "doi:10.57745/GDWEKI",
+            "pidURL": "https://doi.org/10.57745/GDWEKI",
+            "filename": "README.md",
+            "contentType": "text/markdown",
+            "filesize": 8449,
+            "description": "Fichier readme",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f1a219f25-f07165d70e41",
+            "rootDataFileId": -1,
+            "md5": "57e0d2bc527700c3ad24e90ac36781f7",
+            "checksum": {
+              "type": "MD5",
+              "value": "57e0d2bc527700c3ad24e90ac36781f7"
+            },
+            "creationDate": "2024-04-26"
+          }
+        },
+        {
+          "description": "",
+          "label": "rotation.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196894,
+            "persistentId": "doi:10.57745/NUCLCO",
+            "pidURL": "https://doi.org/10.57745/NUCLCO",
+            "filename": "rotation.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 152,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf39b7e-20e04d6b2ba1",
+            "rootDataFileId": -1,
+            "md5": "9b035658ce25ad60be08ccfb7da217cd",
+            "checksum": {
+              "type": "MD5",
+              "value": "9b035658ce25ad60be08ccfb7da217cd"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "rot_mat.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196892,
+            "persistentId": "doi:10.57745/WAE0SE",
+            "pidURL": "https://doi.org/10.57745/WAE0SE",
+            "filename": "rot_mat.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 200,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf38949-2ce8ea2b94c5",
+            "rootDataFileId": -1,
+            "md5": "d0fa1341ba8432dd81495ecdf05ceafe",
+            "checksum": {
+              "type": "MD5",
+              "value": "d0fa1341ba8432dd81495ecdf05ceafe"
+            },
+            "creationDate": "2024-04-23"
+          }
+        },
+        {
+          "description": "",
+          "label": "theta_crop.npy",
+          "restricted": false,
+          "directoryLabel": "PolarizedDatabaseM/calib",
+          "version": 1,
+          "datasetVersionId": 271925,
+          "dataFile": {
+            "id": 196895,
+            "persistentId": "doi:10.57745/U4C8XN",
+            "pidURL": "https://doi.org/10.57745/U4C8XN",
+            "filename": "theta_crop.npy",
+            "contentType": "application/octet-stream",
+            "filesize": 21412096,
+            "description": "",
+            "storageIdentifier": "espace-generique://prod-espace-generique:18f0bf39f81-b44217f15d9d",
+            "rootDataFileId": -1,
+            "md5": "ae643908e5e8b5a1e4d10efa0a530cb9",
+            "checksum": {
+              "type": "MD5",
+              "value": "ae643908e5e8b5a1e4d10efa0a530cb9"
+            },
+            "creationDate": "2024-04-23"
+          }
+        }
+      ]
+    }
+  }
+}

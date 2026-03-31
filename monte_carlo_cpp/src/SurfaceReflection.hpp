@@ -1,8 +1,12 @@
-// SurfaceReflection.hpp
 #ifndef SURFACEREFLECTION_HPP
 #define SURFACEREFLECTION_HPP
 
-#include "Vec3.hpp" // Use the single definition
+#include "Vec3.hpp"
+
+#include <random>
+#include <string>
+#include <utility>
+#include <vector>
 
 struct ReflectionResult
 {
@@ -10,12 +14,34 @@ struct ReflectionResult
     double weightMultiplier;
 };
 
-ReflectionResult reflectLambertian(double albedo);
+class SurfaceModel
+{
+public:
+    void loadAlbedoCsv(const std::string &filename);
+    void setModel(const std::string &model_name);
+    void setDefaultAlbedo(double value);
+    void setOceanWindSpeed(double value);
+    void loadParameterJson(const std::string &filename);
+    double albedo(double wavelength_nm) const;
+    double directSolarRadiance(
+        const Vec3 &surfaceNormal,
+        const Vec3 &sunDirection,
+        const Vec3 &viewDirection,
+        double wavelength_nm,
+        double directSolarIrradiance
+    ) const;
 
-/**
- * Attempt a simple Fresnel reflection if we have 
- * water index of refraction ~1.33 or so.
- */
-ReflectionResult reflectFresnelWater(const Vec3 &incoming);
+private:
+    std::string model_name_ = "lambertian_land";
+    double default_albedo_ = 0.15;
+    double ocean_wind_speed_m_s_ = 5.0;
+    std::vector<std::pair<double, double>> table_;
+};
 
-#endif
+ReflectionResult sampleLambertianReflection(
+    const Vec3 &surfaceNormal,
+    double spectralAlbedo,
+    std::mt19937 &rng
+);
+
+#endif // SURFACEREFLECTION_HPP

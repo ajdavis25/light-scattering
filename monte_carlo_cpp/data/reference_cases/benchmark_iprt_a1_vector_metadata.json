@@ -1,0 +1,11 @@
+{
+  "source_name": "IPRT Phase A1 benchmark, MYSTIC reference subset",
+  "source_url": "https://www.meteo.physik.uni-muenchen.de/~iprt/doku.php?id=intercomparisons:a1_rayleigh",
+  "reference_file_url": "https://www.meteo.physik.uni-muenchen.de/~iprt/lib/exe/fetch.php?media=intercomparisons:phase_a:a1:iprt_case_a1_mystic.dat",
+  "description": "Vector Rayleigh benchmark subset from the IPRT A1 intercomparison. Subset uses depol=0, altitude=0 km, sza=0 deg, saa=65 deg, vaa=0 deg, vza=10..80 deg.",
+  "notes": [
+    "This benchmark includes I, Q, and U from an external vector radiative transfer model.",
+    "The direct-sun viewing direction vza=0 is excluded because it is not a stable diffuse-sky comparison point.",
+    "The subset is intentionally small to keep regression validation runtime bounded."
+  ]
+}

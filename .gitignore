@@ -160,3 +160,31 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Local editor settings
+.vscode/
+
+# C++/CMake build outputs
+monte_carlo_cpp/build/
+monte_carlo_cpp/build_current/
+cmake-build-*/
+
+# Generated run outputs
+monte_carlo_cpp/results/
+plots/current/
+plots/old/
+observer_sky_*.csv
+observer_sky_*.txt
+aop_*.png
+color_*.png
+dop_*.png
+low_*.png
+row1_*_panel*.png
+debug_direct_pdf_*.png
+
+# Temporary configs, scratch directories, and downloaded artifacts
+monte_carlo_cpp/config/_tmp_*.cfg
+tmp_*
+
+# Large/generated binary data kept locally
+monte_carlo_cpp/data/paper_cases/**/*.npy

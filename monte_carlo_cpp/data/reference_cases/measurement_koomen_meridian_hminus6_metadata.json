@@ -1,0 +1,9 @@
+{
+  "source_name": "Koomen et al. (1952) Fig. 3 plus Table I, Sacramento Peak",
+  "source_url": "https://static1.squarespace.com/static/54694fa6e4b0eaec4530f99d/t/5e876886cdfbaa441f538327/1585932427823/measurements%2Bof%2Bthe%2Bbrightness%2Bof%2Bthe%2Btwilight%2Bsky%2B1952.pdf",
+  "description": "Solar-meridian twilight brightness and polarization reference for H=-6 deg at Sacramento Peak. Intensity values come from Table I (Z=0); polarization factors are digitized from Fig. 3 and converted to DoLP.",
+  "notes": [
+    "This is a meridian-only polarization validation subset, not a full-sky measurement field.",
+    "The DoLP values are approximate because the publication provides the H=-6 polarization data as a plotted curve, not a table."
+  ]
+}

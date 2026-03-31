@@ -1,0 +1,22 @@
+{
+  "case_id": "interim_gal_public_case",
+  "paper_primary_measurement_frozen": false,
+  "paper_gate_blocked_reason": "No frozen public below-horizon full-sky twilight polarimetry dataset has been ingested yet; Gal remains an interim surrogate.",
+  "public_source_defaults": {
+    "pressure_temperature_h2o": "ERA5",
+    "aerosol_column_constraints": "AERONET Level 2",
+    "aerosol_vertical_shape": "MERRA-2 or CAMS",
+    "ozone_no2_columns": "OMI/OMPS/TROPOMI",
+    "instrument_response": "source paper, supplement, or manufacturer curve"
+  },
+  "implemented_scaffold_inputs": {
+    "atmosphere_profile_csv": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\interim_gal_public_case\\atmosphere_profile.csv",
+    "atmosphere_profile_sha256": "e1255cd410c0eb1ff2169cb642409dffb93b4c95f01ce85eab1fa20a16691f9f",
+    "instrument_response_csv": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\interim_gal_public_case\\instrument_response.csv",
+    "instrument_response_sha256": "d959292a292ca1ba63d93c100b119e24e1c8fcf7cad430045f86d7765554eb64",
+    "surface_config_json": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\interim_gal_public_case\\surface_config.json",
+    "surface_config_sha256": "8c61c59112078d0483e5667f9ce70460d1cd02b33744c36f68c56aefcb8299f1",
+    "measurement_metadata_json": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\interim_gal_public_case\\measurement_metadata.json",
+    "measurement_metadata_sha256": "791aaa0d5fd8a68e3c858d972776091f5eadb96b41794db42b37e530977b7f72"
+  }
+}

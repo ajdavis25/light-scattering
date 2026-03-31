@@ -1,0 +1,36 @@
+{
+  "model_name": "marseille_case_local_aeronet_inversion_v2",
+  "description": "Case-local aerosol model using Marseille_ATMO AERONET Almucantar inversion microphysics when a strict within-window inversion is unavailable but a same-day inversion exists.",
+  "target_aod_550": 0.1379458971081164,
+  "aeronet_aod_550": 0.14392786281082184,
+  "openmeteo_aod_550": 0.12,
+  "aeronet_weight": 0.75,
+  "aeronet_inversion_usage_mode": "same_day_fallback",
+  "aeronet_inversion_time_delta_hours": 3.346111111111111,
+  "aeronet_inversion_selected_time_utc": "2022-08-15T15:53:27Z",
+  "aeronet_inversion_quality_level": "lev15",
+  "scattering_column_fraction": {
+    "boundary_fine": 0.45388703335840214,
+    "elevated_fine": 0.20318666896779236,
+    "residual_sulfate": 0.06940250646435392,
+    "coastal_coarse": 0.2735237912094516
+  },
+  "ssa_550": 0.9891489361702126,
+  "pm_ratio": 0.6514285714285715,
+  "mixed_fine_indicator": 0.5881841373626374,
+  "pmax_base": 0.03022634996382979,
+  "coastal_coarse_asymmetry": 0.7905865319148935,
+  "fine_asymmetry": 0.6257468510638298,
+  "angstrom_fine": 2.2,
+  "angstrom_coarse": -0.2,
+  "instrument_response_model": "imx250myr_blue_public_docs_proxy_v2",
+  "instrument_response_source_urls": [
+    "https://www.sony-semicon.com/files/62/flyer_industry/IMX250_264_253MZR_MYR_Flyer_en.pdf",
+    "https://thinklucid.com/document/phoenix-5-0-mp-polarized-tech-ref-phx050s-p-q-imx250mzr-myr/",
+    "https://dce9ugryut4ao.cloudfront.net/PHX050S-Polarized_1.72.0.0_Documentation_English.zip"
+  ],
+  "inversion_refractive_index_real_550": 1.441831914893617,
+  "inversion_refractive_index_imag_550": 0.000776468085106383,
+  "inversion_depolarization_ratio_550": 0.023614446808510638,
+  "inversion_sphericity_fraction": 0.78286146
+}

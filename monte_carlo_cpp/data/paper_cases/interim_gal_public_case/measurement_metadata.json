@@ -1,0 +1,15 @@
+{
+  "source_name": "Gal et al. (2001) Figure 2a, Sodankyla full-sky imaging polarimetry",
+  "source_url": "https://arago.elte.hu/sites/default/files/SkyPolLapland_PRSLA.pdf",
+  "doi": "10.1098/rspa.2000.0726",
+  "site_lat_deg": 67.25,
+  "site_lon_deg": 26.3,
+  "utc_timestamp": "2001-06-21T00:00:00Z",
+  "channel_description": "450 nm effective channel represented with a Gaussian response proxy",
+  "paper_gate_role": "interim_full_sky_surrogate",
+  "below_horizon_twilight": false,
+  "notes": [
+    "This paper-case scaffold uses the existing Gal full-sky public reference as an interim surrogate.",
+    "The final paper gate remains blocked until a frozen below-horizon full-sky twilight polarimetry dataset is ingested."
+  ]
+}

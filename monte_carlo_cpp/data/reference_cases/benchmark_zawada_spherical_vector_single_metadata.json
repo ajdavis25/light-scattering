@@ -1,0 +1,41 @@
+{
+  "source_name": "Zawada et al. (2020) spherical-vector limb benchmark subset",
+  "source_url": "https://doi.org/10.5281/zenodo.4292303",
+  "paper_url": "https://doi.org/10.5194/amt-14-3953-2021",
+  "reference_file_url": "https://zenodo.org/api/records/4292303/files/zawada_AMT_rtm_comparison_data_v1.nc/content",
+  "description": "Published spherical vector benchmark subset extracted from the Zawada et al. limb-scattering intercomparison dataset. The subset uses the multi-model mean for the single-scatter, no-refraction test case with Rayleigh scattering, ozone absorption, and stratospheric aerosol scattering at 351 nm.",
+  "subset_definition": {
+    "test_case": "single scatter only, no refraction",
+    "solar_condition_index": 0,
+    "tangent_sza_deg": 70.0,
+    "tangent_saa_deg": 30.0,
+    "composition": "rayleigh+ozone+aerosol",
+    "surface_albedo": 0.0,
+    "wavelength_nm": 351.0,
+    "tangent_altitude_sampling_km": [
+      0.5,
+      5.5,
+      10.5,
+      15.5,
+      20.5,
+      25.5,
+      30.5,
+      35.5,
+      40.5,
+      45.5,
+      50.5,
+      55.5,
+      60.5,
+      65.5,
+      70.5,
+      75.5,
+      79.5
+    ]
+  },
+  "notes": [
+    "Reference radiances are the published multi-model mean from the Zenodo benchmark dataset, not an internally generated surrogate.",
+    "Each sampled line of sight carries its own observer-local solar zenith and azimuth from the published geometry_data group.",
+    "The benchmark atmosphere and aerosol phase table are derived directly from the ancillary_data group at 351 nm to avoid cross-study optics drift.",
+    "The benchmark-specific Rayleigh scattering cross section is also taken directly from the ancillary_data group at 351 nm."
+  ]
+}

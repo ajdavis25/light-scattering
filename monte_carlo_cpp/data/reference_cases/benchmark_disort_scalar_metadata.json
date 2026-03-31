@@ -1,0 +1,19 @@
+{
+  "source_name": "PythonicDISORT 1.6",
+  "source_url": "https://pythonic-disort.readthedocs.io/en/latest/Pythonic-DISORT.html",
+  "description": "Plane-parallel scalar Rayleigh principal-plane reference generated with PythonicDISORT.",
+  "geometry": {
+    "solar_zenith_deg": 60.0,
+    "relative_azimuth_deg": 0.0,
+    "observer_boundary": "surface"
+  },
+  "optics": {
+    "single_layer_optical_depth": 0.05,
+    "single_scattering_albedo": 0.999999,
+    "rayleigh_legendre_coefficients": [
+      1.0,
+      0.0,
+      0.1
+    ]
+  }
+}

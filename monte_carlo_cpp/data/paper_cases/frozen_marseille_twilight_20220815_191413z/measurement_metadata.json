@@ -1,0 +1,24 @@
+{
+  "source_name": "A 2 month-long annotated skylight polarization images database",
+  "source_url": "https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/9L2YUB",
+  "source_api_url": "https://entrepot.recherche.data.gouv.fr/api/datasets/:persistentId/?persistentId=doi:10.57745/9L2YUB",
+  "doi": "10.57745/9L2YUB",
+  "measurement_paper_url": "https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-024-06959-6",
+  "site_lat_deg": 43.286990365824785,
+  "site_lon_deg": 5.403361407820939,
+  "utc_timestamp": "2022-08-15T19:14:13Z",
+  "channel_description": "Public Marseille dataset B channel on the IMX250MYR sensor. The instrument-response CSV is a case-local public-doc-constrained IMX250MYR blue-channel proxy, anchored to the Sony Polarsens flyer and the LUCID PHX050S polarized technical reference because the dataset release does not provide a tabulated manufacturer spectral-response curve.",
+  "channel_response_source_urls": [
+    "https://www.sony-semicon.com/files/62/flyer_industry/IMX250_264_253MZR_MYR_Flyer_en.pdf",
+    "https://thinklucid.com/document/phoenix-5-0-mp-polarized-tech-ref-phx050s-p-q-imx250mzr-myr/",
+    "https://dce9ugryut4ao.cloudfront.net/PHX050S-Polarized_1.72.0.0_Documentation_English.zip"
+  ],
+  "annotation_filename": "2022-08-15_raw_annotations.npy",
+  "annotation_label": "c",
+  "below_horizon_twilight": true,
+  "solar_zenith_deg": 96.00706717006891,
+  "solar_azimuth_deg": 295.9850935608692,
+  "paper_gate_role": "frozen_primary_twilight_case_with_extracted_reference",
+  "measurement_reference_csv": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference.csv",
+  "aop_reference_convention": "Marseille comparison basis with measured sensor-frame Q/U rotated by (relative_azimuth_deg - rotation_z_deg - 90_deg) before binning."
+}

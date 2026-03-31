@@ -1,52 +1,28 @@
-/**************************************************************
- * main.cpp
- *
- * Example main that:
- *   - Does snippet tests
- *   - Calls runMonteCarloSimulation() for a more physical twilight scenario
- **************************************************************/
+#include "MonteCarloDriver.hpp"
+
+#include <exception>
+#include <filesystem>
 #include <iostream>
-#include "PhaseFunctions.hpp"
-#include "SurfaceReflection.hpp"
-#include "Polarization.hpp"
-#include "Atmosphere.hpp"
-#include "WavelengthHandling.hpp"
-#include "MonteCarloDriver.hpp"  
+#include <string>
 
-int main()
+int main(int argc, char **argv)
 {
-    {
-        // 1) snippet tests
-        double val = rayleighPhase(0.5);
-        std::cout << "Rayleigh( cosTheta=0.5 ) => " << val << "\n";
+    try {
+        const std::string configPath = argc > 1
+            ? argv[1]
+            : (std::filesystem::exists("../config/default_clear_sky.cfg")
+                ? "../config/default_clear_sky.cfg"
+                : "monte_carlo_cpp/config/default_clear_sky.cfg");
 
-        auto refl = reflectLambertian(0.2);
-        std::cout << "Lambert reflection dir z=" << refl.dir.z
-                  << ", weight mult=" << refl.weightMultiplier << "\n";
-
-        auto unpol = initUnpolarized(1.0);
-        auto outPol = applyIdentityMueller(unpol);
-        std::cout << "Unpolarized stokes => I=" << outPol.I << "\n";
-
-        Atmosphere atm;
-        atm.loadLayerData("");
-        double alt = 5000.0; 
-        double rho = atm.atmosphericDensity(alt);
-        double absorb = atm.absorptionCoeff(alt);
-        std::cout << "At alt=" << alt
-                  << "m => density=" << rho
-                  << ", absorption=" << absorb << "\n";
-
-        double wave_nm = 550.0;
-        double scat = scatteringCoefficient(atm, alt, wave_nm);
-        std::cout << "Scattering at " << wave_nm
-                  << " nm => " << scat << "\n";
+        std::cout << "Running production clear-sky twilight solver with config: "
+                  << configPath << "\n";
+        const SimulationConfig config = loadSimulationConfig(configPath);
+        const SkyResult result = runMonteCarloSimulation(config);
+        writeSkyResult(result);
+        std::cout << "Simulation complete.\n";
+        return 0;
+    } catch (const std::exception &error) {
+        std::cerr << "Simulation failed: " << error.what() << "\n";
+        return 1;
     }
-
-    // 2) MAIN multi-scattering simulation
-    std::cout << "\n=== Running Full Monte Carlo Simulation (Twilight) ===\n";
-    runMonteCarloSimulation();
-    std::cout << "=== Simulation complete. ===\n";
-
-    return 0;
 }

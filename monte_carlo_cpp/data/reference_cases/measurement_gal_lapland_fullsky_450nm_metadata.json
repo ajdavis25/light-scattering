@@ -1,0 +1,39 @@
+{
+  "source_name": "Gal et al. (2001) Figure 2a, Sodankyla full-sky imaging polarimetry",
+  "source_url": "https://arago.elte.hu/sites/default/files/SkyPolLapland_PRSLA.pdf",
+  "doi": "10.1098/rspa.2000.0726",
+  "description": "Digitized full-sky degree-of-linear-polarization reference from the 2 h panel of Figure 2a in Gal et al. (2001), measured at 450 nm with calibrated full-sky imaging polarimetry.",
+  "geometry": {
+    "solar_zenith_deg": 83.1,
+    "relative_azimuth_definition": "bearing from the solar direction in the published fisheye map",
+    "sampling_grid": {
+      "zenith_deg": [
+        15,
+        30,
+        45,
+        60,
+        75
+      ],
+      "relative_azimuth_deg": [
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210,
+        240,
+        270,
+        300,
+        330
+      ]
+    }
+  },
+  "notes": [
+    "This is a digitized coarse full-sky DoLP field derived from a published calibrated fisheye map, not raw instrument output.",
+    "The published circular map was sampled assuming approximately linear zenith radius in the rendered figure.",
+    "The reference is low-sun daytime sky at solar zenith 83.1 deg, not below-horizon twilight.",
+    "Only polarization metrics are enforced for this case because the source figure does not provide a matching calibrated intensity table."
+  ]
+}

@@ -1,0 +1,299 @@
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_MEASUREMENT_CONFIG = (
+    REPO_ROOT
+    / "monte_carlo_cpp"
+    / "config"
+    / "paper_cases"
+    / "frozen_marseille_twilight_20220815_191413z_measurement.cfg"
+)
+DEFAULT_VALIDATION_CONFIG = REPO_ROOT / "monte_carlo_cpp" / "config" / "paper_validation.cfg"
+DEFAULT_LOG = REPO_ROOT / "monte_carlo_cpp" / "results" / "validation" / "marseille_paper_batch.log"
+DEFAULT_BATCHED_MEASUREMENT_RUNNER = (
+    REPO_ROOT / "monte_carlo_cpp" / "tools" / "run_measurement_case_batched.py"
+)
+
+
+def find_runner(name: str) -> Path:
+    candidates = [
+        REPO_ROOT / "monte_carlo_cpp" / "build_current" / name,
+        REPO_ROOT / "monte_carlo_cpp" / "build" / name,
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f"Could not find {name} in build_current or build.")
+
+
+def write_log_header(
+    log_path: Path,
+    measurement_runner: Path,
+    measurement_config: Path,
+    measurement_batch_size: int,
+    higher_order_block_size: int,
+    validation_runner: Path,
+    validation_config: Path,
+) -> None:
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    header = [
+        f"started_utc={datetime.now(timezone.utc).isoformat()}",
+        f"measurement_runner={measurement_runner}",
+        f"measurement_config={measurement_config}",
+        f"measurement_batch_size={measurement_batch_size}",
+        f"measurement_higher_order_block_size={higher_order_block_size}",
+        f"validation_runner={validation_runner}",
+        f"validation_config={validation_config}",
+        f"cwd={REPO_ROOT}",
+        "",
+    ]
+    log_path.write_text("\n".join(header))
+
+
+def stream_command(command: list[str], log_file, label: str) -> int:
+    log_file.write(f"=== {label} started_utc={datetime.now(timezone.utc).isoformat()} ===\n")
+    log_file.flush()
+    process = subprocess.Popen(
+        command,
+        cwd=REPO_ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+    assert process.stdout is not None
+    for line in process.stdout:
+        print(line, end="", flush=True)
+        log_file.write(line)
+        log_file.flush()
+    return_code = process.wait()
+    log_file.write(f"=== {label} exit_code={return_code} finished_utc={datetime.now(timezone.utc).isoformat()} ===\n")
+    log_file.flush()
+    return return_code
+
+
+def run_logged_command(command: list[str], log_path: Path, label: str) -> int:
+    with log_path.open("a", encoding="utf-8") as log_file:
+        log_file.write(f"=== {label} started_utc={datetime.now(timezone.utc).isoformat()} ===\n")
+        log_file.flush()
+        process = subprocess.Popen(
+            command,
+            cwd=REPO_ROOT,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        return_code = process.wait()
+        log_file.write(
+            f"=== {label} exit_code={return_code} finished_utc={datetime.now(timezone.utc).isoformat()} ===\n"
+        )
+        log_file.flush()
+        return return_code
+
+
+def run_sequence(
+    measurement_runner: Path,
+    measurement_config: Path,
+    validation_runner: Path,
+    validation_config: Path,
+    log_path: Path,
+    measurement_batch_size: int,
+    higher_order_block_size: int,
+    *,
+    stream_output: bool,
+) -> int:
+    measurement_command = [
+        sys.executable,
+        "-u",
+        str(measurement_runner),
+        str(measurement_config),
+        "--batch-size",
+        str(measurement_batch_size),
+        "--higher-order-block-size",
+        str(higher_order_block_size),
+        "--resume",
+    ]
+    if stream_output:
+        with log_path.open("a", encoding="utf-8") as log_file:
+            measurement_code = stream_command(
+                measurement_command,
+                log_file,
+                "measurement_case",
+            )
+            if measurement_code != 0:
+                log_file.write("Aborting validation because the Marseille measurement rerun failed.\n")
+                return measurement_code
+            return stream_command(
+                [str(validation_runner), str(validation_config)],
+                log_file,
+                "paper_validation",
+            )
+
+    measurement_code = run_logged_command(
+        measurement_command,
+        log_path,
+        "measurement_case",
+    )
+    if measurement_code != 0:
+        with log_path.open("a", encoding="utf-8") as log_file:
+            log_file.write("Aborting validation because the Marseille measurement rerun failed.\n")
+        return measurement_code
+    return run_logged_command(
+        [str(validation_runner), str(validation_config)],
+        log_path,
+        "paper_validation",
+    )
+
+
+def run_detached(
+    measurement_config: Path,
+    validation_config: Path,
+    log_path: Path,
+    measurement_batch_size: int,
+    higher_order_block_size: int,
+) -> int:
+    creationflags = 0
+    if sys.platform == "win32":
+        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+
+    with log_path.open("a", encoding="utf-8") as log_file:
+        process = subprocess.Popen(
+            [
+                sys.executable,
+                "-u",
+                str(Path(__file__).resolve()),
+                "--measurement-config",
+                str(measurement_config),
+                "--validation-config",
+                str(validation_config),
+                "--measurement-batch-size",
+                str(measurement_batch_size),
+                "--higher-order-block-size",
+                str(higher_order_block_size),
+                "--log",
+                str(log_path),
+                "--run-now",
+            ],
+            cwd=REPO_ROOT,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            text=True,
+            creationflags=creationflags,
+        )
+
+    print(f"Started detached Marseille + paper-validation batch with PID {process.pid}")
+    print(f"Log: {log_path}")
+    print("Inspect the log plus the measurement and validation report outputs for completion.")
+    return 0
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run the strict Marseille measurement rerun followed by the strict paper-validation suite."
+    )
+    parser.add_argument(
+        "--measurement-config",
+        type=Path,
+        default=DEFAULT_MEASUREMENT_CONFIG,
+        help="Measurement config to run first.",
+    )
+    parser.add_argument(
+        "--validation-config",
+        type=Path,
+        default=DEFAULT_VALIDATION_CONFIG,
+        help="Validation config to run after the Marseille measurement rerun.",
+    )
+    parser.add_argument(
+        "--log",
+        type=Path,
+        default=DEFAULT_LOG,
+        help="Combined batch log file.",
+    )
+    parser.add_argument(
+        "--measurement-batch-size",
+        type=int,
+        default=8,
+        help="Exact Marseille directions per measurement batch.",
+    )
+    parser.add_argument(
+        "--higher-order-block-size",
+        type=int,
+        default=32,
+        help="Higher-order samples per checkpointed single-direction batch invocation.",
+    )
+    parser.add_argument(
+        "--detached",
+        action="store_true",
+        help="Launch the batch in the background and return immediately.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the resolved runners, configs, and log path without launching the batch.",
+    )
+    parser.add_argument(
+        "--run-now",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    measurement_runner = DEFAULT_BATCHED_MEASUREMENT_RUNNER.resolve()
+    validation_runner = find_runner("ValidationRunner.exe")
+    measurement_config = args.measurement_config.resolve()
+    validation_config = args.validation_config.resolve()
+    log_path = args.log.resolve()
+
+    if args.dry_run:
+        print(f"measurement_runner={measurement_runner}")
+        print(f"measurement_config={measurement_config}")
+        print(f"measurement_batch_size={args.measurement_batch_size}")
+        print(f"measurement_higher_order_block_size={args.higher_order_block_size}")
+        print(f"validation_runner={validation_runner}")
+        print(f"validation_config={validation_config}")
+        print(f"log={log_path}")
+        return 0
+
+    write_log_header(
+        log_path,
+        measurement_runner,
+        measurement_config,
+        args.measurement_batch_size,
+        args.higher_order_block_size,
+        validation_runner,
+        validation_config,
+    )
+
+    if args.detached and not args.run_now:
+        return run_detached(
+            measurement_config,
+            validation_config,
+            log_path,
+            args.measurement_batch_size,
+            args.higher_order_block_size,
+        )
+
+    return run_sequence(
+        measurement_runner,
+        measurement_config,
+        validation_runner,
+        validation_config,
+        log_path,
+        args.measurement_batch_size,
+        args.higher_order_block_size,
+        stream_output=not args.run_now,
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

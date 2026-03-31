@@ -1,0 +1,51 @@
+{
+  "description": "Repository-owned clear-sky continental aerosol reference used for the bundled midlatitude profile and aerosol phase/Mueller lookup table.",
+  "intended_use": "Development-stage clear-sky reference input, not a study-specific paper dataset.",
+  "column_aod_550": 0.23836172112524134,
+  "profile_model": {
+    "scattering_components": {
+      "boundary_fine": {
+        "extinction_550_ground_m_inv": 5.2e-05,
+        "scale_height_m": 1800.0,
+        "asymmetry": 0.68,
+        "angstrom_exponent": 1.75
+      },
+      "boundary_coarse": {
+        "extinction_550_ground_m_inv": 5.2e-05,
+        "scale_height_m": 900.0,
+        "asymmetry": 0.84,
+        "angstrom_exponent": 0.2
+      },
+      "elevated_fine": {
+        "extinction_550_ground_m_inv": 6.1e-06,
+        "scale_height_m": 6000.0,
+        "asymmetry": 0.63,
+        "angstrom_exponent": 1.3
+      },
+      "background_sulfate": {
+        "extinction_550_ground_m_inv": 3.5e-07,
+        "onset_altitude_m": 18000.0,
+        "scale_height_m": 8000.0,
+        "asymmetry": 0.58,
+        "angstrom_exponent": 2.05
+      }
+    },
+    "absorption_components": {
+      "black_carbon": {
+        "extinction_550_ground_m_inv": 3.7e-06,
+        "scale_height_m": 1800.0,
+        "angstrom_exponent": 1.0
+      },
+      "residual_absorber": {
+        "extinction_550_ground_m_inv": 4e-07,
+        "scale_height_m": 6500.0,
+        "angstrom_exponent": 1.35
+      }
+    }
+  },
+  "phase_matrix_model": {
+    "f11_shape": "wavelength-dependent coarse/fine/backscatter Henyey-Greenstein mixture",
+    "polarization_fraction": "bounded broadside envelope with suppressed forward and backward scattering",
+    "mueller_constraints": "f22=f11, f33=f44=f11*sqrt(1-p^2), f34=0"
+  }
+}

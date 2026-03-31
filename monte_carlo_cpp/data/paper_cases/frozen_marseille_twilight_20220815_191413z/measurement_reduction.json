@@ -1,0 +1,32 @@
+{
+  "case_id": "frozen_marseille_twilight_20220815_191413z",
+  "channel_name": "Public Marseille dataset B channel on the IMX250MYR sensor. The instrument-response CSV is a case-local public-doc-constrained IMX250MYR blue-channel proxy, anchored to the Sony Polarsens flyer and the LUCID PHX050S polarized technical reference because the dataset release does not provide a tabulated manufacturer spectral-response curve.",
+  "reduction_source_timestamp": "2022-08-15T19:14:13Z",
+  "raw_timestamp_key": "2022-08-15T19-14-13",
+  "frame_index": 567,
+  "raw_frame_shape": [
+    1636,
+    1636
+  ],
+  "exposure_us": 33.456,
+  "image_type": 5,
+  "color_channel_index": 3,
+  "rotation_z_deg": -134.9836273854003,
+  "comparison_basis": "sensor_q_u_rotated_by(relative_azimuth_deg - rotation_z_deg - 90_deg)",
+  "limit_zenith_deg": 90.0,
+  "zenith_bins": 19,
+  "azimuth_bins": 36,
+  "min_pixels_per_bin": 8,
+  "valid_pixels": 130804,
+  "saturated_pixels": 33,
+  "rows_written": 683,
+  "raw_file_sha256": "1a7f49097f37c04617b0118c69ef168e6579852daaf523cc37b7fa9a430f4794",
+  "alpha_crop_sha256": "01df0da0f191ef16b3507cb09978a3ea5c7b784f62c8fc36b6886c6ed6de7052",
+  "theta_crop_sha256": "c262f44174899283a4c6c82aeca3cdbd75d9697837a0f5d2b2c12a103a108874",
+  "rotation_sha256": "aba0ddd54a55d8e23627a39a0bd7ca81420f842d63b6ee7dfb0a43ff4a11df19",
+  "measurement_reference_sha256": "2b7fa699dc9325f9e2060f6c2591cf5ea31a087b9fe2e21afa9639890a43fc27",
+  "strict_subset_reference_sha256": "d4e2163edc036bc83eff1fd4537b238860dc009643b780af273b05fa18773727",
+  "strict_subset_rows_written": 48,
+  "profile_subset_reference_sha256": "a8ceebfc104a26879479dbac5bb3a9f69b3553d028cb4b8e897c6fed3c131d0c",
+  "profile_subset_rows_written": 12
+}

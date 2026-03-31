@@ -1,0 +1,55 @@
+{
+  "benchmark_references": [
+    {
+      "status": "bundled",
+      "case_config": "benchmark_disort_scalar.cfg",
+      "reference_csv": "benchmark_disort_scalar_principal_plane.csv",
+      "metadata_json": "benchmark_disort_scalar_metadata.json",
+      "notes": "External plane-parallel scalar Rayleigh benchmark generated with PythonicDISORT 1.6."
+    },
+    {
+      "status": "bundled",
+      "case_config": "benchmark_iprt_a1_vector.cfg",
+      "reference_csv": "benchmark_iprt_a1_vector_mystic.csv",
+      "metadata_json": "benchmark_iprt_a1_vector_metadata.json",
+      "notes": "External vector Rayleigh benchmark subset from the IPRT A1 intercomparison using MYSTIC results."
+    },
+    {
+      "status": "bundled",
+      "case_config": "benchmark_zawada_spherical_vector_single.cfg",
+      "reference_csv": "benchmark_zawada_spherical_vector_single.csv",
+      "metadata_json": "benchmark_zawada_spherical_vector_single_metadata.json",
+      "notes": "Published spherical-vector limb-scattering benchmark subset from Zawada et al. (2020) / AMT 2021 using the Zenodo multi-model mean at 351 nm."
+    },
+    {
+      "status": "bundled",
+      "case_config": "benchmark_zawada_spherical_vector_multiple.cfg",
+      "reference_csv": "benchmark_zawada_spherical_vector_multiple.csv",
+      "metadata_json": "benchmark_zawada_spherical_vector_multiple_metadata.json",
+      "notes": "Published spherical-vector multiple-scattering limb benchmark subset from Zawada et al. (2020) / AMT 2021 using the Zenodo multi-model mean at 351 nm."
+    }
+  ],
+  "measurement_references": [
+    {
+      "status": "bundled",
+      "case_config": "measurement_rozenberg_hminus6.cfg",
+      "reference_csv": "measurement_rozenberg_table1_hminus6.csv",
+      "metadata_json": "measurement_rozenberg_table1_metadata.json",
+      "notes": "Published twilight brightness pattern from Rozenberg (1952) Table I, Sacramento Peak, H=-6 degrees."
+    },
+    {
+      "status": "bundled",
+      "case_config": "measurement_koomen_meridian_hminus6_polarization.cfg",
+      "reference_csv": "measurement_koomen_meridian_hminus6_polarization.csv",
+      "metadata_json": "measurement_koomen_meridian_hminus6_metadata.json",
+      "notes": "Published twilight meridian polarization subset from Koomen et al. (1952) Fig. 3 plus Table I, H=-6 degrees."
+    },
+    {
+      "status": "bundled",
+      "case_config": "measurement_gal_lapland_fullsky_450nm_dolp.cfg",
+      "reference_csv": "measurement_gal_lapland_fullsky_450nm_dolp.csv",
+      "metadata_json": "measurement_gal_lapland_fullsky_450nm_metadata.json",
+      "notes": "Digitized full-sky calibrated DoLP field from Gal et al. (2001) Figure 2a, 2 h panel, 450 nm, solar zenith 83.1 degrees."
+    }
+  ]
+}

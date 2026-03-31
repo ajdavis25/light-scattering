@@ -1,0 +1,5 @@
+{
+  "surface_model": "lambertian_land",
+  "default_albedo": 0.15,
+  "notes": "Real matched Marseille twilight case. Land Lambertian surface retained in the current paper path."
+}

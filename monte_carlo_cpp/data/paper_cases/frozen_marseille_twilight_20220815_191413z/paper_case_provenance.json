@@ -1,0 +1,194 @@
+{
+  "case_id": "frozen_marseille_twilight_20220815_191413z",
+  "paper_primary_measurement_frozen": true,
+  "paper_gate_blocked_reason": "The frozen Marseille twilight measurement reference has been extracted, but the case still has to pass the paper-validation thresholds.",
+  "frozen_measurement_case": {
+    "dataset_doi": "10.57745/9L2YUB",
+    "dataset_record_url": "https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/9L2YUB",
+    "measurement_paper_url": "https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-024-06959-6",
+    "selected_timestamp_utc": "2022-08-15T19:14:13Z",
+    "annotation_filename": "2022-08-15_raw_annotations.npy",
+    "annotation_file_id": 196828,
+    "annotation_label": "c",
+    "solar_zenith_deg": 96.00706717006891,
+    "solar_azimuth_deg": 295.9850935608692
+  },
+  "matched_public_inputs": {
+    "weather_source": "Open-Meteo archive API",
+    "weather_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.286990&longitude=5.403361&start_date=2022-08-15&end_date=2022-08-15&hourly=temperature_2m,relative_humidity_2m,surface_pressure,cloud_cover,total_column_integrated_water_vapour&timezone=UTC",
+    "pressure_profile_source": "Open-Meteo historical-forecast pressure levels",
+    "pressure_profile_url": "https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=43.286990&longitude=5.403361&start_date=2022-08-15&end_date=2022-08-15&hourly=temperature_1000hPa,relative_humidity_1000hPa,geopotential_height_1000hPa,temperature_975hPa,relative_humidity_975hPa,geopotential_height_975hPa,temperature_950hPa,relative_humidity_950hPa,geopotential_height_950hPa,temperature_925hPa,relative_humidity_925hPa,geopotential_height_925hPa,temperature_900hPa,relative_humidity_900hPa,geopotential_height_900hPa,temperature_850hPa,relative_humidity_850hPa,geopotential_height_850hPa,temperature_800hPa,relative_humidity_800hPa,geopotential_height_800hPa,temperature_700hPa,relative_humidity_700hPa,geopotential_height_700hPa,temperature_600hPa,relative_humidity_600hPa,geopotential_height_600hPa,temperature_500hPa,relative_humidity_500hPa,geopotential_height_500hPa,temperature_400hPa,relative_humidity_400hPa,geopotential_height_400hPa,temperature_300hPa,relative_humidity_300hPa,geopotential_height_300hPa,temperature_250hPa,relative_humidity_250hPa,geopotential_height_250hPa,temperature_200hPa,relative_humidity_200hPa,geopotential_height_200hPa,temperature_150hPa,relative_humidity_150hPa,geopotential_height_150hPa,temperature_100hPa,relative_humidity_100hPa,geopotential_height_100hPa,temperature_70hPa,relative_humidity_70hPa,geopotential_height_70hPa,temperature_50hPa,relative_humidity_50hPa,geopotential_height_50hPa,temperature_30hPa,relative_humidity_30hPa,geopotential_height_30hPa&timezone=UTC",
+    "air_quality_source": "Open-Meteo air-quality API",
+    "air_quality_url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=43.286990&longitude=5.403361&start_date=2022-08-15&end_date=2022-08-15&hourly=ozone,nitrogen_dioxide,aerosol_optical_depth,pm10,pm2_5&timezone=UTC",
+    "aeronet_source": "AERONET Version 3 Direct Sun",
+    "aeronet_url": "https://aeronet.gsfc.nasa.gov/cgi-bin/print_web_data_v3?site=Marseille_ATMO&year=2022&month=8&day=15&year2=2022&month2=8&day2=16&AOD15=1&AVG=10&if_no_html=1",
+    "aeronet_inversion_url": "https://aeronet.gsfc.nasa.gov/cgi-bin/print_web_data_inv_v3?site=Marseille_ATMO&year=2022&month=8&day=15&year2=2022&month2=8&day2=16&product=ALL&ALM15=1&AVG=10&if_no_html=1",
+    "aeronet_inversion_available": true,
+    "aeronet_inversion_usage_mode": "same_day_fallback",
+    "aeronet_inversion_time_delta_hours": 3.346111111111111,
+    "aeronet_inversion_selected_time_utc": "2022-08-15T15:53:27Z",
+    "aeronet_inversion_quality_level": "lev15",
+    "sensor_flyer_url": "https://www.sony-semicon.com/files/62/flyer_industry/IMX250_264_253MZR_MYR_Flyer_en.pdf",
+    "camera_techref_url": "https://thinklucid.com/document/phoenix-5-0-mp-polarized-tech-ref-phx050s-p-q-imx250mzr-myr/",
+    "camera_techref_download_url": "https://dce9ugryut4ao.cloudfront.net/PHX050S-Polarized_1.72.0.0_Documentation_English.zip",
+    "aeronet_site": "Marseille_ATMO",
+    "aeronet_sample_time_utc": "2022-08-15T17:06:16Z",
+    "aeronet_time_delta_hours": 2.1325,
+    "aeronet_weight_in_case_aod": 0.75
+  },
+  "derived_case_summary": {
+    "surface_temperature_k": 298.15,
+    "surface_relative_humidity": 0.78,
+    "surface_pressure_pa": 100270.0,
+    "cloud_cover_percent": 1.0,
+    "surface_ozone_ug_m3": 86.0,
+    "surface_no2_ug_m3": 19.8,
+    "surface_pm10_ug_m3": 17.5,
+    "surface_pm25_ug_m3": 11.4,
+    "target_aod_550": 0.1379458971081164,
+    "openmeteo_aod_550": 0.12,
+    "aeronet_aod_500": 0.163912,
+    "aeronet_aod_440": 0.195732,
+    "aeronet_aod_550": 0.14392786281082184,
+    "aeronet_angstrom_440_870": 1.364151,
+    "aeronet_precipitable_water_cm": 2.346131,
+    "aeronet_ozone_dobson": 311.765271,
+    "aeronet_no2_dobson": 0.235092,
+    "openmeteo_tcwv_kg_m2": 23.2,
+    "thermodynamic_profile_mode": "openmeteo_pressure_levels_with_template_upper_tail",
+    "pressure_level_rows": 19,
+    "upper_tail_rows": 31,
+    "matched_profile_top_altitude_m": 24308.41,
+    "case_local_aerosol_model": {
+      "pm_ratio": 0.6514285714285715,
+      "mixed_fine_indicator": 0.5881841373626374,
+      "scattering_column_fraction": {
+        "boundary_fine": 0.45388703335840214,
+        "elevated_fine": 0.20318666896779236,
+        "residual_sulfate": 0.06940250646435392,
+        "coastal_coarse": 0.2735237912094516
+      },
+      "ssa_550": 0.9891489361702126,
+      "absorption_black_carbon_fraction": 0.7278571428571428,
+      "pmax_base": 0.03022634996382979,
+      "coastal_coarse_asymmetry": 0.7905865319148935,
+      "fine_asymmetry": 0.6257468510638298,
+      "angstrom_fine": 2.2,
+      "angstrom_coarse": -0.2,
+      "model_name": "marseille_case_local_aeronet_inversion_v2",
+      "description": "Case-local aerosol model using Marseille_ATMO AERONET Almucantar inversion microphysics when a strict within-window inversion is unavailable but a same-day inversion exists.",
+      "inversion_refractive_index_real_550": 1.441831914893617,
+      "inversion_refractive_index_imag_550": 0.000776468085106383,
+      "inversion_depolarization_ratio_550": 0.023614446808510638,
+      "inversion_sphericity_fraction": 0.78286146,
+      "inversion_aod_fine_fraction_550": 0.72617573885557,
+      "inversion_aod_coarse_fraction_550": 0.2735237912094516
+    }
+  },
+  "artifacts": {
+    "atmosphere_profile_csv": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\atmosphere_profile.csv",
+      "sha256": "156e661d0eec59260edc3c883e2d418668fa1699c6c7e671e85a3191245379ee"
+    },
+    "instrument_response_csv": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\instrument_response.csv",
+      "sha256": "300865868f45dc1755be70ea329e9c89cb087ff24f24760f4efb937596b8d0e2"
+    },
+    "aerosol_phase_matrix_csv": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\aerosol_phase_matrix.csv",
+      "sha256": "2e5178d4c27d8e4907f35efa22f5b7dd87428b9a29bad7b3d029cb8eb094eca3"
+    },
+    "aerosol_optics_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\aerosol_optics.json",
+      "sha256": "15a25ba83130e9e6a85ac20b5718875c6bcb7908e0e79784b60b762875241843"
+    },
+    "surface_config_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\surface_config.json",
+      "sha256": "49bf56b7edfcd612b9c3ed09f604f4913a509e4d418b8470f625cd622eca3c95"
+    },
+    "measurement_metadata_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_metadata.json",
+      "sha256": "31f2d19cc69d3cacd51502d001005460981708f048b9e9a6a56a712aea6eb97d"
+    },
+    "open_meteo_pressure_levels_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\open_meteo_pressure_levels.json",
+      "sha256": "bdc54689fc25a9cbe03612cd1c1f6b90125c7417c452d858764644ba81001ac8"
+    },
+    "aeronet_inversion_txt": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\aeronet_inversion.txt",
+      "sha256": "d3f9c06fea95fb70ced289fb0561744aa6e4bc1999af6dc8589be56c17959d07"
+    },
+    "measurement_reference_csv": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference.csv",
+      "sha256": "2b7fa699dc9325f9e2060f6c2591cf5ea31a087b9fe2e21afa9639890a43fc27"
+    },
+    "measurement_reduction_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reduction.json",
+      "sha256": "de07f3fb6598d5c6f139884d2eb810a39113c350c137d6057e2472c33741a21e"
+    },
+    "measurement_config": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\config\\paper_cases\\frozen_marseille_twilight_20220815_191413z_measurement.cfg",
+      "sha256": "c12c40d11309d61deb19c1ed98a78f4681131e4bdf18a28cc1db0141c41ed046"
+    },
+    "measurement_reference_strict_subset_csv": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference_strict_subset.csv",
+      "sha256": "d4e2163edc036bc83eff1fd4537b238860dc009643b780af273b05fa18773727"
+    },
+    "measurement_reference_strict_subset_summary_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference_strict_subset_summary.json",
+      "sha256": "753c9207618aa6eab9bc6859b63b7f016a2e7f016b6d56094580edf00fb9d08b"
+    },
+    "measurement_reference_profile_subset_csv": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference_profile_subset.csv",
+      "sha256": "a8ceebfc104a26879479dbac5bb3a9f69b3553d028cb4b8e897c6fed3c131d0c"
+    },
+    "measurement_reference_profile_subset_summary_json": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\measurement_reference_profile_subset_summary.json",
+      "sha256": "1c1d545954b5eedd8383e84f7b4ebba68a5c8f9de847a4f3d5c3fc181b64e8a3"
+    },
+    "rotation_npy": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\data\\paper_cases\\frozen_marseille_twilight_20220815_191413z\\rotation.npy",
+      "sha256": "aba0ddd54a55d8e23627a39a0bd7ca81420f842d63b6ee7dfb0a43ff4a11df19"
+    },
+    "measurement_strict_subset_config": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\config\\paper_cases\\frozen_marseille_twilight_20220815_191413z_measurement_strict_subset.cfg",
+      "sha256": "5269da8ddf26aa9d97b62dedfc539aaec137ab62e1c890748c3bef1cb0b5ff2a"
+    },
+    "measurement_profile_subset_config": {
+      "path": "C:\\Users\\ashton\\Desktop\\projects\\light-scattering\\monte_carlo_cpp\\config\\paper_cases\\frozen_marseille_twilight_20220815_191413z_measurement_profile_subset.cfg",
+      "sha256": "44185eb80be11fc4455ea40111b7db2ef1acd286addc4459758212a620a23faa"
+    }
+  },
+  "remaining_approximations": [
+    "The lower and middle atmosphere thermodynamic profile now comes from matched Open-Meteo pressure levels, but the upper-atmosphere tail above the highest pressure level still uses the checked-in template profile.",
+    "The Marseille aerosol phase matrix now uses AERONET inversion microphysics when available, but the vertical distribution is still a shaped profile rather than a measured extinction profile.",
+    "The instrument response is now a case-local public-doc-constrained IMX250MYR blue-channel proxy, but it is still approximate because no tabulated manufacturer spectral-response curve is bundled with the dataset."
+  ],
+  "measurement_reduction": {
+    "frame_index": 567,
+    "raw_timestamp_key": "2022-08-15T19-14-13",
+    "valid_pixels": 130804,
+    "rows_written": 683,
+    "zenith_bins": 19,
+    "azimuth_bins": 36,
+    "strict_subset_rows_written": 48,
+    "strict_subset_region_counts": {
+      "solar_vertical_midzen": 12,
+      "antisolar_midzen": 8,
+      "bright_horizon_arc": 10,
+      "near_zenith": 6,
+      "aop_flip_relaz_45_sector": 5,
+      "aop_flip_relaz_215_sector": 6,
+      "global_fill": 1
+    },
+    "profile_subset_rows_written": 12,
+    "profile_subset_region_counts": {
+      "solar_vertical_midzen": 2,
+      "antisolar_midzen": 2,
+      "bright_horizon_arc": 2,
+      "near_zenith": 2,
+      "aop_flip_relaz_45_sector": 2,
+      "aop_flip_relaz_215_sector": 2
+    }
+  }
+}

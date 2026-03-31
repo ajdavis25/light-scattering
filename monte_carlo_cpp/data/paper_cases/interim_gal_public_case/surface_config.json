@@ -1,0 +1,5 @@
+{
+  "surface_model": "lambertian_land",
+  "default_albedo": 0.15,
+  "notes": "Interim inland land surface for the public paper-case scaffold."
+}

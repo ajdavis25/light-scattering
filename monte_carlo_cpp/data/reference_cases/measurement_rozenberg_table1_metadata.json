@@ -1,0 +1,14 @@
+{
+  "source_name": "Rozenberg (1952) Table I, Sacramento Peak",
+  "source_url": "https://ntrs.nasa.gov/api/citations/19930092270/downloads/19930092270.pdf",
+  "description": "Measured twilight sky brightness pattern for solar altitude H=-6 degrees from Table I.",
+  "geometry": {
+    "solar_altitude_deg": -6.0,
+    "solar_zenith_deg": 96.0,
+    "relative_azimuth_definition": "bearing from the direction of the Sun"
+  },
+  "notes": [
+    "Brightness values are taken directly from the published table.",
+    "Validation uses normalized intensity pattern rather than absolute photometric units."
+  ]
+}

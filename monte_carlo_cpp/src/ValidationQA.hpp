@@ -1,17 +1,25 @@
-// ValidationQA.hpp
 #ifndef VALIDATIONQA_HPP
 #define VALIDATIONQA_HPP
 
-/**
- * Compare single-scatter results with analytic formula for Rayleigh 
- * or compare plane-parallel approach with a known code or reference.
- */
-void testSingleScatterPlaneParallel();
+#include <string>
+#include <vector>
 
-/**
- * Test or compare multi-scattering results with known approximate solutions
- * or a simpler reference code.
- */
-void testMultiScatterAgainstDISORT();
+struct ValidationMetric
+{
+    std::string name;
+    double value = 0.0;
+    double threshold = 0.0;
+    bool pass = true;
+};
 
-#endif
+struct ValidationReport
+{
+    bool overall_pass = true;
+    std::vector<ValidationMetric> metrics;
+    std::vector<std::string> notes;
+};
+
+ValidationReport runValidationSuite(const std::string &config_path);
+void writeValidationReport(const ValidationReport &report, const std::string &output_dir);
+
+#endif // VALIDATIONQA_HPP

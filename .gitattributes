@@ -1,0 +1,38 @@
+# Normalize text files in the repository to LF on checkout.
+* text=auto eol=lf
+
+# Common source and config files
+*.py text eol=lf
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.h text eol=lf
+*.c text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.csv text eol=lf
+*.ipynb text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+
+# Common binary assets and datasets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.npy binary
+*.npz binary
+*.nc binary
+*.exe binary
+*.dll binary
+*.so binary
+*.a binary
+*.lib binary
+*.obj binary
+*.pyd binary
