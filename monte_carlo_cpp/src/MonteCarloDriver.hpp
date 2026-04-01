@@ -198,6 +198,7 @@ struct SampleProgress
         first_order_complete,
         second_order_band_complete,
         second_order_complete,
+        higher_order_progress,
         higher_order_complete,
         direction_complete,
     };

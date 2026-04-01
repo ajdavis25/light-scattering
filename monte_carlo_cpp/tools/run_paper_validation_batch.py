@@ -13,14 +13,17 @@ DEFAULT_LOG = REPO_ROOT / "monte_carlo_cpp" / "results" / "validation" / "paper_
 
 
 def find_validation_runner() -> Path:
-    candidates = [
-        REPO_ROOT / "monte_carlo_cpp" / "build_current" / "ValidationRunner.exe",
-        REPO_ROOT / "monte_carlo_cpp" / "build" / "ValidationRunner.exe",
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    raise FileNotFoundError("Could not find ValidationRunner.exe in build_current or build.")
+    for runner_name in ("ValidationRunner.exe", "ValidationRunner"):
+        for build_dir in (
+            REPO_ROOT / "monte_carlo_cpp" / "build_current",
+            REPO_ROOT / "monte_carlo_cpp" / "build",
+        ):
+            candidate = build_dir / runner_name
+            if candidate.exists():
+                return candidate
+    raise FileNotFoundError(
+        "Could not find ValidationRunner or ValidationRunner.exe in build_current or build."
+    )
 
 
 def write_log_header(log_path: Path, runner: Path, config: Path) -> None:
@@ -53,17 +56,22 @@ def run_streaming(runner: Path, config: Path, log_path: Path) -> int:
 
 def run_detached(runner: Path, config: Path, log_path: Path) -> int:
     creationflags = 0
+    start_new_session = False
     if sys.platform == "win32":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+    else:
+        start_new_session = True
 
     with log_path.open("a", encoding="utf-8") as log_file:
         process = subprocess.Popen(
             [str(runner), str(config)],
             cwd=REPO_ROOT,
+            stdin=subprocess.DEVNULL,
             stdout=log_file,
             stderr=subprocess.STDOUT,
             text=True,
             creationflags=creationflags,
+            start_new_session=start_new_session,
         )
 
     print(f"Started detached validation run with PID {process.pid}")

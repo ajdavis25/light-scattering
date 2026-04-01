@@ -23,14 +23,21 @@ DEFAULT_BATCHED_MEASUREMENT_RUNNER = (
 
 
 def find_runner(name: str) -> Path:
-    candidates = [
-        REPO_ROOT / "monte_carlo_cpp" / "build_current" / name,
-        REPO_ROOT / "monte_carlo_cpp" / "build" / name,
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    raise FileNotFoundError(f"Could not find {name} in build_current or build.")
+    names = [name]
+    if name.endswith(".exe"):
+        names.append(name[:-4])
+    else:
+        names.append(f"{name}.exe")
+
+    for build_dir in (
+        REPO_ROOT / "monte_carlo_cpp" / "build_current",
+        REPO_ROOT / "monte_carlo_cpp" / "build",
+    ):
+        for runner_name in names:
+            candidate = build_dir / runner_name
+            if candidate.exists():
+                return candidate
+    raise FileNotFoundError(f"Could not find {name} or platform-specific variant in build_current or build.")
 
 
 def write_log_header(
@@ -160,8 +167,11 @@ def run_detached(
     higher_order_block_size: int,
 ) -> int:
     creationflags = 0
+    start_new_session = False
     if sys.platform == "win32":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+    else:
+        start_new_session = True
 
     with log_path.open("a", encoding="utf-8") as log_file:
         process = subprocess.Popen(
@@ -182,10 +192,12 @@ def run_detached(
                 "--run-now",
             ],
             cwd=REPO_ROOT,
+            stdin=subprocess.DEVNULL,
             stdout=log_file,
             stderr=subprocess.STDOUT,
             text=True,
             creationflags=creationflags,
+            start_new_session=start_new_session,
         )
 
     print(f"Started detached Marseille + paper-validation batch with PID {process.pid}")
@@ -220,7 +232,7 @@ def parse_args() -> argparse.Namespace:
         "--measurement-batch-size",
         type=int,
         default=8,
-        help="Exact Marseille directions per measurement batch.",
+        help="Exact Marseille directions per batch, or max concurrent checkpointed directions.",
     )
     parser.add_argument(
         "--higher-order-block-size",

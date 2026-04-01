@@ -2985,7 +2985,32 @@ DirectionEstimate estimateDirectionMoments(
         moments.mean = checkpointState->higher_order.mean;
         moments.m2 = checkpointState->higher_order.m2;
     }
+    const int higherOrderInitialCompletedSamples = std::max(0, moments.count);
+    const int higherOrderProgressInterval =
+        sampleCount <= 16 ? 1 : (sampleCount <= 64 ? 4 : (sampleCount <= 256 ? 16 : 32));
     const auto higherOrderStart = std::chrono::steady_clock::now();
+    const auto reportHigherOrderProgress = [&](int completedSamples) {
+        if (!stageCallback || completedSamples <= higherOrderInitialCompletedSamples) {
+            return;
+        }
+        const bool shouldReport =
+            completedSamples == higherOrderInitialCompletedSamples + 1 ||
+            completedSamples == sampleCount ||
+            (completedSamples % higherOrderProgressInterval) == 0;
+        if (!shouldReport) {
+            return;
+        }
+
+        DirectionEstimate::TimingSummary timing = estimate.timing;
+        timing.higher_order_seconds =
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
+        stageCallback(
+            SampleProgress::Stage::higher_order_progress,
+            timing,
+            static_cast<std::size_t>(completedSamples),
+            static_cast<std::size_t>(sampleCount)
+        );
+    };
     if (checkpointState != nullptr) {
         const int startSample = std::max(0, moments.count);
         for (int sampleIndex = startSample; sampleIndex < sampleCount; ++sampleIndex) {
@@ -3003,6 +3028,7 @@ DirectionEstimate estimateDirectionMoments(
                 direction.azimuth_deg,
                 sampleRng
             ));
+            reportHigherOrderProgress(moments.count);
         }
     } else {
         std::mt19937 rng(seedForDirection(
@@ -3019,6 +3045,7 @@ DirectionEstimate estimateDirectionMoments(
                 direction.azimuth_deg,
                 rng
             ));
+            reportHigherOrderProgress(moments.count);
         }
     }
     estimate.timing.higher_order_seconds +=

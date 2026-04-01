@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import argparse
+from collections import deque
 import csv
 import json
 import math
+import os
+import selectors
 import subprocess
 import sys
 import time
@@ -64,13 +67,21 @@ REGION_FIELDS = [
 
 
 def find_runner(name: str) -> Path:
-    for candidate in (
-        REPO_ROOT / "monte_carlo_cpp" / "build_current" / name,
-        REPO_ROOT / "monte_carlo_cpp" / "build" / name,
+    names = [name]
+    if name.endswith(".exe"):
+        names.append(name[:-4])
+    else:
+        names.append(f"{name}.exe")
+
+    for build_dir in (
+        REPO_ROOT / "monte_carlo_cpp" / "build_current",
+        REPO_ROOT / "monte_carlo_cpp" / "build",
     ):
-        if candidate.exists():
-            return candidate
-    raise FileNotFoundError(f"Could not find {name}")
+        for runner_name in names:
+            candidate = build_dir / runner_name
+            if candidate.exists():
+                return candidate
+    raise FileNotFoundError(f"Could not find {name} or platform-specific variant in build_current or build.")
 
 
 def parse_config(path: Path) -> dict[str, str]:
@@ -281,6 +292,108 @@ def read_checkpoint_completed_samples(path: Path) -> int:
     return completed
 
 
+def single_direction_case_id(parent_case_id: str, original_index: int) -> str:
+    return f"{parent_case_id}__batch_{original_index:04d}_{original_index:04d}"
+
+
+def make_direction_work_item(
+    parent_case_id: str,
+    row: dict[str, str],
+    report_dir: Path,
+    work_dir: Path,
+) -> dict[str, object]:
+    original_index = int(row["original_index"])
+    case_id = single_direction_case_id(parent_case_id, original_index)
+    return {
+        "row": row,
+        "original_index": original_index,
+        "case_id": case_id,
+        "reference_path": work_dir / f"{case_id}_reference.csv",
+        "config_path": work_dir / f"{case_id}.cfg",
+        "comparison_csv": report_dir / f"{case_id}_comparison.csv",
+        "report_txt": report_dir / f"{case_id}.txt",
+        "region_csv": report_dir / f"{case_id}_region_summary.csv",
+        "checkpoint_path": work_dir / f"{case_id}_checkpoint.txt",
+        "prepared": False,
+    }
+
+
+def materialize_direction_work_item(
+    item: dict[str, object],
+    fieldnames: list[str],
+    config_path: Path,
+    config_text: str,
+    config_values: dict[str, str],
+    output_dir: Path,
+    *,
+    reset_outputs: bool,
+) -> None:
+    reference_path = item["reference_path"]
+    config_path_out = item["config_path"]
+    comparison_csv = item["comparison_csv"]
+    report_txt = item["report_txt"]
+    region_csv = item["region_csv"]
+    checkpoint_path = item["checkpoint_path"]
+    row = item["row"]
+    case_id = item["case_id"]
+
+    if reset_outputs:
+        for stale_path in (comparison_csv, report_txt, region_csv, checkpoint_path):
+            if stale_path.exists():
+                stale_path.unlink()
+
+    with Path(reference_path).open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow(row)
+
+    overrides = {
+        "case_id": str(case_id),
+        "measurement_reference_csv": str(reference_path),
+        "output_dir": str(output_dir.resolve()),
+    }
+    for key, value in config_values.items():
+        if not value:
+            continue
+        if key in overrides:
+            continue
+        if key.endswith("_csv") or key.endswith("_json") or key.endswith("_cfg") or key.endswith("_config"):
+            overrides[key] = str(resolve_config_path(config_path, value))
+
+    Path(config_path_out).write_text(
+        rewrite_config(config_text, overrides),
+        encoding="utf-8",
+    )
+    item["prepared"] = True
+
+
+def launch_direction_worker(
+    measurement_runner: Path,
+    item: dict[str, object],
+    higher_order_block_size: int,
+) -> subprocess.Popen[str]:
+    env = os.environ.copy()
+    env.setdefault("OMP_NUM_THREADS", "1")
+    process = subprocess.Popen(
+        [
+            str(measurement_runner),
+            str(item["config_path"]),
+            "--checkpoint-state",
+            str(item["checkpoint_path"]),
+            "--higher-order-block-size",
+            str(higher_order_block_size),
+        ],
+        cwd=REPO_ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        env=env,
+    )
+    assert process.stdout is not None
+    return process
+
+
 def finalize_outputs(
     rows: list[dict[str, str]],
     config_values: dict[str, str],
@@ -452,12 +565,17 @@ def finalize_outputs(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a measurement case in resumable exact-direction batches.")
     parser.add_argument("config", type=Path, help="Measurement-case config to run.")
-    parser.add_argument("--batch-size", type=int, default=8, help="Exact directions per batch.")
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=8,
+        help="Exact directions per batch, or max concurrent single-direction workers when checkpointing is enabled.",
+    )
     parser.add_argument(
         "--higher-order-block-size",
         type=int,
         default=32,
-        help="Higher-order samples per checkpointed single-direction invocation when batch-size is 1.",
+        help="Higher-order samples per checkpointed single-direction worker invocation.",
     )
     parser.add_argument("--resume", action="store_true", help="Resume from an existing partial rows CSV if present.")
     parser.add_argument("--max-batches", type=int, default=0, help="Optional limit on batches to execute this run.")
@@ -469,6 +587,7 @@ def main() -> int:
     started = time.time()
     measurement_runner = find_runner("MeasurementCaseRunner.exe")
     config_path = args.config.resolve()
+    config_text = config_path.read_text(encoding="utf-8")
     config_values = parse_config(config_path)
     case_id = config_values["case_id"]
     output_dir = resolve_config_path(config_path, config_values["output_dir"])
@@ -489,12 +608,14 @@ def main() -> int:
     fieldnames, reference_rows = load_reference_rows(reference_csv)
     completed = load_completed_indices(partial_rows_csv) if args.resume else set()
     pending_rows = [row for row in reference_rows if int(row["original_index"]) not in completed]
+    checkpoint_parallel_mode = args.higher_order_block_size > 0
 
     progress = {
         "case_id": case_id,
         "config": str(config_path),
         "measurement_runner": str(measurement_runner),
         "batch_size": args.batch_size,
+        "mode": "checkpoint_parallel" if checkpoint_parallel_mode else "grouped_batch",
         "resume": args.resume,
         "completed_points": len(completed),
         "total_points": len(reference_rows),
@@ -506,100 +627,215 @@ def main() -> int:
     write_progress(progress_path, progress)
 
     with log_path.open("a", encoding="utf-8", buffering=1) as log_file:
-        executed_batches = 0
-        for batch_index, start in enumerate(range(0, len(pending_rows), args.batch_size), start=1):
-            if args.max_batches > 0 and executed_batches >= args.max_batches:
-                break
-            batch_rows = pending_rows[start:start + args.batch_size]
-            batch_indices = [int(row["original_index"]) for row in batch_rows]
-            batch_case_id = f"batch_{batch_indices[0]:04d}_{batch_indices[-1]:04d}"
-            batch_reference_path = work_dir / f"{batch_case_id}_reference.csv"
-            batch_config_path = work_dir / f"{batch_case_id}.cfg"
+        if checkpoint_parallel_mode:
+            concurrency = max(1, args.batch_size)
+            selected_rows = pending_rows
+            if args.max_batches > 0:
+                selected_rows = selected_rows[:args.max_batches * concurrency]
 
-            with batch_reference_path.open("w", encoding="utf-8", newline="") as handle:
-                writer = csv.DictWriter(handle, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerows(batch_rows)
-
-            batch_overrides = {
-                "case_id": batch_case_id,
-                "measurement_reference_csv": str(batch_reference_path),
-                "output_dir": str(output_dir.resolve()),
-            }
-            for key, value in config_values.items():
-                if not value:
-                    continue
-                if key in batch_overrides:
-                    continue
-                if key.endswith("_csv") or key.endswith("_json") or key.endswith("_cfg") or key.endswith("_config"):
-                    batch_overrides[key] = str(resolve_config_path(config_path, value))
-
-            batch_config_path.write_text(
-                rewrite_config(config_path.read_text(encoding="utf-8"), batch_overrides),
-                encoding="utf-8",
+            queue: deque[dict[str, object]] = deque(
+                make_direction_work_item(case_id, row, report_dir, work_dir) for row in selected_rows
             )
+            selector = selectors.DefaultSelector()
+            active: dict[str, dict[str, object]] = {}
 
-            log_file.write(f"=== batch {batch_index} started indices={batch_indices[0]}..{batch_indices[-1]} ===\n")
-            log_file.flush()
-            batch_comparison_csv = report_dir / f"{batch_case_id}_comparison.csv"
-            batch_report_txt = report_dir / f"{batch_case_id}.txt"
-            batch_region_csv = report_dir / f"{batch_case_id}_region_summary.csv"
-            checkpoint_path = work_dir / f"{batch_case_id}_checkpoint.txt"
-            if not args.resume:
-                for stale_path in (batch_comparison_csv, batch_report_txt, batch_region_csv, checkpoint_path):
-                    if stale_path.exists():
-                        stale_path.unlink()
-
-            if args.batch_size == 1:
-                last_completed_samples = read_checkpoint_completed_samples(checkpoint_path) if args.resume else 0
-                while not batch_comparison_csv.exists():
-                    command = [
-                        str(measurement_runner),
-                        str(batch_config_path),
-                        "--checkpoint-state",
-                        str(checkpoint_path),
-                        "--higher-order-block-size",
-                        str(args.higher_order_block_size),
-                    ]
-                    process = subprocess.Popen(
-                        command,
-                        cwd=REPO_ROOT,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                        text=True,
-                        bufsize=1,
+            recovered: deque[dict[str, object]] = deque()
+            while queue:
+                item = queue.popleft()
+                comparison_csv = Path(item["comparison_csv"])
+                if args.resume and comparison_csv.exists():
+                    recovered_rows = read_comparison_rows(comparison_csv)
+                    append_rows(partial_rows_csv, recovered_rows)
+                    completed.update(int(float(row["index"])) for row in recovered_rows)
+                    progress.update({
+                        "completed_points": len(completed),
+                        "remaining_points": len(reference_rows) - len(completed),
+                        "last_completed_batch": str(item["case_id"]),
+                        "status": "in_progress" if len(completed) < len(reference_rows) else "complete",
+                    })
+                    write_progress(progress_path, progress)
+                    recovered_line = (
+                        f"[batched-measurement] recovered_completed_direction case_id={item['case_id']} "
+                        f"completed_points={len(completed)}/{len(reference_rows)}"
                     )
-                    assert process.stdout is not None
-                    for line in process.stdout:
+                    print(recovered_line, flush=True)
+                    log_file.write(recovered_line + "\n")
+                    log_file.flush()
+                    continue
+                recovered.append(item)
+            queue = recovered
+
+            while active or queue:
+                while len(active) < concurrency and queue:
+                    item = queue.popleft()
+                    if not bool(item["prepared"]):
+                        materialize_direction_work_item(
+                            item,
+                            fieldnames,
+                            config_path,
+                            config_text,
+                            config_values,
+                            output_dir,
+                            reset_outputs=not args.resume,
+                        )
+
+                    checkpoint_path = Path(item["checkpoint_path"])
+                    previous_completed_samples = (
+                        read_checkpoint_completed_samples(checkpoint_path)
+                        if checkpoint_path.exists()
+                        else 0
+                    )
+                    process = launch_direction_worker(
+                        measurement_runner,
+                        item,
+                        args.higher_order_block_size,
+                    )
+                    item["process"] = process
+                    item["stdout_closed"] = False
+                    item["last_completed_samples"] = previous_completed_samples
+                    active[str(item["case_id"])] = item
+                    selector.register(process.stdout, selectors.EVENT_READ, data=str(item["case_id"]))
+
+                    launch_line = (
+                        f"=== direction worker started case_id={item['case_id']} "
+                        f"direction_index={item['original_index']} "
+                        f"completed_samples={previous_completed_samples} "
+                        f"block_size={args.higher_order_block_size} ==="
+                    )
+                    print(launch_line, flush=True)
+                    log_file.write(launch_line + "\n")
+                    log_file.flush()
+
+                if not active:
+                    break
+
+                for key, _ in selector.select(timeout=1.0):
+                    active_case_id = str(key.data)
+                    item = active.get(active_case_id)
+                    if item is None:
+                        continue
+                    stream = key.fileobj
+                    line = stream.readline()
+                    if line:
                         print(line, end="", flush=True)
                         log_file.write(line)
                         log_file.flush()
-                    return_code = process.wait()
-                    log_file.write(f"=== batch {batch_index} exit_code={return_code} ===\n")
-                    log_file.flush()
-                    if return_code != 0:
-                        return return_code
+                    else:
+                        selector.unregister(stream)
+                        stream.close()
+                        item["stdout_closed"] = True
 
-                    if batch_comparison_csv.exists():
-                        break
+                finished_case_ids: list[str] = []
+                for active_case_id, item in list(active.items()):
+                    process = item["process"]
+                    if process.poll() is None or not bool(item["stdout_closed"]):
+                        continue
 
-                    completed_samples = read_checkpoint_completed_samples(checkpoint_path)
-                    checkpoint_line = (
-                        f"[batched-measurement] checkpoint_samples={completed_samples} "
-                        f"block_size={args.higher_order_block_size} batch_case_id={batch_case_id}\n"
+                    exit_line = (
+                        f"=== direction worker exit_code={process.returncode} case_id={item['case_id']} "
+                        f"direction_index={item['original_index']} ==="
                     )
-                    print(checkpoint_line, end="", flush=True)
-                    log_file.write(checkpoint_line)
+                    print(exit_line, flush=True)
+                    log_file.write(exit_line + "\n")
                     log_file.flush()
-                    if completed_samples <= last_completed_samples:
-                        print(
-                            f"Checkpoint did not advance for {batch_case_id}: "
-                            f"{completed_samples} samples (previous {last_completed_samples}).",
-                            file=sys.stderr,
+                    if process.returncode != 0:
+                        return int(process.returncode)
+
+                    comparison_csv = Path(item["comparison_csv"])
+                    if comparison_csv.exists():
+                        batch_comparison_rows = read_comparison_rows(comparison_csv)
+                        append_rows(partial_rows_csv, batch_comparison_rows)
+                        completed.update(int(float(row["index"])) for row in batch_comparison_rows)
+                        progress.update({
+                            "completed_points": len(completed),
+                            "remaining_points": len(reference_rows) - len(completed),
+                            "last_completed_batch": str(item["case_id"]),
+                            "status": "in_progress" if len(completed) < len(reference_rows) else "complete",
+                        })
+                        write_progress(progress_path, progress)
+                        completed_line = (
+                            f"[batched-measurement] completed_points={len(completed)}/{len(reference_rows)} "
+                            f"last_batch={item['case_id']} partial_rows_csv={partial_rows_csv}"
                         )
-                        return 1
-                    last_completed_samples = completed_samples
-            else:
+                        print(completed_line, flush=True)
+                        log_file.write(completed_line + "\n")
+                        log_file.flush()
+                    else:
+                        checkpoint_path = Path(item["checkpoint_path"])
+                        completed_samples = read_checkpoint_completed_samples(checkpoint_path)
+                        checkpoint_line = (
+                            f"[batched-measurement] checkpoint_samples={completed_samples} "
+                            f"block_size={args.higher_order_block_size} batch_case_id={item['case_id']}"
+                        )
+                        print(checkpoint_line, flush=True)
+                        log_file.write(checkpoint_line + "\n")
+                        log_file.flush()
+                        if completed_samples <= int(item["last_completed_samples"]):
+                            print(
+                                f"Checkpoint did not advance for {item['case_id']}: "
+                                f"{completed_samples} samples "
+                                f"(previous {item['last_completed_samples']}).",
+                                file=sys.stderr,
+                            )
+                            return 1
+                        item["last_completed_samples"] = completed_samples
+                        progress.update({
+                            "last_checkpoint_batch": str(item["case_id"]),
+                            "last_checkpoint_completed_samples": completed_samples,
+                            "status": "in_progress",
+                        })
+                        write_progress(progress_path, progress)
+                        queue.append(item)
+
+                    finished_case_ids.append(active_case_id)
+
+                for active_case_id in finished_case_ids:
+                    active.pop(active_case_id, None)
+        else:
+            executed_batches = 0
+            for batch_index, start in enumerate(range(0, len(pending_rows), args.batch_size), start=1):
+                if args.max_batches > 0 and executed_batches >= args.max_batches:
+                    break
+                batch_rows = pending_rows[start:start + args.batch_size]
+                batch_indices = [int(row["original_index"]) for row in batch_rows]
+                batch_case_id = f"batch_{batch_indices[0]:04d}_{batch_indices[-1]:04d}"
+                batch_reference_path = work_dir / f"{batch_case_id}_reference.csv"
+                batch_config_path = work_dir / f"{batch_case_id}.cfg"
+
+                with batch_reference_path.open("w", encoding="utf-8", newline="") as handle:
+                    writer = csv.DictWriter(handle, fieldnames=fieldnames)
+                    writer.writeheader()
+                    writer.writerows(batch_rows)
+
+                batch_overrides = {
+                    "case_id": batch_case_id,
+                    "measurement_reference_csv": str(batch_reference_path),
+                    "output_dir": str(output_dir.resolve()),
+                }
+                for key, value in config_values.items():
+                    if not value:
+                        continue
+                    if key in batch_overrides:
+                        continue
+                    if key.endswith("_csv") or key.endswith("_json") or key.endswith("_cfg") or key.endswith("_config"):
+                        batch_overrides[key] = str(resolve_config_path(config_path, value))
+
+                batch_config_path.write_text(
+                    rewrite_config(config_text, batch_overrides),
+                    encoding="utf-8",
+                )
+
+                log_file.write(f"=== batch {batch_index} started indices={batch_indices[0]}..{batch_indices[-1]} ===\n")
+                log_file.flush()
+                batch_comparison_csv = report_dir / f"{batch_case_id}_comparison.csv"
+                batch_report_txt = report_dir / f"{batch_case_id}.txt"
+                batch_region_csv = report_dir / f"{batch_case_id}_region_summary.csv"
+                checkpoint_path = work_dir / f"{batch_case_id}_checkpoint.txt"
+                if not args.resume:
+                    for stale_path in (batch_comparison_csv, batch_report_txt, batch_region_csv, checkpoint_path):
+                        if stale_path.exists():
+                            stale_path.unlink()
+
                 command = [str(measurement_runner), str(batch_config_path)]
                 process = subprocess.Popen(
                     command,
@@ -620,22 +856,24 @@ def main() -> int:
                 if return_code != 0:
                     return return_code
 
-            batch_comparison_rows = read_comparison_rows(batch_comparison_csv)
-            append_rows(partial_rows_csv, batch_comparison_rows)
-            completed.update(int(float(row["index"])) for row in batch_comparison_rows)
-            executed_batches += 1
-            progress.update({
-                "completed_points": len(completed),
-                "remaining_points": len(reference_rows) - len(completed),
-                "last_completed_batch": batch_case_id,
-                "status": "in_progress" if len(completed) < len(reference_rows) else "complete",
-            })
-            write_progress(progress_path, progress)
-            print(
-                f"[batched-measurement] completed_points={len(completed)}/{len(reference_rows)} "
-                f"last_batch={batch_case_id} partial_rows_csv={partial_rows_csv}",
-                flush=True,
-            )
+                batch_comparison_rows = read_comparison_rows(batch_comparison_csv)
+                append_rows(partial_rows_csv, batch_comparison_rows)
+                completed.update(int(float(row["index"])) for row in batch_comparison_rows)
+                executed_batches += 1
+                progress.update({
+                    "completed_points": len(completed),
+                    "remaining_points": len(reference_rows) - len(completed),
+                    "last_completed_batch": batch_case_id,
+                    "status": "in_progress" if len(completed) < len(reference_rows) else "complete",
+                })
+                write_progress(progress_path, progress)
+                completed_line = (
+                    f"[batched-measurement] completed_points={len(completed)}/{len(reference_rows)} "
+                    f"last_batch={batch_case_id} partial_rows_csv={partial_rows_csv}"
+                )
+                print(completed_line, flush=True)
+                log_file.write(completed_line + "\n")
+                log_file.flush()
 
     all_rows = read_comparison_rows(partial_rows_csv)
     deduped = {int(float(row["index"])): row for row in all_rows}

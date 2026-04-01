@@ -435,6 +435,8 @@ const char *sampleProgressStageName(SampleProgress::Stage stage)
             return "second_order_band_complete";
         case SampleProgress::Stage::second_order_complete:
             return "second_order_complete";
+        case SampleProgress::Stage::higher_order_progress:
+            return "higher_order_progress";
         case SampleProgress::Stage::higher_order_complete:
             return "higher_order_complete";
         case SampleProgress::Stage::direction_complete:
@@ -1028,6 +1030,7 @@ int main(int argc, char **argv)
     try {
         const auto overallStart = std::chrono::steady_clock::now();
         std::cout.setf(std::ios::unitbuf);
+        std::cerr.setf(std::ios::unitbuf);
         const RunnerOptions options = parseRunnerOptions(argc, argv);
 
         const auto configLoadStart = std::chrono::steady_clock::now();
@@ -1112,13 +1115,22 @@ int main(int argc, char **argv)
                     timingRecord.higher_order_seconds = progress.higher_order_seconds;
                     timingRecord.valid = true;
 
-                    if (progress.stage == SampleProgress::Stage::direction_complete ||
-                        progress.stage == SampleProgress::Stage::higher_order_complete) {
+                    if (progress.stage == SampleProgress::Stage::higher_order_progress ||
+                        progress.stage == SampleProgress::Stage::higher_order_complete ||
+                        progress.stage == SampleProgress::Stage::direction_complete) {
+                        const std::size_t completedSamples =
+                            progress.stage == SampleProgress::Stage::direction_complete
+                                ? static_cast<std::size_t>(checkpointState.higher_order.completed_samples)
+                                : progress.stage_completed;
+                        const std::size_t targetSamples =
+                            progress.mc_sample_count > 0
+                                ? static_cast<std::size_t>(progress.mc_sample_count)
+                                : progress.stage_total;
                         std::cout << "[measurement-checkpoint-progress] stage="
                                   << sampleProgressStageName(progress.stage)
                                   << " direction_index=" << progress.direction_index
-                                  << " completed_samples=" << checkpointState.higher_order.completed_samples
-                                  << " target_samples=" << progress.mc_sample_count
+                                  << " completed_samples=" << completedSamples
+                                  << " target_samples=" << targetSamples
                                   << " elapsed_s=" << progress.direction_elapsed_seconds
                                   << " first_s=" << progress.first_order_seconds
                                   << " second_s=" << progress.second_order_seconds
@@ -1246,6 +1258,18 @@ int main(int argc, char **argv)
                                   << " azimuth_deg=" << progress.azimuth_deg
                                   << "\n";
                     }
+                    return;
+                }
+
+                if (progress.stage == SampleProgress::Stage::higher_order_progress) {
+                    std::cout << "[measurement-stage] stage=" << sampleProgressStageName(progress.stage)
+                              << " direction_index=" << progress.direction_index
+                              << " samples=" << progress.stage_completed << "/" << progress.stage_total
+                              << " direction_elapsed_s=" << progress.direction_elapsed_seconds
+                              << " higher_s=" << progress.higher_order_seconds
+                              << " zenith_deg=" << progress.zenith_deg
+                              << " azimuth_deg=" << progress.azimuth_deg
+                              << "\n";
                     return;
                 }
 

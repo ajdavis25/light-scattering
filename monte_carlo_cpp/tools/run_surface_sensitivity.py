@@ -7,7 +7,21 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = REPO_ROOT / "monte_carlo_cpp" / "config" / "paper_cases" / "frozen_marseille_twilight_20220815_191413z_measurement_interactive.cfg"
-DEFAULT_RUNNER = REPO_ROOT / "monte_carlo_cpp" / "build_current" / "MeasurementCaseRunner.exe"
+
+
+def find_default_runner() -> Path:
+    for runner_name in ("MeasurementCaseRunner.exe", "MeasurementCaseRunner"):
+        for build_dir in (
+            REPO_ROOT / "monte_carlo_cpp" / "build_current",
+            REPO_ROOT / "monte_carlo_cpp" / "build",
+        ):
+            candidate = build_dir / runner_name
+            if candidate.exists():
+                return candidate
+    return REPO_ROOT / "monte_carlo_cpp" / "build_current" / "MeasurementCaseRunner"
+
+
+DEFAULT_RUNNER = find_default_runner()
 
 
 def parse_config(path: Path) -> dict[str, str]:
