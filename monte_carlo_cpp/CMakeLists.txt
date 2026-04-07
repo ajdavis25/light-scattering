@@ -8,6 +8,11 @@ set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_INCLUDES OFF)
 enable_testing()
 find_package(OpenMP)
 
+set(FILESYSTEM_LINK_LIBS "")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
+    list(APPEND FILESYSTEM_LINK_LIBS stdc++fs)
+endif()
+
 add_library(rt_core
     src/Atmosphere.cpp
     src/WavelengthHandling.cpp
@@ -22,30 +27,57 @@ target_include_directories(rt_core PUBLIC src)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(rt_core PUBLIC OpenMP::OpenMP_CXX)
 endif()
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(rt_core PUBLIC ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(MonteCarloCPP src/main.cpp)
 target_link_libraries(MonteCarloCPP PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(MonteCarloCPP PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(ValidationRunner src/validation_main.cpp)
 target_link_libraries(ValidationRunner PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(ValidationRunner PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(MeasurementCaseRunner src/measurement_case_main.cpp)
 target_link_libraries(MeasurementCaseRunner PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(MeasurementCaseRunner PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(test_phasefunctions tests/test_phasefunctions.cpp)
 target_link_libraries(test_phasefunctions PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(test_phasefunctions PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(test_surface tests/test_surface.cpp)
 target_link_libraries(test_surface PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(test_surface PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(test_polarization tests/test_polarization.cpp)
 target_link_libraries(test_polarization PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(test_polarization PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(test_atmosphere tests/test_atmosphere.cpp)
 target_link_libraries(test_atmosphere PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(test_atmosphere PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_executable(test_wavelength tests/test_wavelength.cpp)
 target_link_libraries(test_wavelength PRIVATE rt_core)
+if(FILESYSTEM_LINK_LIBS)
+    target_link_libraries(test_wavelength PRIVATE ${FILESYSTEM_LINK_LIBS})
+endif()
 
 add_test(NAME phasefunctions COMMAND test_phasefunctions)
 add_test(NAME surface COMMAND test_surface)

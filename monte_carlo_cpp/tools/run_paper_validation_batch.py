@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -12,17 +13,37 @@ DEFAULT_CONFIG = REPO_ROOT / "monte_carlo_cpp" / "config" / "paper_validation.cf
 DEFAULT_LOG = REPO_ROOT / "monte_carlo_cpp" / "results" / "validation" / "paper_validation_batch.log"
 
 
+def candidate_build_dirs() -> list[Path]:
+    build_dirs: list[Path] = []
+    env_build_dir = os.environ.get("MONTE_CARLO_BUILD_DIR", "").strip()
+    if env_build_dir:
+        build_dirs.append(Path(env_build_dir).expanduser().resolve())
+    build_dirs.extend([
+        REPO_ROOT / "monte_carlo_cpp" / "build_current",
+        REPO_ROOT / "monte_carlo_cpp" / "build",
+    ])
+
+    unique: list[Path] = []
+    seen: set[str] = set()
+    for build_dir in build_dirs:
+        key = str(build_dir)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(build_dir)
+    return unique
+
+
 def find_validation_runner() -> Path:
     for runner_name in ("ValidationRunner.exe", "ValidationRunner"):
-        for build_dir in (
-            REPO_ROOT / "monte_carlo_cpp" / "build_current",
-            REPO_ROOT / "monte_carlo_cpp" / "build",
-        ):
+        for build_dir in candidate_build_dirs():
             candidate = build_dir / runner_name
             if candidate.exists():
                 return candidate
     raise FileNotFoundError(
-        "Could not find ValidationRunner or ValidationRunner.exe in build_current or build."
+        "Could not find ValidationRunner or ValidationRunner.exe in "
+        + ", ".join(str(path) for path in candidate_build_dirs())
+        + "."
     )
 
 

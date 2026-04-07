@@ -66,6 +66,27 @@ REGION_FIELDS = [
 ]
 
 
+def candidate_build_dirs() -> list[Path]:
+    build_dirs: list[Path] = []
+    env_build_dir = os.environ.get("MONTE_CARLO_BUILD_DIR", "").strip()
+    if env_build_dir:
+        build_dirs.append(Path(env_build_dir).expanduser().resolve())
+    build_dirs.extend([
+        REPO_ROOT / "monte_carlo_cpp" / "build_current",
+        REPO_ROOT / "monte_carlo_cpp" / "build",
+    ])
+
+    unique: list[Path] = []
+    seen: set[str] = set()
+    for build_dir in build_dirs:
+        key = str(build_dir)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(build_dir)
+    return unique
+
+
 def find_runner(name: str) -> Path:
     names = [name]
     if name.endswith(".exe"):
@@ -73,15 +94,14 @@ def find_runner(name: str) -> Path:
     else:
         names.append(f"{name}.exe")
 
-    for build_dir in (
-        REPO_ROOT / "monte_carlo_cpp" / "build_current",
-        REPO_ROOT / "monte_carlo_cpp" / "build",
-    ):
+    for build_dir in candidate_build_dirs():
         for runner_name in names:
             candidate = build_dir / runner_name
             if candidate.exists():
                 return candidate
-    raise FileNotFoundError(f"Could not find {name} or platform-specific variant in build_current or build.")
+    raise FileNotFoundError(
+        f"Could not find {name} or platform-specific variant in {', '.join(str(path) for path in candidate_build_dirs())}."
+    )
 
 
 def parse_config(path: Path) -> dict[str, str]:
@@ -130,7 +150,17 @@ def load_reference_rows(path: Path) -> tuple[list[str], list[dict[str, str]]]:
     cleaned_rows: list[dict[str, str]] = []
     for index, row in enumerate(rows):
         cleaned = {key: (value if value is not None else "") for key, value in row.items()}
-        cleaned["original_index"] = str(index)
+        original_index_raw = cleaned.get("original_index", "").strip()
+        if original_index_raw:
+            try:
+                original_index = int(float(original_index_raw))
+            except ValueError as exc:
+                raise RuntimeError(
+                    f"Invalid original_index value in reference CSV {path}: {original_index_raw!r}"
+                ) from exc
+        else:
+            original_index = index
+        cleaned["original_index"] = str(original_index)
         cleaned_rows.append(cleaned)
     return fieldnames, cleaned_rows
 
