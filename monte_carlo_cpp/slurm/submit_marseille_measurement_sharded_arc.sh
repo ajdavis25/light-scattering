@@ -7,20 +7,25 @@ WORKER_SLURM_SCRIPT="${SCRIPT_DIR}/marseille_shard_worker_arc.slurm"
 MERGE_SLURM_SCRIPT="${SCRIPT_DIR}/marseille_shard_merge_arc.slurm"
 PREPARE_SCRIPT="${REPO_ROOT}/monte_carlo_cpp/tools/prepare_measurement_case_shards.py"
 
+ACCOUNT=${ACCOUNT:-}
 PARTITION=${PARTITION:-compute1}
 MERGE_PARTITION=${MERGE_PARTITION:-${PARTITION}}
 JOB_NAME=${JOB_NAME:-marseille_strict_sharded}
-TIME_LIMIT=${TIME_LIMIT:-18:00:00}
-CPUS_PER_TASK=${CPUS_PER_TASK:-80}
+TIME_LIMIT=${TIME_LIMIT:-2-00:00:00}
+CPUS_PER_TASK=${CPUS_PER_TASK:-40}
 PYTHON_BIN=${PYTHON_BIN:-/usr/bin/python3.12}
-GCC_MODULE=${GCC_MODULE:-gcc/14.2.0}
+GCC_MODULE=${GCC_MODULE:-}
+MONTE_CARLO_BUILD_DIR=${MONTE_CARLO_BUILD_DIR:-${REPO_ROOT}/monte_carlo_cpp/build_cluster_gcc8}
 MEASUREMENT_CONFIG=${MEASUREMENT_CONFIG:-${REPO_ROOT}/monte_carlo_cpp/config/paper_cases/frozen_marseille_twilight_20220815_191413z_measurement.cfg}
-CASE_ID_SUFFIX=${CASE_ID_SUFFIX:-arc_sharded}
-SHARDS=${SHARDS:-8}
+CASE_ID_SUFFIX=${CASE_ID_SUFFIX-arc_sharded}
+SHARDS=${SHARDS:-16}
 ARRAY_MAX=${ARRAY_MAX:-${SHARDS}}
-HIGHER_ORDER_BLOCK_SIZE=${HIGHER_ORDER_BLOCK_SIZE:-4}
+HIGHER_ORDER_BLOCK_SIZE=${HIGHER_ORDER_BLOCK_SIZE:-1}
 BATCH_SIZE=${BATCH_SIZE:-${CPUS_PER_TASK}}
-LAYOUT=${LAYOUT:-strided}
+LAYOUT=${LAYOUT:-contiguous}
+SHARD_SPEC=${SHARD_SPEC:-}
+MERGE_DEPENDENCY_TYPE=${MERGE_DEPENDENCY_TYPE:-afterany}
+SLURM_HINT=${SLURM_HINT:-nomultithread}
 
 RESULTS_DIR="${REPO_ROOT}/monte_carlo_cpp/results"
 SLURM_LOG_DIR="${RESULTS_DIR}/slurm"
@@ -71,25 +76,40 @@ fi
 if (( ARRAY_MAX > ACTUAL_SHARDS )); then
     ARRAY_MAX=${ACTUAL_SHARDS}
 fi
+if [[ -n "${SHARD_SPEC}" ]]; then
+    ARRAY_SPEC=${SHARD_SPEC}
+else
+    ARRAY_SPEC="0-$((ACTUAL_SHARDS - 1))%${ARRAY_MAX}"
+fi
+
+SBATCH_COMMON_ARGS=()
+if [[ -n "${ACCOUNT}" ]]; then
+    SBATCH_COMMON_ARGS+=(--account="${ACCOUNT}")
+fi
+if [[ -n "${SLURM_HINT}" ]]; then
+    SBATCH_COMMON_ARGS+=(--hint="${SLURM_HINT}")
+fi
 
 ARRAY_JOB_ID=$(
     sbatch --parsable \
+        "${SBATCH_COMMON_ARGS[@]}" \
         --partition="${PARTITION}" \
         --job-name="${JOB_NAME}" \
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task="${CPUS_PER_TASK}" \
-        --array="0-$((ACTUAL_SHARDS - 1))%${ARRAY_MAX}" \
+        --array="${ARRAY_SPEC}" \
         --time="${TIME_LIMIT}" \
         --output="${SLURM_LOG_DIR}/%x-%A_%a.out" \
         --error="${SLURM_LOG_DIR}/%x-%A_%a.err" \
-        --export=ALL,REPO_ROOT="${REPO_ROOT}",MANIFEST_PATH="${MANIFEST_PATH}",PYTHON_BIN="${PYTHON_BIN}",GCC_MODULE="${GCC_MODULE}",BATCH_SIZE="${BATCH_SIZE}",HIGHER_ORDER_BLOCK_SIZE="${HIGHER_ORDER_BLOCK_SIZE}" \
+        --export=ALL,REPO_ROOT="${REPO_ROOT}",MANIFEST_PATH="${MANIFEST_PATH}",PYTHON_BIN="${PYTHON_BIN}",GCC_MODULE="${GCC_MODULE}",MONTE_CARLO_BUILD_DIR="${MONTE_CARLO_BUILD_DIR}",BATCH_SIZE="${BATCH_SIZE}",HIGHER_ORDER_BLOCK_SIZE="${HIGHER_ORDER_BLOCK_SIZE}" \
         "${WORKER_SLURM_SCRIPT}"
 )
 
 MERGE_JOB_ID=$(
     sbatch --parsable \
-        --dependency="afterok:${ARRAY_JOB_ID}" \
+        "${SBATCH_COMMON_ARGS[@]}" \
+        --dependency="${MERGE_DEPENDENCY_TYPE}:${ARRAY_JOB_ID}" \
         --partition="${MERGE_PARTITION}" \
         --job-name="${JOB_NAME}_merge" \
         --nodes=1 \
@@ -98,7 +118,7 @@ MERGE_JOB_ID=$(
         --time="01:00:00" \
         --output="${SLURM_LOG_DIR}/%x-%j.out" \
         --error="${SLURM_LOG_DIR}/%x-%j.err" \
-        --export=ALL,REPO_ROOT="${REPO_ROOT}",MANIFEST_PATH="${MANIFEST_PATH}",PYTHON_BIN="${PYTHON_BIN}",GCC_MODULE="${GCC_MODULE}" \
+        --export=ALL,REPO_ROOT="${REPO_ROOT}",MANIFEST_PATH="${MANIFEST_PATH}",PYTHON_BIN="${PYTHON_BIN}",GCC_MODULE="${GCC_MODULE}",MONTE_CARLO_BUILD_DIR="${MONTE_CARLO_BUILD_DIR}" \
         "${MERGE_SLURM_SCRIPT}"
 )
 
@@ -118,12 +138,14 @@ echo "parent_case_id=${PARENT_CASE_ID}"
 echo "requested_shards=${SHARDS}"
 echo "actual_shards=${ACTUAL_SHARDS}"
 echo "array_max_concurrency=${ARRAY_MAX}"
+echo "array_spec=${ARRAY_SPEC}"
 echo "cpus_per_task=${CPUS_PER_TASK}"
 echo "batch_size=${BATCH_SIZE}"
 echo "higher_order_block_size=${HIGHER_ORDER_BLOCK_SIZE}"
+echo "monte_carlo_build_dir=${MONTE_CARLO_BUILD_DIR}"
 echo "array_job_id_file=${ARRAY_JOB_ID_FILE}"
 echo "merge_job_id_file=${MERGE_JOB_ID_FILE}"
-echo "merge_dependency=afterok:${ARRAY_JOB_ID}"
+echo "merge_dependency=${MERGE_DEPENDENCY_TYPE}:${ARRAY_JOB_ID}"
 echo "parent_partial_rows_csv=${REPORT_DIR}/${PARENT_CASE_ID}_batched_partial_rows.csv"
 echo "parent_progress_json=${REPORT_DIR}/${PARENT_CASE_ID}_batched_progress.json"
 echo "parent_comparison_csv=${REPORT_DIR}/${PARENT_CASE_ID}_comparison.csv"

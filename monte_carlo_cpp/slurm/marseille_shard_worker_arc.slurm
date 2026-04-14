@@ -1,35 +1,43 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ -f /etc/profile.d/lmod.sh ]]; then
-    # shellcheck disable=SC1091
-    source /etc/profile.d/lmod.sh
-elif [[ -f /etc/profile.d/modules.sh ]]; then
-    # shellcheck disable=SC1091
-    source /etc/profile.d/modules.sh
-fi
-
 REPO_ROOT=${REPO_ROOT:?REPO_ROOT must be exported by the submit helper}
 MANIFEST_PATH=${MANIFEST_PATH:?MANIFEST_PATH must be exported by the submit helper}
 PYTHON_BIN=${PYTHON_BIN:-/usr/bin/python3.12}
-GCC_MODULE=${GCC_MODULE:-gcc/14.2.0}
+GCC_MODULE=${GCC_MODULE:-}
+MONTE_CARLO_BUILD_DIR=${MONTE_CARLO_BUILD_DIR:-}
 BATCH_SIZE=${BATCH_SIZE:-${SLURM_CPUS_PER_TASK:-1}}
-HIGHER_ORDER_BLOCK_SIZE=${HIGHER_ORDER_BLOCK_SIZE:-4}
+HIGHER_ORDER_BLOCK_SIZE=${HIGHER_ORDER_BLOCK_SIZE:-1}
 SHARD_INDEX=${SLURM_ARRAY_TASK_ID:?SLURM_ARRAY_TASK_ID is required}
+MODULE_STATUS=not_requested
 
-if ! command -v module >/dev/null 2>&1; then
-    echo "module command is unavailable in this Slurm shell" >&2
-    exit 1
+if [[ -n "${GCC_MODULE}" ]]; then
+    if [[ -f /etc/profile.d/lmod.sh ]]; then
+        # shellcheck disable=SC1091
+        source /etc/profile.d/lmod.sh
+    elif [[ -f /etc/profile.d/modules.sh ]]; then
+        # shellcheck disable=SC1091
+        source /etc/profile.d/modules.sh
+    fi
+
+    if ! command -v module >/dev/null 2>&1; then
+        echo "module command is unavailable in this Slurm shell" >&2
+        exit 1
+    fi
+
+    module purge
+    module load "${GCC_MODULE}"
+    MODULE_STATUS="loaded:${GCC_MODULE}"
 fi
-
-module purge
-module load "${GCC_MODULE}"
 
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export PYTHONUNBUFFERED=1
+if [[ -n "${MONTE_CARLO_BUILD_DIR}" ]]; then
+    export MONTE_CARLO_BUILD_DIR
+fi
 
 cd "${REPO_ROOT}"
 
@@ -76,6 +84,8 @@ echo "started_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "host=$(hostname)"
 echo "slurm_job_id=${SLURM_JOB_ID:-}"
 echo "slurm_array_task_id=${SLURM_ARRAY_TASK_ID:-}"
+echo "module_status=${MODULE_STATUS}"
+echo "monte_carlo_build_dir=${MONTE_CARLO_BUILD_DIR:-}"
 echo "case_id=${CASE_ID}"
 echo "manifest_path=${MANIFEST_PATH}"
 echo "config=${SHARD_CONFIG}"

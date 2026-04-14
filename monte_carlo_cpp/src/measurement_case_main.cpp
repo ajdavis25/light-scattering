@@ -1090,55 +1090,80 @@ int main(int argc, char **argv)
                       << " checkpoint_state=" << options.checkpoint_state_path.string()
                       << "\n";
 
-            DirectionTimingRecord timingRecord {};
-            const SkyBinResult model = solveSkyDirection(
-                config,
-                directions.front(),
-                originalDirectionIndices.front(),
-                targetSamples,
-                &checkpointState,
-                [&](const SampleProgress &progress) {
-                    timingRecord.direction_elapsed_seconds = progress.direction_elapsed_seconds;
-                    timingRecord.first_order_seconds = progress.first_order_seconds;
-                    timingRecord.first_order_view_samples = progress.first_order_view_samples;
-                    timingRecord.first_order_steps = progress.first_order_steps;
-                    timingRecord.solar_disk_nodes = progress.solar_disk_nodes;
-                    timingRecord.second_order_seconds = progress.second_order_seconds;
-                    timingRecord.second_order_incoming_single_scatter_seconds =
-                        progress.second_order_incoming_single_scatter_seconds;
-                    timingRecord.second_order_incoming_single_scatter_calls =
-                        progress.second_order_incoming_single_scatter_calls;
-                    timingRecord.second_order_nonzero_incoming_calls =
-                        progress.second_order_nonzero_incoming_calls;
-                    timingRecord.second_order_view_samples = progress.second_order_view_samples;
-                    timingRecord.second_order_mu_phi_evaluations = progress.second_order_mu_phi_evaluations;
-                    timingRecord.higher_order_seconds = progress.higher_order_seconds;
-                    timingRecord.valid = true;
+	            DirectionTimingRecord timingRecord {};
+	            const SkyBinResult model = solveSkyDirection(
+	                config,
+	                directions.front(),
+	                originalDirectionIndices.front(),
+	                targetSamples,
+	                &checkpointState,
+	                [&](const SampleProgress &progress) {
+	                    timingRecord.direction_elapsed_seconds = progress.direction_elapsed_seconds;
+	                    timingRecord.first_order_seconds = progress.first_order_seconds;
+	                    timingRecord.first_order_view_samples = progress.first_order_view_samples;
+	                    timingRecord.first_order_steps = progress.first_order_steps;
+	                    timingRecord.solar_disk_nodes = progress.solar_disk_nodes;
+	                    timingRecord.second_order_seconds = progress.second_order_seconds;
+	                    timingRecord.second_order_incoming_single_scatter_seconds =
+	                        progress.second_order_incoming_single_scatter_seconds;
+	                    timingRecord.second_order_incoming_single_scatter_calls =
+	                        progress.second_order_incoming_single_scatter_calls;
+	                    timingRecord.second_order_nonzero_incoming_calls =
+	                        progress.second_order_nonzero_incoming_calls;
+	                    timingRecord.second_order_view_samples = progress.second_order_view_samples;
+	                    timingRecord.second_order_mu_phi_evaluations = progress.second_order_mu_phi_evaluations;
+	                    timingRecord.higher_order_seconds = progress.higher_order_seconds;
+	                    timingRecord.valid = true;
 
-                    if (progress.stage == SampleProgress::Stage::higher_order_progress ||
-                        progress.stage == SampleProgress::Stage::higher_order_complete ||
-                        progress.stage == SampleProgress::Stage::direction_complete) {
-                        const std::size_t completedSamples =
-                            progress.stage == SampleProgress::Stage::direction_complete
-                                ? static_cast<std::size_t>(checkpointState.higher_order.completed_samples)
-                                : progress.stage_completed;
-                        const std::size_t targetSamples =
-                            progress.mc_sample_count > 0
-                                ? static_cast<std::size_t>(progress.mc_sample_count)
-                                : progress.stage_total;
-                        std::cout << "[measurement-checkpoint-progress] stage="
-                                  << sampleProgressStageName(progress.stage)
-                                  << " direction_index=" << progress.direction_index
-                                  << " completed_samples=" << completedSamples
-                                  << " target_samples=" << targetSamples
-                                  << " elapsed_s=" << progress.direction_elapsed_seconds
-                                  << " first_s=" << progress.first_order_seconds
-                                  << " second_s=" << progress.second_order_seconds
-                                  << " higher_s=" << progress.higher_order_seconds
-                                  << "\n";
-                    }
-                }
-            );
+	                    if (progress.stage == SampleProgress::Stage::first_order_complete ||
+	                        progress.stage == SampleProgress::Stage::second_order_complete ||
+	                        progress.stage == SampleProgress::Stage::higher_order_progress ||
+	                        progress.stage == SampleProgress::Stage::higher_order_complete) {
+	                        writeDirectionCheckpointState(
+	                            options.checkpoint_state_path,
+	                            config.output.case_id,
+	                            originalDirectionIndices.front(),
+	                            directions.front(),
+	                            checkpointState
+	                        );
+	                    }
+
+	                    if (progress.stage == SampleProgress::Stage::first_order_complete ||
+	                        progress.stage == SampleProgress::Stage::second_order_complete) {
+	                        std::cout << "[measurement-checkpoint-progress] stage="
+	                                  << sampleProgressStageName(progress.stage)
+	                                  << " direction_index=" << progress.direction_index
+	                                  << " elapsed_s=" << progress.direction_elapsed_seconds
+	                                  << " first_s=" << progress.first_order_seconds
+	                                  << " second_s=" << progress.second_order_seconds
+	                                  << " higher_s=" << progress.higher_order_seconds
+	                                  << "\n";
+	                    }
+
+	                    if (progress.stage == SampleProgress::Stage::higher_order_progress ||
+	                        progress.stage == SampleProgress::Stage::higher_order_complete ||
+	                        progress.stage == SampleProgress::Stage::direction_complete) {
+	                        const std::size_t completedSamples =
+	                            progress.stage == SampleProgress::Stage::direction_complete
+	                                ? static_cast<std::size_t>(checkpointState.higher_order.completed_samples)
+	                                : progress.stage_completed;
+	                        const std::size_t targetSamples =
+	                            progress.mc_sample_count > 0
+	                                ? static_cast<std::size_t>(progress.mc_sample_count)
+	                                : progress.stage_total;
+	                        std::cout << "[measurement-checkpoint-progress] stage="
+	                                  << sampleProgressStageName(progress.stage)
+	                                  << " direction_index=" << progress.direction_index
+	                                  << " completed_samples=" << completedSamples
+	                                  << " target_samples=" << targetSamples
+	                                  << " elapsed_s=" << progress.direction_elapsed_seconds
+	                                  << " first_s=" << progress.first_order_seconds
+	                                  << " second_s=" << progress.second_order_seconds
+	                                  << " higher_s=" << progress.higher_order_seconds
+	                                  << "\n";
+	                    }
+	                }
+	            );
 
             writeDirectionCheckpointState(
                 options.checkpoint_state_path,

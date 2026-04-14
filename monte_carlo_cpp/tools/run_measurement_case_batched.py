@@ -308,18 +308,25 @@ def write_progress(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
-def read_checkpoint_completed_samples(path: Path) -> int:
+def read_checkpoint_progress(path: Path) -> tuple[int, int, int]:
     if not path.exists():
-        return 0
+        return (0, 0, 0)
+    has_first_order = 0
+    has_second_order = 0
     completed = 0
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        if key.strip() == "higher_completed_samples":
+        key = key.strip()
+        if key == "has_first_order":
+            has_first_order = 1 if int(float(value.strip())) != 0 else 0
+        elif key == "has_second_order":
+            has_second_order = 1 if int(float(value.strip())) != 0 else 0
+        elif key == "higher_completed_samples":
             completed = int(float(value.strip()))
-    return completed
+    return (has_first_order, has_second_order, completed)
 
 
 def single_direction_case_id(parent_case_id: str, original_index: int) -> str:
@@ -710,11 +717,8 @@ def main() -> int:
                         )
 
                     checkpoint_path = Path(item["checkpoint_path"])
-                    previous_completed_samples = (
-                        read_checkpoint_completed_samples(checkpoint_path)
-                        if checkpoint_path.exists()
-                        else 0
-                    )
+                    previous_checkpoint_progress = read_checkpoint_progress(checkpoint_path)
+                    previous_completed_samples = previous_checkpoint_progress[2]
                     process = launch_direction_worker(
                         measurement_runner,
                         item,
@@ -723,6 +727,7 @@ def main() -> int:
                     item["process"] = process
                     item["stdout_closed"] = False
                     item["last_completed_samples"] = previous_completed_samples
+                    item["last_checkpoint_progress"] = previous_checkpoint_progress
                     active[str(item["case_id"])] = item
                     selector.register(process.stdout, selectors.EVENT_READ, data=str(item["case_id"]))
 
@@ -792,19 +797,22 @@ def main() -> int:
                         log_file.flush()
                     else:
                         checkpoint_path = Path(item["checkpoint_path"])
-                        completed_samples = read_checkpoint_completed_samples(checkpoint_path)
+                        checkpoint_progress = read_checkpoint_progress(checkpoint_path)
+                        completed_samples = checkpoint_progress[2]
                         checkpoint_line = (
-                            f"[batched-measurement] checkpoint_samples={completed_samples} "
+                            f"[batched-measurement] checkpoint_first_order={checkpoint_progress[0]} "
+                            f"checkpoint_second_order={checkpoint_progress[1]} "
+                            f"checkpoint_samples={completed_samples} "
                             f"block_size={args.higher_order_block_size} batch_case_id={item['case_id']}"
                         )
                         print(checkpoint_line, flush=True)
                         log_file.write(checkpoint_line + "\n")
                         log_file.flush()
-                        if completed_samples <= int(item["last_completed_samples"]):
+                        if checkpoint_progress == tuple(item["last_checkpoint_progress"]):
                             print(
                                 f"Checkpoint did not advance for {item['case_id']}: "
-                                f"{completed_samples} samples "
-                                f"(previous {item['last_completed_samples']}).",
+                                f"{checkpoint_progress} "
+                                f"(previous {item['last_checkpoint_progress']}).",
                                 file=sys.stderr,
                             )
                             return 1

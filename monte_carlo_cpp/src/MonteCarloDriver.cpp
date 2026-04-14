@@ -2988,6 +2988,7 @@ DirectionEstimate estimateDirectionMoments(
     const int higherOrderInitialCompletedSamples = std::max(0, moments.count);
     const int higherOrderProgressInterval =
         sampleCount <= 16 ? 1 : (sampleCount <= 64 ? 4 : (sampleCount <= 256 ? 16 : 32));
+    const double higherOrderBaseSeconds = estimate.timing.higher_order_seconds;
     const auto higherOrderStart = std::chrono::steady_clock::now();
     const auto reportHigherOrderProgress = [&](int completedSamples) {
         if (!stageCallback || completedSamples <= higherOrderInitialCompletedSamples) {
@@ -3002,7 +3003,7 @@ DirectionEstimate estimateDirectionMoments(
         }
 
         DirectionEstimate::TimingSummary timing = estimate.timing;
-        timing.higher_order_seconds =
+        timing.higher_order_seconds = higherOrderBaseSeconds +
             std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
         stageCallback(
             SampleProgress::Stage::higher_order_progress,
@@ -3028,6 +3029,14 @@ DirectionEstimate estimateDirectionMoments(
                 direction.azimuth_deg,
                 sampleRng
             ));
+            if (checkpointState != nullptr) {
+                estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
+                    std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
+                checkpointState->higher_order.completed_samples = moments.count;
+                checkpointState->higher_order.mean = moments.mean;
+                checkpointState->higher_order.m2 = moments.m2;
+                checkpointState->timing = publicTimingSummary(estimate.timing);
+            }
             reportHigherOrderProgress(moments.count);
         }
     } else {
@@ -3045,10 +3054,18 @@ DirectionEstimate estimateDirectionMoments(
                 direction.azimuth_deg,
                 rng
             ));
+            if (checkpointState != nullptr) {
+                estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
+                    std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
+                checkpointState->higher_order.completed_samples = moments.count;
+                checkpointState->higher_order.mean = moments.mean;
+                checkpointState->higher_order.m2 = moments.m2;
+                checkpointState->timing = publicTimingSummary(estimate.timing);
+            }
             reportHigherOrderProgress(moments.count);
         }
     }
-    estimate.timing.higher_order_seconds +=
+    estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
         std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
     estimate.higher_order = moments.mean;
     estimate.higher_variance = moments.variance();
