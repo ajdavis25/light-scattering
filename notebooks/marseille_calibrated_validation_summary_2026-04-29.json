@@ -12,7 +12,9 @@
     "calibration_csv": "/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.csv",
     "calibration_metadata_json": "/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.json",
     "plot_directory": "/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2",
+    "main_panel_figure_png": "/work/vmo703/light-scattering/notebooks/figures/marseille_calibrated_main_panel_2026-04-30.png",
     "paper_package_md": "/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md",
+    "handoff_md": "/work/vmo703/light-scattering/notebooks/MARSEILLE_LIGHT_SCATTERING_HANDOFF_2026-04-30.md",
     "metric_table_csv": "/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_validation_2026-04-28.csv",
     "figure_table_csv": "/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_figures_2026-04-29.csv"
   },

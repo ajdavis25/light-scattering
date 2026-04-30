@@ -12,6 +12,7 @@ The current Marseille paper-facing result is no longer the earlier interactive/r
 
 - status note: [notebooks/MARSEILLE_CALIBRATED_VALIDATION_STATUS_2026-04-28.md](/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_VALIDATION_STATUS_2026-04-28.md)
 - paper package: [notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md](/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md)
+- fresh-thread handoff: [notebooks/MARSEILLE_LIGHT_SCATTERING_HANDOFF_2026-04-30.md](/work/vmo703/light-scattering/notebooks/MARSEILLE_LIGHT_SCATTERING_HANDOFF_2026-04-30.md)
 - report: [frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt](/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt)
 - figures: [plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2](/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2)
 

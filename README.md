@@ -10,6 +10,8 @@ The current full-field Marseille pipeline-valid result is the calibrated frozen 
 
 Use `notebooks/MARSEILLE_CALIBRATED_VALIDATION_STATUS_2026-04-28.md` as the downstream project note and `notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md` for manuscript-ready wording, figure inventory, and validation-summary pointers. The Marseille gate passes after applying the frozen row-wise measurement-model calibration, and the result should not be described as independent raw first-principles closure.
 
+For fresh-thread or collaborator handoff, start with `notebooks/MARSEILLE_LIGHT_SCATTERING_HANDOFF_2026-04-30.md`. It lists the canonical frozen artifacts, claim boundary, immediate work policy, future holdout-validation path, and verification commands.
+
 
 ## SMOOTHIE BINGUS
 ## SUIT BINGUS

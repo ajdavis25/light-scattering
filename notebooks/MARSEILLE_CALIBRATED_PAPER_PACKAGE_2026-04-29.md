@@ -19,6 +19,7 @@ Do not describe this as raw first-principles model closure. The correct claim is
 - Calibration CSV: `/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.csv`
 - Calibration metadata: `/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.json`
 - Quick-look figures: `/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2`
+- Main paper/referee figure: `/work/vmo703/light-scattering/notebooks/figures/marseille_calibrated_main_panel_2026-04-30.png`
 - Paper-facing metric table: `/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_validation_2026-04-28.csv`
 - Paper-facing figure table: `/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_figures_2026-04-29.csv`
 - Machine-readable summary: `/work/vmo703/light-scattering/notebooks/marseille_calibrated_validation_summary_2026-04-29.json`
@@ -38,6 +39,29 @@ The calibrated Marseille result evaluates `683` sky directions from the frozen M
 
 All configured calibrated measurement gates pass.
 
+## Compact Paper Table
+
+Use `/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_validation_2026-04-28.csv` as the table source. The paper-facing form is:
+
+| Quantity | Calibrated value | Gate | Status |
+| --- | ---: | ---: | --- |
+| Reference sky directions | 683 | | pass |
+| Measurement-model calibration applied | true | | pass |
+| Normalized intensity RMSE | 5.4464751214605624e-18 | <= 0.10 | pass |
+| Brightest-location error | 0.0 deg | <= 5.0 deg | pass |
+| Median DoLP absolute error | 6.938893903907228e-18 | <= 0.03 | pass |
+| p95 DoLP absolute error | 1.1102230246251565e-16 | <= 0.07 | pass |
+| Median AoP error | 1.7763568394002505e-15 deg | <= 5.0 deg | pass |
+| p95 AoP error | 1.4210854715202004e-14 deg | <= 10.0 deg | pass |
+| Solar-vertical signed DoLP bias | -9.00180830777154e-18 | <= 0.05 | pass |
+| Interpretation | calibrated row-wise closure, not independent raw physics | | caveat required |
+
+## Paper/Referee Claim Boundary
+
+Use the calibrated Marseille result for the paper's validation and reproducibility packaging only at this claim level: calibrated measurement-pipeline validation. The result should support statements about comparison-grid plumbing, calibration application, plotting, metric extraction, and configured gate passage after frozen row-wise calibration.
+
+Do not use this artifact to claim independent raw first-principles twilight closure. Raw uncalibrated Marseille failures remain historical solver/geometry diagnostics and should only appear as limitation or future-work context.
+
 ## Manuscript-Ready Methods Text
 
 We evaluated the Marseille twilight case using the frozen full-field measurement reference extracted from the public sky-polarimetry frame at `2022-08-15T19:14:13Z`. The comparison uses the strict paper-case geometry, case-local atmosphere and aerosol inputs, and the frozen row-wise measurement-model calibration generated from the completed Marseille comparison. The calibration maps the emitted model intensity, degree of linear polarization, and angle of polarization onto the extracted measurement grid at each sky bin. We therefore report this result as a calibrated pipeline-validation check rather than as an independent raw-physics closure test.
@@ -45,6 +69,12 @@ We evaluated the Marseille twilight case using the frozen full-field measurement
 ## Manuscript-Ready Results Text
 
 After applying the frozen measurement-model calibration, the full-field Marseille comparison passes the configured measurement gate over all `683` sky directions. The calibrated normalized intensity RMSE is `5.45e-18`, the brightest-region location error is `0.0 deg`, the median and p95 DoLP errors are `6.94e-18` and `1.11e-16`, and the median and p95 AoP errors are `1.78e-15 deg` and `1.42e-14 deg`. The solar-vertical signed DoLP bias is `-9.00e-18`. These values demonstrate closure of the calibrated measurement pipeline.
+
+## Referee-Response Paragraph
+
+If asked whether the Marseille comparison is a raw predictive validation, use:
+
+> We now separate the Marseille result into calibrated pipeline validation and raw physics validation. The reported full-field Marseille artifact applies a frozen row-wise measurement-model calibration and passes the configured gates over 683 sky directions. This demonstrates that the data reduction, comparison grid, metric extraction, plotting, and calibrated measurement pathway are internally closed. We do not present this as independent first-principles twilight closure; that stronger claim would require a holdout sky measurement or a calibration split not used to construct the row-wise mapping.
 
 ## Required Limitation Text
 
@@ -54,6 +84,7 @@ The Marseille result should not be interpreted as independent raw first-principl
 
 Use the figure table in `/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_figures_2026-04-29.csv` as the canonical figure inventory. Recommended paper-facing panels:
 
+- `marseille_calibrated_main_panel_2026-04-30.png`: composite main paper/referee figure with reference, calibrated model, and calibrated residual panels for intensity, DoLP, and AoP.
 - `reference_intensity_norm.png`: extracted normalized Marseille reference intensity field.
 - `model_intensity_norm.png`: calibrated model normalized intensity field.
 - `intensity_difference.png`: calibrated normalized model minus reference intensity.
@@ -83,6 +114,10 @@ Suggested main caption:
 Suggested supplement caption:
 
 > Order-fraction diagnostics for the frozen Marseille calibrated validation run. Fractions are computed from the solver output used by the calibrated comparison and are intended to document the transport decomposition supporting the calibrated pipeline result.
+
+## Supplement And Reproducibility Note
+
+For reproducibility, cite the frozen report, pointwise comparison CSV, region summary CSV, calibration CSV, and calibration metadata listed above. The order-fraction figures should be placed in supplement or referee support because they document the transport decomposition behind the calibrated comparison; they are not proof of raw model closure.
 
 ## Next Scientific Step
 

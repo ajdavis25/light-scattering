@@ -46,6 +46,7 @@ Use this wording in downstream notes:
 - Pointwise comparison CSV: `/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_comparison.csv`
 - Region summary CSV: `/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_region_summary.csv`
 - Paper-facing metric table: `/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_validation_2026-04-28.csv`
+- Paper-facing main figure: `/work/vmo703/light-scattering/notebooks/figures/marseille_calibrated_main_panel_2026-04-30.png`
 - Regenerated quick-look plots: `/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2`
 - Default plotting target: `/work/vmo703/light-scattering/spherical/main.py` now points its measurement plot layer at this frozen report case id.
 - Paper package: `/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md`
