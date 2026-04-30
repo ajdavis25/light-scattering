@@ -8,7 +8,13 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from run_measurement_case_batched import load_reference_rows, parse_config, resolve_config_path, rewrite_config
+from run_measurement_case_batched import (
+    load_reference_rows,
+    parse_config,
+    resolve_config_path,
+    rewrite_config,
+    single_direction_case_id,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -134,6 +140,10 @@ def main() -> int:
         shard_config_path.write_text(rewrite_config(config_text, shard_overrides), encoding="utf-8")
 
         original_indices = sorted(int(float(row["original_index"])) for row in rows)
+        checkpoint_paths = [
+            str((report_dir / "_batched_work" / f"{single_direction_case_id(shard_case_id, original_index)}_checkpoint.txt").resolve())
+            for original_index in original_indices
+        ]
         manifest["shards"].append({
             "index": shard_index,
             "case_id": shard_case_id,
@@ -146,6 +156,7 @@ def main() -> int:
             "partial_rows_csv": str(report_dir / f"{shard_case_id}_batched_partial_rows.csv"),
             "progress_json": str(report_dir / f"{shard_case_id}_batched_progress.json"),
             "comparison_csv": str(report_dir / f"{shard_case_id}_comparison.csv"),
+            "checkpoint_paths": checkpoint_paths,
             "report_txt": str(report_dir / f"{shard_case_id}.txt"),
             "region_summary_csv": str(report_dir / f"{shard_case_id}_region_summary.csv"),
         })

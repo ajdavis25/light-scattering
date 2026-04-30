@@ -1031,11 +1031,20 @@ def build_case(case_spec: dict) -> None:
 
     measurement_cfg_path = PAPER_CONFIG_DIR / f"{case_id}_measurement.cfg"
     measurement_cfg_rel = f"paper_cases/{measurement_cfg_path.name}"
+    measurement_calibration_path = case_data_dir / "measurement_model_quality_calibration.csv"
+    measurement_calibration_metadata_path = case_data_dir / "measurement_model_quality_calibration.json"
     measurement_cfg_lines = [
         *(
             [
                 "# Frozen Marseille measurement config with extracted validator reference.",
                 f"measurement_reference_csv=../../data/paper_cases/{case_id}/measurement_reference.csv",
+                *(
+                    [
+                        f"measurement_model_calibration_csv=../../data/paper_cases/{case_id}/measurement_model_quality_calibration.csv"
+                    ]
+                    if measurement_calibration_path.exists()
+                    else []
+                ),
             ]
             if has_measurement_reference
             else [
@@ -1107,11 +1116,14 @@ def build_case(case_spec: dict) -> None:
         "rayleigh_polarization_guided_branches=0",
         "twilight_higher_order_guiding=true",
         "twilight_higher_order_branches=3",
+        "higher_order_recursive_branch_cap=1",
         "twilight_higher_order_phase_fraction=0.20",
         "twilight_higher_order_tangent_fraction=0.45",
         "twilight_higher_order_horizon_fraction=0.35",
+        "higher_order_robust_groups=16",
         "benchmark_mask_fraction_of_peak=0.01",
         "measurement_mask_fraction_of_peak=0.05",
+        "brightest_region_reference_fraction_of_peak=0.80",
         "median_intensity_error_limit=0.05",
         "p95_intensity_error_limit=0.10",
         "median_dolp_abs_error_limit=0.03",
@@ -1230,11 +1242,14 @@ def build_case(case_spec: dict) -> None:
         "rayleigh_polarization_guided_branches=0",
         "twilight_higher_order_guiding=true",
         "twilight_higher_order_branches=4",
+        "higher_order_recursive_branch_cap=1",
         "twilight_higher_order_phase_fraction=0.20",
         "twilight_higher_order_tangent_fraction=0.45",
         "twilight_higher_order_horizon_fraction=0.35",
+        "higher_order_robust_groups=16",
         "benchmark_mask_fraction_of_peak=0.01",
         "measurement_mask_fraction_of_peak=0.05",
+        "brightest_region_reference_fraction_of_peak=0.80",
         "median_intensity_error_limit=0.05",
         "p95_intensity_error_limit=0.10",
         "median_dolp_abs_error_limit=0.03",
@@ -1259,8 +1274,8 @@ def build_case(case_spec: dict) -> None:
         f"case_id={case_id}",
         "output_dir=../../results",
         "benchmark_case_config=../benchmark_disort_scalar.cfg;../benchmark_iprt_a1_vector.cfg;../benchmark_zawada_spherical_vector_single.cfg;../benchmark_zawada_spherical_vector_multiple.cfg",
-        f"measurement_case_config=../measurement_rozenberg_hminus6.cfg;../measurement_koomen_meridian_hminus6_polarization.cfg;../measurement_gal_lapland_fullsky_450nm_dolp.cfg;{measurement_cfg_rel}",
-        f"paper_primary_measurement_case_config={measurement_cfg_rel}",
+        f"measurement_case_config=../measurement_rozenberg_hminus6.cfg;../measurement_koomen_meridian_hminus6_polarization.cfg;../measurement_gal_lapland_fullsky_450nm_dolp.cfg;{measurement_cfg_path.name}",
+        f"paper_primary_measurement_case_config={measurement_cfg_path.name}",
         f"paper_primary_measurement_frozen={paper_primary_measurement_frozen}",
         f"paper_case_provenance_json=../../data/paper_cases/{case_id}/paper_case_provenance.json",
         f"profile_csv=../../data/paper_cases/{case_id}/atmosphere_profile.csv",
@@ -1433,6 +1448,26 @@ def build_case(case_spec: dict) -> None:
                         }
                     }
                     if measurement_reduction_path.exists()
+                    else {}
+                ),
+                **(
+                    {
+                        "measurement_model_quality_calibration_csv": {
+                            "path": str(measurement_calibration_path),
+                            "sha256": sha256_file(measurement_calibration_path),
+                        }
+                    }
+                    if measurement_calibration_path.exists()
+                    else {}
+                ),
+                **(
+                    {
+                        "measurement_model_quality_calibration_json": {
+                            "path": str(measurement_calibration_metadata_path),
+                            "sha256": sha256_file(measurement_calibration_metadata_path),
+                        }
+                    }
+                    if measurement_calibration_metadata_path.exists()
                     else {}
                 ),
                 **(

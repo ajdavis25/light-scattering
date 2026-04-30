@@ -31,8 +31,9 @@ DEFAULT_MEASUREMENT_CONFIG = (
     / "monte_carlo_cpp"
     / "config"
     / "paper_cases"
-    / "frozen_marseille_twilight_20220815_191413z_measurement_interactive.cfg"
+    / "frozen_marseille_twilight_20220815_191413z_measurement.cfg"
 )
+DEFAULT_MEASUREMENT_REPORT_CASE_ID = "frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2"
 LEGACY_FULLSKY_MEASUREMENT_CONFIG = (
     ROOT / "monte_carlo_cpp" / "config" / "measurement_gal_lapland_fullsky_450nm_dolp.cfg"
 )
@@ -282,6 +283,7 @@ def main() -> None:
     measurement_summary = save_measurement_case_plots(
         config_path=DEFAULT_MEASUREMENT_CONFIG,
         plot_root=DEFAULT_PLOT_DIR / "measurement_cases",
+        report_case_id=DEFAULT_MEASUREMENT_REPORT_CASE_ID,
     )
     print(f"Production case: {production.case_dir}")
     print(f"Peak intensity: {float(np.max(production.intensity)):.6e}")

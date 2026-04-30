@@ -99,12 +99,14 @@ struct MonteCarloConfig
     double twilight_limb_elevation_deg = 10.0;
     bool twilight_higher_order_guiding = true;
     int twilight_higher_order_branches = 2;
+    int higher_order_recursive_branch_cap = 0;
     double twilight_higher_order_phase_fraction = 0.45;
     double twilight_higher_order_tangent_fraction = 0.35;
     double twilight_higher_order_horizon_fraction = 0.20;
     double twilight_higher_order_tangent_cone_half_angle_deg = 18.0;
     double twilight_higher_order_horizon_cone_half_angle_deg = 24.0;
     double twilight_higher_order_horizon_elevation_deg = 7.0;
+    int higher_order_robust_groups = 0;
     bool twilight_order_depolarization = false;
     double twilight_second_order_polarization_scale = 1.0;
     double twilight_higher_order_polarization_scale = 1.0;
@@ -124,6 +126,7 @@ struct OutputConfig
     std::string benchmark_metadata_json;
     std::string measurement_case_config;
     std::string measurement_reference_csv;
+    std::string measurement_model_calibration_csv;
     std::string measurement_metadata_json;
     std::string paper_primary_measurement_case_config;
     bool paper_primary_measurement_frozen = false;
@@ -142,6 +145,7 @@ struct ValidationThresholds
     double p95_aop_error_deg_limit = 10.0;
     double solar_vertical_signed_dolp_bias_limit = 0.05;
     double normalized_rmse_limit = 0.15;
+    double brightest_region_reference_fraction_of_peak = 0.0;
     double brightest_region_deg_limit = 5.0;
     double neutral_point_location_deg_limit = 5.0;
 };
@@ -250,6 +254,14 @@ struct HigherOrderCheckpointState
     int completed_samples = 0;
     StokesVector mean {0.0, 0.0, 0.0, 0.0};
     StokesVector m2 {0.0, 0.0, 0.0, 0.0};
+    bool sample_in_progress = false;
+    int in_progress_sample_index = 0;
+    std::size_t completed_bands_in_sample = 0;
+    StokesVector partial_sample {0.0, 0.0, 0.0, 0.0};
+    std::string rng_state;
+    int robust_group_count = 0;
+    std::vector<int> robust_group_samples;
+    std::vector<StokesVector> robust_group_sums;
 };
 
 struct DirectionCheckpointState

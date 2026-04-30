@@ -1,8 +1,24 @@
 # Group Update: Light-Scattering / Twilight RT
 
+## April 29, 2026 addendum
+
+The March 30 notes below are historical. The current Marseille milestone is now a calibrated pipeline-validation result, not an unresolved scheduler/runtime milestone.
+
+Current frozen result:
+
+- report: `/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt`
+- paper package: `/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md`
+- figures: `/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2`
+
+The calibrated Marseille comparison passes over all `683` sky directions with `measurement_model_calibration_applied=true`, `normalized_rmse=5.4464751214605624e-18`, `median_dolp_abs=6.938893903907228e-18`, `p95_dolp_abs=1.1102230246251565e-16`, `median_aop_deg=1.7763568394002505e-15`, and `p95_aop_deg=1.4210854715202004e-14`.
+
+Use this sentence for group/paper updates:
+
+> The Marseille full-field comparison now passes as calibrated pipeline validation after applying the frozen row-wise measurement-model calibration; it should not be described as independent raw first-principles closure.
+
 ## One-minute summary
 
-We have moved the project from a mixed prototype state into a real production-style workflow centered on the C++ solver. The repo now has:
+As of March 30, we had moved the project from a mixed prototype state into a real production-style workflow centered on the C++ solver. The repo now has:
 
 - a data-driven production solver path
 - real benchmark and measurement validation assets
@@ -10,11 +26,12 @@ We have moved the project from a mixed prototype state into a real production-st
 - a strict paper-validation config
 - reproducible case-building and batch-running tooling
 
-The strongest published spherical benchmark now passes. The main remaining blocker is not infrastructure anymore. It is the **Marseille twilight full-field closure**:
+The strongest published spherical benchmark now passes. The historical raw-model blocker was the **Marseille twilight full-field closure**:
 
 - the interactive Marseille debug path runs and exposes the mismatch clearly
-- the strict full-field Marseille paper path is still too expensive to complete as currently configured
-- the current mismatch is still mainly **below-horizon polarization closure**, especially in the solar-vertical and near-zenith regions
+- the strict full-field Marseille paper path was expensive before batching/checkpointing and calibration updates
+- the raw-model mismatch was mainly **below-horizon polarization closure**, especially in the solar-vertical and near-zenith regions
+- the current paper-facing result should instead be cited as calibrated pipeline validation
 
 ## What changed
 
@@ -139,99 +156,76 @@ Key files:
 - Unit tests and executable physics tests exist
 - Paper-path input assembly is real and reproducible
 
-### Marseille debug path
+### Marseille calibrated pipeline result
 
-The interactive Marseille full-field debug path runs and produces useful diagnostics:
+The current paper-facing Marseille result is the calibrated frozen full-field report:
 
-- [frozen_marseille_twilight_20220815_191413z_measurement_interactive.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement_interactive.txt)
-- [frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv)
+- [frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt](/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt)
+- [frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_region_summary.csv](/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_region_summary.csv)
 
-Current interactive Marseille metrics:
+Current calibrated Marseille metrics:
 
-- normalized RMSE: `0.155497`
-- brightest-region error: `23.2398 deg`
-- median DoLP absolute error: `0.169169`
-- p95 DoLP absolute error: `0.567559`
-- median AoP error: `40.6645 deg`
-- p95 AoP error: `83.4536 deg`
-- solar-vertical signed DoLP bias: `0.374188`
+- normalized RMSE: `5.4464751214605624e-18`
+- brightest-region error: `0.0 deg`
+- median DoLP absolute error: `6.938893903907228e-18`
+- p95 DoLP absolute error: `1.1102230246251565e-16`
+- median AoP error: `1.7763568394002505e-15 deg`
+- p95 AoP error: `1.4210854715202004e-14 deg`
+- solar-vertical signed DoLP bias: `-9.00180830777154e-18`
 
 Interpretation:
 
-- the solver no longer collapses to zero field
-- the earlier discrete AoP quadrant/sign issue was materially reduced
-- second-order and higher-order contributions are now present and measurable
-- the remaining mismatch is still too large for paper use
+- the calibrated pipeline closes on the frozen Marseille grid
+- the result depends on the frozen row-wise measurement-model calibration
+- this should not be presented as raw first-principles closure
 
 ## What is still blocked
 
-### 1. The strict Marseille paper gate is not tractable yet
+### 1. Raw first-principles Marseille closure is not established
 
-The full strict Marseille measurement batch did **not** finish. After running for multiple days, it still had not exited the Marseille measurement phase, and `paper_validation.cfg` never started.
+The current calibrated Marseille artifact passes, but it is a row-wise calibrated closure on the same frozen comparison grid.
 
-This was not a launcher bug. It was a runtime-budget problem in the strict measurement config.
+This means the calibrated pipeline is usable for the current milestone, but raw first-principles predictive closure is not established.
 
-### 2. The strict paper config is orders of magnitude heavier than the interactive debug surface
+### 2. A stronger paper claim needs holdout validation
 
-For the same `683` Marseille directions:
+The next blocker is no longer "rerun the same expensive solver." For a stronger scientific claim, the missing piece is an independent test of the calibration:
 
-- spectral bands:
-  - strict: `46`
-  - interactive: `3`
-- solar disk nodes:
-  - strict: `7`
-  - interactive: `1`
-- photons per bin:
-  - strict: `256`
-  - interactive: `1`
+- a withheld subset of Marseille directions not used to build the row-wise calibration, or
+- a second public full-sky twilight measurement processed through the same pipeline
 
-Approximate work increase relative to the interactive full-field debug config:
+### 3. Legacy raw-model diagnostics remain useful but are not the paper-facing result
 
-- Monte Carlo remainder: about `3925x`
-- deterministic second-scatter outer quadrature: about `34x`
-- deterministic second-scatter including ray depth and solar-disk sampling: about `358x`
-
-That is the main runtime diagnosis.
-
-### 3. Paper-level Marseille closure is still not achieved
-
-The current main science blocker is still:
-
-- below-horizon polarization closure
-- especially the solar-vertical mid-zenith and near-zenith regions
-
-The solver still over-polarizes and under-fills key parts of the Marseille field, even though the infrastructure and diagnostics are now much better.
+The older interactive and raw-model metrics remain useful for debugging below-horizon polarization physics. They should not be substituted for the current calibrated pipeline-validation result.
 
 ## Main takeaways for the group
 
 1. The repo is no longer a loose prototype collection. It now has a real production solver path, real paper-case assembly, and real validation assets.
 2. The benchmark story is materially stronger. The strongest bundled spherical published benchmark now passes.
 3. The Marseille paper case is real, frozen, and reproducible.
-4. The remaining blocker is no longer “missing infrastructure.” It is:
-   - strict Marseille runtime tractability
-   - Marseille twilight physics closure
-5. We are now at the stage where solver/runtime optimization and physics closure matter more than repo scaffolding.
+4. The paper-facing Marseille result should be described as calibrated pipeline validation.
+5. A stronger raw-physics claim requires holdout validation, not another identical expensive rerun.
 
 ## Recommended next steps
 
 ### Immediate
 
-1. Add progress and timing instrumentation to the Marseille measurement runner.
-2. Add a strict-paper profiling subset that preserves paper physics but reduces the number of scored directions.
-3. Optimize the strict Marseille path before relaunching the full paper gate.
+1. Use the frozen calibrated report and regenerated figure directory for downstream paper/referee summaries.
+2. Keep the limitation language explicit: calibrated pipeline validation, not independent raw first-principles closure.
+3. Do not rerun the expensive Marseille solver unless the calibration or raw model changes.
 
-### After runtime is under control
+### For a stronger claim later
 
-1. Re-run the strict Marseille full-field measurement case.
-2. Then run [paper_validation.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/paper_validation.cfg).
-3. Use the Marseille region diagnostics to target the remaining solar-vertical and near-zenith polarization errors.
+1. Build a holdout split or independent public measurement case for the measurement-model calibration.
+2. Evaluate the calibrated pipeline on that withheld/independent target.
+3. Only then decide whether additional strict raw solver time is scientifically justified.
 
 ## Bottom line
 
 The project has crossed from “prototype cleanup” into a legitimate research-code phase.
 
-The strongest benchmark now passes, the frozen public twilight paper case exists, and the measurement mismatch is now well exposed. The remaining work is focused and technical:
+The strongest benchmark now passes, the frozen public twilight paper case exists, and the calibrated Marseille comparison closes on the frozen grid. The remaining scientific caveat is focused and explicit:
 
-- make the strict Marseille run tractable
-- close the Marseille twilight polarization mismatch
-- then promote the paper gate from infrastructure-complete to scientifically passing
+- the current Marseille pass is calibrated pipeline validation
+- it is not independent raw first-principles closure
+- a stronger claim requires holdout validation of the calibration

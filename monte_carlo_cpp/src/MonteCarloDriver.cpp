@@ -97,6 +97,125 @@ struct RunningMoments
     }
 };
 
+double medianComponent(std::vector<double> values)
+{
+    if (values.empty()) {
+        return 0.0;
+    }
+    const std::size_t middle = values.size() / 2;
+    std::nth_element(values.begin(), values.begin() + middle, values.end());
+    double median = values[middle];
+    if ((values.size() % 2) == 0) {
+        const auto lower = std::max_element(values.begin(), values.begin() + middle);
+        median = 0.5 * (*lower + median);
+    }
+    return median;
+}
+
+struct RobustHigherOrderGroups
+{
+    int group_count = 0;
+    std::vector<int> sample_counts;
+    std::vector<StokesVector> sums;
+
+    void initialize(int requestedGroupCount)
+    {
+        group_count = std::max(0, requestedGroupCount);
+        sample_counts.assign(static_cast<std::size_t>(group_count), 0);
+        sums.assign(static_cast<std::size_t>(group_count), StokesVector {0.0, 0.0, 0.0, 0.0});
+    }
+
+    bool enabled() const
+    {
+        return group_count > 1;
+    }
+
+    void loadFromCheckpoint(const HigherOrderCheckpointState &state, int requestedGroupCount)
+    {
+        if (requestedGroupCount <= 1) {
+            initialize(0);
+            return;
+        }
+        if (state.completed_samples == 1 && state.robust_group_count == 0) {
+            initialize(requestedGroupCount);
+            sample_counts.front() = 1;
+            sums.front() = state.mean;
+            return;
+        }
+        if (state.completed_samples > 0 && state.robust_group_count != requestedGroupCount) {
+            throw std::runtime_error("Checkpoint higher-order robust group state does not match current config.");
+        }
+        if (state.robust_group_count == requestedGroupCount &&
+            state.robust_group_samples.size() == static_cast<std::size_t>(requestedGroupCount) &&
+            state.robust_group_sums.size() == static_cast<std::size_t>(requestedGroupCount)) {
+            group_count = requestedGroupCount;
+            sample_counts = state.robust_group_samples;
+            sums = state.robust_group_sums;
+            return;
+        }
+        if (state.completed_samples > 0) {
+            throw std::runtime_error("Checkpoint is missing higher-order robust group sums.");
+        }
+        initialize(requestedGroupCount);
+    }
+
+    void update(int sampleIndex, const StokesVector &sample)
+    {
+        if (!enabled()) {
+            return;
+        }
+        const std::size_t groupIndex = static_cast<std::size_t>(sampleIndex % group_count);
+        ++sample_counts[groupIndex];
+        sums[groupIndex].I += sample.I;
+        sums[groupIndex].Q += sample.Q;
+        sums[groupIndex].U += sample.U;
+        sums[groupIndex].V += sample.V;
+    }
+
+    void copyToCheckpoint(HigherOrderCheckpointState &state) const
+    {
+        state.robust_group_count = group_count;
+        state.robust_group_samples = sample_counts;
+        state.robust_group_sums = sums;
+    }
+
+    StokesVector medianOfMeans(const StokesVector &fallback) const
+    {
+        if (!enabled()) {
+            return fallback;
+        }
+
+        std::vector<double> iValues;
+        std::vector<double> qValues;
+        std::vector<double> uValues;
+        std::vector<double> vValues;
+        iValues.reserve(sums.size());
+        qValues.reserve(sums.size());
+        uValues.reserve(sums.size());
+        vValues.reserve(sums.size());
+        for (std::size_t index = 0; index < sums.size(); ++index) {
+            const int count = sample_counts[index];
+            if (count <= 0) {
+                continue;
+            }
+            const double invCount = 1.0 / static_cast<double>(count);
+            iValues.push_back(sums[index].I * invCount);
+            qValues.push_back(sums[index].Q * invCount);
+            uValues.push_back(sums[index].U * invCount);
+            vValues.push_back(sums[index].V * invCount);
+        }
+        if (iValues.size() < 2) {
+            return fallback;
+        }
+        return {
+            medianComponent(std::move(iValues)),
+            medianComponent(std::move(qValues)),
+            medianComponent(std::move(uValues)),
+            medianComponent(std::move(vValues)),
+        };
+    }
+};
+
 struct SecondOrderBreakdown
 {
     StokesVector total {0.0, 0.0, 0.0, 0.0};
@@ -1769,6 +1888,28 @@ unsigned int seedForDirectionSample(
     return static_cast<unsigned int>((hash >> 32) ^ (hash & 0xffffffffull));
 }
 
+std::string serializeRngState(const std::mt19937 &rng)
+{
+    std::ostringstream output;
+    output << rng;
+    return output.str();
+}
+
+std::mt19937 restoreRngState(const std::string &serializedState, unsigned int fallbackSeed)
+{
+    std::mt19937 rng(fallbackSeed);
+    if (serializedState.empty()) {
+        return rng;
+    }
+
+    std::istringstream input(serializedState);
+    input >> rng;
+    if (!input) {
+        throw std::runtime_error("Unable to restore checkpointed higher-order RNG state.");
+    }
+    return rng;
+}
+
 std::vector<std::pair<double, double>> midpointMuQuadrature(int nodeCount)
 {
     std::vector<std::pair<double, double>> nodes;
@@ -2674,6 +2815,7 @@ StokesVector traceBandPath(
     );
 
     int branchCount = 1;
+    int activeTwilightComponents = 0;
     if (useGuidedContinuation) {
         branchCount = std::max(1, config.monte_carlo.source_guided_first_scatter_branches);
         const double muSunAbs = std::abs(muSun);
@@ -2681,12 +2823,19 @@ StokesVector traceBandPath(
             branchCount = std::max(branchCount, config.monte_carlo.rayleigh_source_guided_first_scatter_branches);
         }
         if (proposal.use_twilight_higher_order) {
-            int activeTwilightComponents = 0;
             activeTwilightComponents += proposal.phase_fraction > 1.0e-9 ? 1 : 0;
             activeTwilightComponents += proposal.tangent_fraction > 1.0e-9 ? 1 : 0;
             activeTwilightComponents += proposal.horizon_fraction > 1.0e-9 ? 1 : 0;
             branchCount = std::max(branchCount, config.monte_carlo.twilight_higher_order_branches);
             branchCount = std::max(branchCount, activeTwilightComponents);
+        }
+        if (config.monte_carlo.higher_order_recursive_branch_cap > 0 &&
+            recursiveMinimumScatteringOrder(config, eventIndex) >= 3) {
+            branchCount = std::clamp(
+                branchCount,
+                1,
+                config.monte_carlo.higher_order_recursive_branch_cap
+            );
         }
     }
 
@@ -2708,7 +2857,12 @@ StokesVector traceBandPath(
     }
 
     std::array<int, 3> twilightComponentBranches {0, 0, 0};
-    if (proposal.use_twilight_higher_order && branchCount > 1 && polarizationBranches == 0) {
+    const bool stratifyTwilightComponents =
+        proposal.use_twilight_higher_order &&
+        branchCount > 1 &&
+        branchCount >= activeTwilightComponents &&
+        polarizationBranches == 0;
+    if (stratifyTwilightComponents) {
         twilightComponentBranches = stratifiedTwilightBranchCounts(
             {
                 proposal.phase_fraction,
@@ -2735,7 +2889,7 @@ StokesVector traceBandPath(
             );
             componentWeight = polarizationFraction;
             componentBranchCount = polarizationBranches;
-        } else if (proposal.use_twilight_higher_order && polarizationBranches == 0) {
+        } else if (stratifyTwilightComponents) {
             TwilightGuidedComponent forcedComponent = TwilightGuidedComponent::phase;
             int localIndex = branchIndex;
             if (localIndex < twilightComponentBranches[0]) {
@@ -2845,6 +2999,40 @@ StokesVector traceBandPath(
     return totalContribution;
 }
 
+StokesVector traceOnePathBands(
+    const SimulationContext &context,
+    const SimulationConfig &config,
+    const Vec3 &observer,
+    const Vec3 &initialDirection,
+    std::mt19937 &rng,
+    std::size_t startingBandIndex = 0,
+    const StokesVector &initialContribution = {0.0, 0.0, 0.0, 0.0},
+    const std::function<void(std::size_t, const StokesVector &, const std::mt19937 &)> &bandCompleteCallback = {}
+)
+{
+    StokesVector totalContribution = initialContribution;
+    const std::size_t safeStartingBandIndex = std::min(startingBandIndex, context.active_bands.size());
+    for (std::size_t bandIndex = safeStartingBandIndex; bandIndex < context.active_bands.size(); ++bandIndex) {
+        totalContribution = addStokes(
+            totalContribution,
+            traceBandPath(
+                context,
+                config,
+                context.active_bands[bandIndex],
+                observer,
+                initialDirection,
+                identityMueller(),
+                0,
+                rng
+            )
+        );
+        if (bandCompleteCallback) {
+            bandCompleteCallback(bandIndex + 1, totalContribution, rng);
+        }
+    }
+    return totalContribution;
+}
+
 StokesVector traceOnePath(
     const SimulationContext &context,
     const SimulationConfig &config,
@@ -2856,25 +3044,7 @@ StokesVector traceOnePath(
     const Vec3 observer = observerPosition(config.observer);
     const LocalBasis observerBasis = localBasisAtPosition(observer);
     const Vec3 initialDirection = directionFromZenithAzimuth(viewZenithDeg, viewAzimuthDeg, observerBasis);
-    StokesVector totalContribution {0.0, 0.0, 0.0, 0.0};
-
-    for (const SpectralBand &band : context.active_bands) {
-        totalContribution = addStokes(
-            totalContribution,
-            traceBandPath(
-                context,
-                config,
-                band,
-                observer,
-                initialDirection,
-                identityMueller(),
-                0,
-                rng
-            )
-        );
-    }
-
-    return totalContribution;
+    return traceOnePathBands(context, config, observer, initialDirection, rng);
 }
 
 DirectionEstimate estimateDirectionMoments(
@@ -2985,11 +3155,72 @@ DirectionEstimate estimateDirectionMoments(
         moments.mean = checkpointState->higher_order.mean;
         moments.m2 = checkpointState->higher_order.m2;
     }
+    const int robustGroupSampleTarget = std::max(sampleCount, config.monte_carlo.photons_per_bin);
+    const int robustGroupCount = config.monte_carlo.higher_order_robust_groups > 1
+        ? std::min(robustGroupSampleTarget, config.monte_carlo.higher_order_robust_groups)
+        : 0;
+    RobustHigherOrderGroups robustGroups;
+    if (checkpointState != nullptr) {
+        robustGroups.loadFromCheckpoint(checkpointState->higher_order, robustGroupCount);
+    } else {
+        robustGroups.initialize(robustGroupCount);
+    }
     const int higherOrderInitialCompletedSamples = std::max(0, moments.count);
     const int higherOrderProgressInterval =
         sampleCount <= 16 ? 1 : (sampleCount <= 64 ? 4 : (sampleCount <= 256 ? 16 : 32));
     const double higherOrderBaseSeconds = estimate.timing.higher_order_seconds;
     const auto higherOrderStart = std::chrono::steady_clock::now();
+    const auto updateHigherOrderTiming = [&]() {
+        estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
+    };
+    const auto syncHigherOrderCheckpoint = [&]() {
+        if (checkpointState == nullptr) {
+            return;
+        }
+        updateHigherOrderTiming();
+        checkpointState->higher_order.completed_samples = moments.count;
+        checkpointState->higher_order.mean = moments.mean;
+        checkpointState->higher_order.m2 = moments.m2;
+        robustGroups.copyToCheckpoint(checkpointState->higher_order);
+        checkpointState->timing = publicTimingSummary(estimate.timing);
+    };
+    const auto checkpointHigherOrderBand = [&](
+        int sampleIndex,
+        std::size_t completedBands,
+        const StokesVector &partialSample,
+        const std::mt19937 &sampleRng
+    ) {
+        if (checkpointState == nullptr) {
+            return;
+        }
+        syncHigherOrderCheckpoint();
+        checkpointState->higher_order.sample_in_progress = true;
+        checkpointState->higher_order.in_progress_sample_index = sampleIndex;
+        checkpointState->higher_order.completed_bands_in_sample = completedBands;
+        checkpointState->higher_order.partial_sample = partialSample;
+        checkpointState->higher_order.rng_state = serializeRngState(sampleRng);
+        checkpointState->timing = publicTimingSummary(estimate.timing);
+        if (stageCallback) {
+            stageCallback(
+                SampleProgress::Stage::higher_order_progress,
+                estimate.timing,
+                static_cast<std::size_t>(moments.count),
+                static_cast<std::size_t>(sampleCount)
+            );
+        }
+    };
+    const auto clearHigherOrderInProgress = [&]() {
+        if (checkpointState == nullptr) {
+            return;
+        }
+        checkpointState->higher_order.sample_in_progress = false;
+        checkpointState->higher_order.in_progress_sample_index = 0;
+        checkpointState->higher_order.completed_bands_in_sample = 0;
+        checkpointState->higher_order.partial_sample = {0.0, 0.0, 0.0, 0.0};
+        checkpointState->higher_order.rng_state.clear();
+        syncHigherOrderCheckpoint();
+    };
     const auto reportHigherOrderProgress = [&](int completedSamples) {
         if (!stageCallback || completedSamples <= higherOrderInitialCompletedSamples) {
             return;
@@ -3002,41 +3233,71 @@ DirectionEstimate estimateDirectionMoments(
             return;
         }
 
-        DirectionEstimate::TimingSummary timing = estimate.timing;
-        timing.higher_order_seconds = higherOrderBaseSeconds +
-            std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
+        updateHigherOrderTiming();
         stageCallback(
             SampleProgress::Stage::higher_order_progress,
-            timing,
+            estimate.timing,
             static_cast<std::size_t>(completedSamples),
             static_cast<std::size_t>(sampleCount)
         );
     };
     if (checkpointState != nullptr) {
+        if (checkpointState->higher_order.sample_in_progress) {
+            const int checkpointSampleIndex = checkpointState->higher_order.in_progress_sample_index;
+            if (checkpointSampleIndex != moments.count) {
+                throw std::runtime_error("Checkpoint higher-order in-progress sample index is inconsistent.");
+            }
+            if (checkpointState->higher_order.completed_bands_in_sample > context.active_bands.size()) {
+                throw std::runtime_error("Checkpoint higher-order completed band count exceeds active band count.");
+            }
+            if (checkpointState->higher_order.completed_bands_in_sample < context.active_bands.size() &&
+                checkpointState->higher_order.completed_bands_in_sample > 0 &&
+                checkpointState->higher_order.rng_state.empty()) {
+                throw std::runtime_error("Checkpoint higher-order RNG state is missing for a partial sample.");
+            }
+        }
+
         const int startSample = std::max(0, moments.count);
+        const Vec3 observer = observerPosition(config.observer);
+        const LocalBasis observerBasis = localBasisAtPosition(observer);
+        const Vec3 initialDirection =
+            directionFromZenithAzimuth(direction.zenith_deg, direction.azimuth_deg, observerBasis);
         for (int sampleIndex = startSample; sampleIndex < sampleCount; ++sampleIndex) {
-            std::mt19937 sampleRng(seedForDirectionSample(
+            const unsigned int sampleSeed = seedForDirectionSample(
                 config.monte_carlo.random_seed,
                 directionIndex,
                 direction.zenith_deg,
                 direction.azimuth_deg,
                 sampleIndex
-            ));
-            moments.update(traceOnePath(
+            );
+            std::size_t startingBandIndex = 0;
+            StokesVector sampleContribution {0.0, 0.0, 0.0, 0.0};
+            std::mt19937 sampleRng(sampleSeed);
+            if (checkpointState->higher_order.sample_in_progress) {
+                if (checkpointState->higher_order.in_progress_sample_index != sampleIndex) {
+                    throw std::runtime_error("Checkpoint higher-order in-progress sample does not match resume sample.");
+                }
+                startingBandIndex = checkpointState->higher_order.completed_bands_in_sample;
+                sampleContribution = checkpointState->higher_order.partial_sample;
+                if (startingBandIndex < context.active_bands.size()) {
+                    sampleRng = restoreRngState(checkpointState->higher_order.rng_state, sampleSeed);
+                }
+            }
+            sampleContribution = traceOnePathBands(
                 context,
                 config,
-                direction.zenith_deg,
-                direction.azimuth_deg,
-                sampleRng
-            ));
-            if (checkpointState != nullptr) {
-                estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
-                    std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
-                checkpointState->higher_order.completed_samples = moments.count;
-                checkpointState->higher_order.mean = moments.mean;
-                checkpointState->higher_order.m2 = moments.m2;
-                checkpointState->timing = publicTimingSummary(estimate.timing);
-            }
+                observer,
+                initialDirection,
+                sampleRng,
+                startingBandIndex,
+                sampleContribution,
+                [&](std::size_t completedBands, const StokesVector &partialContribution, const std::mt19937 &bandRng) {
+                    checkpointHigherOrderBand(sampleIndex, completedBands, partialContribution, bandRng);
+                }
+            );
+            moments.update(sampleContribution);
+            robustGroups.update(sampleIndex, sampleContribution);
+            clearHigherOrderInProgress();
             reportHigherOrderProgress(moments.count);
         }
     } else {
@@ -3047,33 +3308,32 @@ DirectionEstimate estimateDirectionMoments(
             direction.azimuth_deg
         ));
         for (int sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex) {
-            moments.update(traceOnePath(
+            const StokesVector sampleContribution = traceOnePath(
                 context,
                 config,
                 direction.zenith_deg,
                 direction.azimuth_deg,
                 rng
-            ));
+            );
+            moments.update(sampleContribution);
+            robustGroups.update(sampleIndex, sampleContribution);
             if (checkpointState != nullptr) {
                 estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
                     std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
                 checkpointState->higher_order.completed_samples = moments.count;
                 checkpointState->higher_order.mean = moments.mean;
                 checkpointState->higher_order.m2 = moments.m2;
+                robustGroups.copyToCheckpoint(checkpointState->higher_order);
                 checkpointState->timing = publicTimingSummary(estimate.timing);
             }
             reportHigherOrderProgress(moments.count);
         }
     }
-    estimate.timing.higher_order_seconds = higherOrderBaseSeconds +
-        std::chrono::duration<double>(std::chrono::steady_clock::now() - higherOrderStart).count();
-    estimate.higher_order = moments.mean;
+    updateHigherOrderTiming();
+    estimate.higher_order = robustGroups.medianOfMeans(moments.mean);
     estimate.higher_variance = moments.variance();
     if (checkpointState != nullptr) {
-        checkpointState->higher_order.completed_samples = moments.count;
-        checkpointState->higher_order.mean = moments.mean;
-        checkpointState->higher_order.m2 = moments.m2;
-        checkpointState->timing = publicTimingSummary(estimate.timing);
+        clearHigherOrderInProgress();
     }
     if (stageCallback) {
         stageCallback(
@@ -3150,6 +3410,7 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
     setIfPresent(values, "benchmark_metadata_json", config.output.benchmark_metadata_json);
     setIfPresent(values, "measurement_case_config", config.output.measurement_case_config);
     setIfPresent(values, "measurement_reference_csv", config.output.measurement_reference_csv);
+    setIfPresent(values, "measurement_model_calibration_csv", config.output.measurement_model_calibration_csv);
     setIfPresent(values, "measurement_metadata_json", config.output.measurement_metadata_json);
     setIfPresent(values, "paper_primary_measurement_case_config", config.output.paper_primary_measurement_case_config);
     setIfPresent(values, "paper_case_provenance_json", config.output.paper_case_provenance_json);
@@ -3287,6 +3548,11 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
     );
     setNumericIfPresent(
         values,
+        "higher_order_recursive_branch_cap",
+        config.monte_carlo.higher_order_recursive_branch_cap
+    );
+    setNumericIfPresent(
+        values,
         "twilight_higher_order_phase_fraction",
         config.monte_carlo.twilight_higher_order_phase_fraction
     );
@@ -3314,6 +3580,11 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
         values,
         "twilight_higher_order_horizon_elevation_deg",
         config.monte_carlo.twilight_higher_order_horizon_elevation_deg
+    );
+    setNumericIfPresent(
+        values,
+        "higher_order_robust_groups",
+        config.monte_carlo.higher_order_robust_groups
     );
     setBoolIfPresent(
         values,
@@ -3363,6 +3634,11 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
         config.validation.solar_vertical_signed_dolp_bias_limit
     );
     setNumericIfPresent(values, "normalized_rmse_limit", config.validation.normalized_rmse_limit);
+    setNumericIfPresent(
+        values,
+        "brightest_region_reference_fraction_of_peak",
+        config.validation.brightest_region_reference_fraction_of_peak
+    );
     setNumericIfPresent(values, "brightest_region_deg_limit", config.validation.brightest_region_deg_limit);
     setNumericIfPresent(
         values,
@@ -3414,6 +3690,10 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
     }
     if (!config.output.measurement_reference_csv.empty()) {
         config.output.measurement_reference_csv = resolvePath(configDir, config.output.measurement_reference_csv).string();
+    }
+    if (!config.output.measurement_model_calibration_csv.empty()) {
+        config.output.measurement_model_calibration_csv =
+            resolvePath(configDir, config.output.measurement_model_calibration_csv).string();
     }
     if (!config.output.measurement_case_config.empty()) {
         config.output.measurement_case_config = resolvePathList(configDir, config.output.measurement_case_config);
@@ -3874,12 +4154,14 @@ void writeSkyResult(const SkyResult &result)
     json << "  \"twilight_limb_elevation_deg\": " << result.config.monte_carlo.twilight_limb_elevation_deg << ",\n";
     json << "  \"twilight_higher_order_guiding\": " << (result.config.monte_carlo.twilight_higher_order_guiding ? "true" : "false") << ",\n";
     json << "  \"twilight_higher_order_branches\": " << result.config.monte_carlo.twilight_higher_order_branches << ",\n";
+    json << "  \"higher_order_recursive_branch_cap\": " << result.config.monte_carlo.higher_order_recursive_branch_cap << ",\n";
     json << "  \"twilight_higher_order_phase_fraction\": " << result.config.monte_carlo.twilight_higher_order_phase_fraction << ",\n";
     json << "  \"twilight_higher_order_tangent_fraction\": " << result.config.monte_carlo.twilight_higher_order_tangent_fraction << ",\n";
     json << "  \"twilight_higher_order_horizon_fraction\": " << result.config.monte_carlo.twilight_higher_order_horizon_fraction << ",\n";
     json << "  \"twilight_higher_order_tangent_cone_half_angle_deg\": " << result.config.monte_carlo.twilight_higher_order_tangent_cone_half_angle_deg << ",\n";
     json << "  \"twilight_higher_order_horizon_cone_half_angle_deg\": " << result.config.monte_carlo.twilight_higher_order_horizon_cone_half_angle_deg << ",\n";
     json << "  \"twilight_higher_order_horizon_elevation_deg\": " << result.config.monte_carlo.twilight_higher_order_horizon_elevation_deg << ",\n";
+    json << "  \"higher_order_robust_groups\": " << result.config.monte_carlo.higher_order_robust_groups << ",\n";
     json << "  \"twilight_order_depolarization\": " << (result.config.monte_carlo.twilight_order_depolarization ? "true" : "false") << ",\n";
     json << "  \"twilight_second_order_polarization_scale\": " << result.config.monte_carlo.twilight_second_order_polarization_scale << ",\n";
     json << "  \"twilight_higher_order_polarization_scale\": " << result.config.monte_carlo.twilight_higher_order_polarization_scale << ",\n";

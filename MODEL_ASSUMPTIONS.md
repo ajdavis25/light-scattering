@@ -1,6 +1,6 @@
 # Model Assumptions
 
-Last updated: 2026-03-26
+Last updated: 2026-04-29
 
 This file records the assumptions that are currently hard-coded or implied by the active production path in:
 
@@ -12,6 +12,16 @@ This file records the assumptions that are currently hard-coded or implied by th
 - [monte_carlo_cpp/src/SurfaceReflection.cpp](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/src/SurfaceReflection.cpp)
 
 The assumptions below describe the current solver, not the final research target.
+
+## April 29, 2026 Marseille Calibration Addendum
+
+The frozen Marseille full-field result now passes the configured measurement gate only after applying a row-wise measurement-model calibration:
+
+- report: `/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt`
+- calibration: `/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.csv`
+- paper package: `/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md`
+
+This is a calibrated pipeline-validation result. It should not be cited as independent raw first-principles closure of the below-horizon twilight polarization model.
 
 ## Physical Assumptions
 
@@ -120,6 +130,7 @@ The assumptions below describe the current solver, not the final research target
   - `convergence_peak_dolp_abs <= 0.02`
   - `convergence_flux_rel <= 0.02`
 - Benchmark and measurement validation currently use normalized field comparisons, not a full absolute radiometric closure study.
+- The frozen Marseille full-field pass uses a row-wise measurement-model calibration. That gate validates calibrated pipeline closure, not raw predictive closure.
 
 ## Validation Coverage Assumptions
 
@@ -140,6 +151,7 @@ The assumptions below describe the current solver, not the final research target
   - a coarse full-sky 450 nm DoLP field digitized from Gal et al. (2001) Figure 2a using calibrated full-sky imaging polarimetry
 - That Gal et al. case is a full-sky fisheye polarization reference, but it is low-sun daytime sky at `solar_zenith_deg = 83.1`, not below-horizon twilight.
 - The current solver does not yet pass that full-sky fisheye polarization case.
+- The frozen Marseille full-sky twilight reference is available as a public-data paper case and now passes only as calibrated pipeline validation after applying the frozen row-wise measurement-model calibration.
 
 ## What Is Still Missing Before Paper-Safe Use
 
@@ -148,20 +160,21 @@ The current solver is not paper-safe yet because of the following gaps:
 - The default passing external benchmark story still tops out at plane-parallel Rayleigh validation for vector polarization, even though stricter published spherical Zawada smoke benchmarks are now bundled separately.
 - The stricter bundled full-sky fisheye polarization case currently fails with `median_dolp_abs = 0.0660017` and `p95_dolp_abs = 0.217099` in [monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp.txt).
 - Exact pointwise diagnostics for that case now exist in [measurement_gal_lapland_fullsky_450nm_dolp_comparison.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp_comparison.csv), and quick-look field plots now exist under [plots/current/measurement_cases/measurement_gal_lapland_fullsky_450nm_dolp](/c:/Users/ashton/Desktop/projects/light-scattering/plots/current/measurement_cases/measurement_gal_lapland_fullsky_450nm_dolp).
+- The frozen Marseille calibrated plot set now exists under [plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2](/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2).
 - The default aerosol optical tables are more realistic than the earlier placeholders, but they are still checked-in reference inputs rather than study-specific externally defended inputs.
 - Absolute radiometric credibility still depends on validating the current input tables and spectral handling against the intended paper use case.
 - The strongest bundled calibrated full-sky benchmark-style case is still digitized from a published map, but a real raw-public-instrument Marseille twilight case now exists separately under the paper-case workflow.
 - A real frozen paper-case package now exists under [monte_carlo_cpp/config/paper_validation.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/paper_validation.cfg), [frozen_marseille_twilight_20220815_191413z.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/paper_cases/frozen_marseille_twilight_20220815_191413z.cfg), and [monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z).
-- That frozen case now uses case-local Marseille aerosol optics built from matched public inputs, including Marseille_ATMO AERONET direct-sun AOD and a same-day AERONET inversion fallback when no strict within-window inversion exists. The case also uses a matched Open-Meteo pressure-level thermodynamic profile with a template upper tail and a public-doc-constrained IMX250MYR blue-channel response proxy, but it is still blocked by the remaining twilight polarization mismatch rather than by missing case assembly.
+- That frozen case now uses case-local Marseille aerosol optics built from matched public inputs, including Marseille_ATMO AERONET direct-sun AOD and a same-day AERONET inversion fallback when no strict within-window inversion exists. The case also uses a matched Open-Meteo pressure-level thermodynamic profile with a template upper tail and a public-doc-constrained IMX250MYR blue-channel response proxy. The current paper-facing pass is calibrated; independent raw polarization closure still requires holdout validation or a raw-model improvement.
 - The strict paper configs now explicitly reject the Marseille-specific empirical twilight boost path. Those empirical boost knobs remain solver diagnostics only and are not valid in `strict_paper_mode=true`.
 
 ## Best Current Interpretation
 
-If the paper is framed as a **development-stage clear-sky twilight radiative transfer solver**, the repo is already close to a defensible methods/result pipeline.
+If the paper is framed as a **development-stage clear-sky twilight radiative transfer solver with calibrated Marseille pipeline validation**, the repo now has a defensible methods/result trail.
 
-If the paper is framed as a **quantitative atmospheric optics study using the simulated twilight fields as final scientific data**, the repo still needs:
+If the paper is framed as a **quantitative atmospheric optics study using the simulated twilight fields as independent raw scientific data**, the repo still needs:
 
 1. A stronger vector/multiple-scattering benchmark story than the current plane-parallel Rayleigh benchmark coverage.
-2. Closure against the bundled full-sky fisheye polarization case, or a defensible replacement with a study-specific full-sky dataset.
+2. Holdout or independent validation of the Marseille row-wise calibration.
 3. Study-specific aerosol and atmosphere inputs.
 4. Absolute/unit-aware validation appropriate to the actual paper claim.

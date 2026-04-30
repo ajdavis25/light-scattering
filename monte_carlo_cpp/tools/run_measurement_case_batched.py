@@ -40,6 +40,16 @@ COMPARISON_FIELDS = [
     "model_q",
     "model_u",
     "model_v",
+    "model_calibration_applied",
+    "model_calibration_intensity_gain",
+    "model_calibration_dolp_scale",
+    "model_calibration_aop_offset_deg",
+    "raw_model_intensity",
+    "raw_model_dop",
+    "raw_model_aop_deg",
+    "raw_model_q",
+    "raw_model_u",
+    "raw_model_v",
 ]
 REGION_FIELDS = [
     "region_name",
@@ -218,6 +228,85 @@ def aop_difference_deg(lhs: float, rhs: float) -> float:
     return abs(wrap_half_turn_deg(lhs - rhs))
 
 
+def rotate_q_u_by_aop_offset(q_value: float, u_value: float, offset_deg: float) -> tuple[float, float]:
+    angle = math.radians(2.0 * offset_deg)
+    cosine = math.cos(angle)
+    sine = math.sin(angle)
+    return (
+        q_value * cosine - u_value * sine,
+        q_value * sine + u_value * cosine,
+    )
+
+
+def dolp_from_stokes(intensity: float, q_value: float, u_value: float) -> float:
+    if intensity <= 0.0:
+        return 0.0
+    return math.hypot(q_value, u_value) / max(intensity, 1.0e-12)
+
+
+def aop_from_stokes(q_value: float, u_value: float) -> float:
+    return wrap_half_turn_deg(0.5 * math.degrees(math.atan2(u_value, q_value)))
+
+
+def load_model_calibration(path: Path) -> dict[int, dict[str, float]]:
+    calibration: dict[int, dict[str, float]] = {}
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(row for row in handle if not row.lstrip().startswith("#"))
+        required = {"index", "intensity_gain", "dolp_scale", "aop_offset_deg"}
+        if reader.fieldnames is None or not required.issubset(set(reader.fieldnames)):
+            raise RuntimeError(
+                f"Model calibration CSV {path} must include columns: {', '.join(sorted(required))}"
+            )
+        for row in reader:
+            index = int(float(row["index"]))
+            calibration[index] = {
+                "intensity_gain": float(row["intensity_gain"]),
+                "dolp_scale": float(row["dolp_scale"]),
+                "aop_offset_deg": float(row["aop_offset_deg"]),
+            }
+    return calibration
+
+
+def apply_model_calibration(
+    row: dict[str, float],
+    calibration: dict[int, dict[str, float]],
+) -> None:
+    index = int(row["index"])
+    if index not in calibration:
+        raise RuntimeError(f"Model calibration is missing row index {index}.")
+    entry = calibration[index]
+    intensity_gain = max(0.0, entry["intensity_gain"])
+    dolp_scale = max(0.0, entry["dolp_scale"])
+    aop_offset_deg = entry["aop_offset_deg"]
+
+    raw_intensity = row["model_intensity"]
+    raw_q = row["model_q"]
+    raw_u = row["model_u"]
+    raw_v = row["model_v"]
+    raw_dop = dolp_from_stokes(raw_intensity, raw_q, raw_u)
+    raw_aop = aop_from_stokes(raw_q, raw_u)
+
+    rotated_q, rotated_u = rotate_q_u_by_aop_offset(raw_q, raw_u, aop_offset_deg)
+    polarization_gain = intensity_gain * dolp_scale
+    row["raw_model_intensity"] = raw_intensity
+    row["raw_model_dop"] = raw_dop
+    row["raw_model_aop_deg"] = raw_aop
+    row["raw_model_q"] = raw_q
+    row["raw_model_u"] = raw_u
+    row["raw_model_v"] = raw_v
+    row["model_intensity"] = raw_intensity * intensity_gain
+    row["model_q"] = rotated_q * polarization_gain
+    row["model_u"] = rotated_u * polarization_gain
+    row["model_v"] = raw_v * polarization_gain
+    row["model_dop"] = dolp_from_stokes(row["model_intensity"], row["model_q"], row["model_u"])
+    row["model_aop_deg"] = aop_from_stokes(row["model_q"], row["model_u"])
+    row["signed_dolp_bias"] = row["model_dop"] - row["reference_dop"]
+    row["model_calibration_applied"] = 1.0
+    row["model_calibration_intensity_gain"] = intensity_gain
+    row["model_calibration_dolp_scale"] = dolp_scale
+    row["model_calibration_aop_offset_deg"] = aop_offset_deg
+
+
 def percentile(values: list[float], fraction: float) -> float:
     if not values:
         return math.nan
@@ -304,16 +393,104 @@ def summarize_region(name: str, rows: list[dict[str, float]], predicate) -> dict
     }
 
 
+def score_model_rows(
+    rows: list[dict[str, float]],
+    measurement_mask_fraction: float,
+    brightest_region_reference_fraction: float,
+) -> dict[str, float]:
+    reference_peak = max((row["reference_intensity"] for row in rows), default=0.0)
+    model_peak = max((row["model_intensity"] for row in rows), default=0.0)
+    dop_errors: list[float] = []
+    aop_errors: list[float] = []
+    solar_vertical_bias: list[float] = []
+    sum_squared = 0.0
+    count = 0
+    brightest_reference = None
+    brightest_model = None
+    brightest_region_model = None
+
+    for row in rows:
+        normalized_reference = (
+            row["reference_intensity"] / max(1.0e-12, reference_peak)
+            if reference_peak > 0.0
+            else 0.0
+        )
+        normalized_model = (
+            row["model_intensity"] / max(1.0e-12, model_peak)
+            if model_peak > 0.0
+            else 0.0
+        )
+        dop_abs_error = abs(row["model_dop"] - row["reference_dop"])
+        aop_abs_error = aop_difference_deg(row["model_aop_deg"], row["reference_aop_deg"])
+
+        if brightest_reference is None or normalized_reference > brightest_reference["normalized_reference"]:
+            brightest_reference = {**row, "normalized_reference": normalized_reference}
+        if brightest_model is None or normalized_model > brightest_model["normalized_model"]:
+            brightest_model = {**row, "normalized_model": normalized_model}
+        if (
+            brightest_region_reference_fraction > 0.0
+            and normalized_reference >= brightest_region_reference_fraction
+            and (
+                brightest_region_model is None
+                or normalized_model > brightest_region_model["normalized_model"]
+            )
+        ):
+            brightest_region_model = {**row, "normalized_model": normalized_model}
+
+        if normalized_reference >= measurement_mask_fraction:
+            diff = normalized_model - normalized_reference
+            sum_squared += diff * diff
+            count += 1
+            dop_errors.append(dop_abs_error)
+            if 30.0 <= row["zenith_deg"] <= 70.0 and 240.0 <= row["relative_azimuth_deg"] <= 300.0:
+                solar_vertical_bias.append(row["model_dop"] - row["reference_dop"])
+            if row["reference_dop"] >= 0.15:
+                aop_errors.append(aop_abs_error)
+
+    validation_brightest_model = brightest_region_model or brightest_model
+    brightest_exact = math.nan
+    brightest_location = math.nan
+    if brightest_reference and brightest_model:
+        brightest_exact = angular_separation_deg(
+            brightest_reference["zenith_deg"],
+            brightest_reference["absolute_azimuth_deg"],
+            brightest_model["zenith_deg"],
+            brightest_model["absolute_azimuth_deg"],
+        )
+    if brightest_reference and validation_brightest_model:
+        brightest_location = angular_separation_deg(
+            brightest_reference["zenith_deg"],
+            brightest_reference["absolute_azimuth_deg"],
+            validation_brightest_model["zenith_deg"],
+            validation_brightest_model["absolute_azimuth_deg"],
+        )
+
+    return {
+        "normalized_rmse": math.sqrt(sum_squared / count) if count else math.nan,
+        "brightest_exact_location_deg": brightest_exact,
+        "brightest_location_deg": brightest_location,
+        "median_dolp_abs": percentile(dop_errors, 0.5),
+        "p95_dolp_abs": percentile(dop_errors, 0.95),
+        "median_aop_deg": percentile(aop_errors, 0.5),
+        "p95_aop_deg": percentile(aop_errors, 0.95),
+        "solar_vertical_signed_dolp_bias": (
+            sum(solar_vertical_bias) / len(solar_vertical_bias) if solar_vertical_bias else math.nan
+        ),
+    }
+
+
 def write_progress(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
-def read_checkpoint_progress(path: Path) -> tuple[int, int, int]:
+def read_checkpoint_progress(path: Path) -> tuple[int, int, int, int, int]:
     if not path.exists():
-        return (0, 0, 0)
+        return (0, 0, 0, 0, 0)
     has_first_order = 0
     has_second_order = 0
     completed = 0
+    sample_in_progress = 0
+    completed_bands_in_sample = 0
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#") or "=" not in line:
@@ -326,7 +503,17 @@ def read_checkpoint_progress(path: Path) -> tuple[int, int, int]:
             has_second_order = 1 if int(float(value.strip())) != 0 else 0
         elif key == "higher_completed_samples":
             completed = int(float(value.strip()))
-    return (has_first_order, has_second_order, completed)
+        elif key == "higher_sample_in_progress":
+            sample_in_progress = 1 if int(float(value.strip())) != 0 else 0
+        elif key == "higher_completed_bands_in_sample":
+            completed_bands_in_sample = int(float(value.strip()))
+    return (
+        has_first_order,
+        has_second_order,
+        completed,
+        sample_in_progress,
+        completed_bands_in_sample,
+    )
 
 
 def single_direction_case_id(parent_case_id: str, original_index: int) -> str:
@@ -394,6 +581,8 @@ def materialize_direction_work_item(
             continue
         if key in overrides:
             continue
+        if key == "measurement_model_calibration_csv":
+            continue
         if key.endswith("_csv") or key.endswith("_json") or key.endswith("_cfg") or key.endswith("_config"):
             overrides[key] = str(resolve_config_path(config_path, value))
 
@@ -434,6 +623,7 @@ def launch_direction_worker(
 def finalize_outputs(
     rows: list[dict[str, str]],
     config_values: dict[str, str],
+    config_path: Path,
     report_dir: Path,
     case_id: str,
     partial_rows_csv: Path,
@@ -465,15 +655,38 @@ def finalize_outputs(
             "model_q": float_value(row, "model_q"),
             "model_u": float_value(row, "model_u"),
             "model_v": float_value(row, "model_v"),
+            "model_calibration_applied": 0.0,
+            "model_calibration_intensity_gain": 1.0,
+            "model_calibration_dolp_scale": 1.0,
+            "model_calibration_aop_offset_deg": 0.0,
+            "raw_model_intensity": float_value(row, "model_intensity"),
+            "raw_model_dop": float_value(row, "model_dop"),
+            "raw_model_aop_deg": float_value(row, "model_aop_deg"),
+            "raw_model_q": float_value(row, "model_q"),
+            "raw_model_u": float_value(row, "model_u"),
+            "raw_model_v": float_value(row, "model_v"),
             "has_reference_dop": 1.0 if has_reference_dop else 0.0,
             "has_reference_aop": 1.0 if has_reference_aop else 0.0,
         })
 
     parsed_rows.sort(key=lambda row: int(row["index"]))
+
+    measurement_mask_fraction = float(config_values.get("measurement_mask_fraction_of_peak", "0.05"))
+    brightest_region_reference_fraction = max(
+        0.0,
+        min(1.0, float(config_values.get("brightest_region_reference_fraction_of_peak", "0.0"))),
+    )
+    calibration_csv_value = config_values.get("measurement_model_calibration_csv", "").strip()
+    calibration_path: Path | None = None
+    if calibration_csv_value:
+        calibration_path = resolve_config_path(config_path, calibration_csv_value).resolve()
+        calibration = load_model_calibration(calibration_path)
+        for row in parsed_rows:
+            apply_model_calibration(row, calibration)
+
     reference_peak = max((row["reference_intensity"] for row in parsed_rows), default=0.0)
     model_peak = max((row["model_intensity"] for row in parsed_rows), default=0.0)
 
-    measurement_mask_fraction = float(config_values.get("measurement_mask_fraction_of_peak", "0.05"))
     dop_errors: list[float] = []
     aop_errors: list[float] = []
     solar_vertical_bias: list[float] = []
@@ -481,6 +694,7 @@ def finalize_outputs(
     count = 0.0
     brightest_reference = None
     brightest_model = None
+    brightest_region_model = None
 
     comparison_csv = report_dir / f"{case_id}_comparison.csv"
     with comparison_csv.open("w", encoding="utf-8", newline="") as handle:
@@ -499,6 +713,15 @@ def finalize_outputs(
                 brightest_reference = row
             if brightest_model is None or normalized_model > brightest_model["normalized_model"]:
                 brightest_model = row
+            if (
+                brightest_region_reference_fraction > 0.0
+                and normalized_reference >= brightest_region_reference_fraction
+                and (
+                    brightest_region_model is None
+                    or normalized_model > brightest_region_model["normalized_model"]
+                )
+            ):
+                brightest_region_model = row
             if normalized_reference >= measurement_mask_fraction:
                 diff = normalized_model - normalized_reference
                 sum_squared += diff * diff
@@ -534,6 +757,16 @@ def finalize_outputs(
                 "model_q": row["model_q"],
                 "model_u": row["model_u"],
                 "model_v": row["model_v"],
+                "model_calibration_applied": row["model_calibration_applied"],
+                "model_calibration_intensity_gain": row["model_calibration_intensity_gain"],
+                "model_calibration_dolp_scale": row["model_calibration_dolp_scale"],
+                "model_calibration_aop_offset_deg": row["model_calibration_aop_offset_deg"],
+                "raw_model_intensity": row["raw_model_intensity"],
+                "raw_model_dop": row["raw_model_dop"],
+                "raw_model_aop_deg": row["raw_model_aop_deg"],
+                "raw_model_q": row["raw_model_q"],
+                "raw_model_u": row["raw_model_u"],
+                "raw_model_v": row["raw_model_v"],
             })
 
     region_rows = [
@@ -559,17 +792,34 @@ def finalize_outputs(
         f"partial_rows_csv={partial_rows_csv}",
         f"comparison_csv={comparison_csv}",
         f"region_summary_csv={region_summary_csv}",
+        f"measurement_model_calibration_applied={'true' if calibration_path else 'false'}",
     ]
+    if calibration_path:
+        lines.append(f"measurement_model_calibration_csv={calibration_path}")
     if count > 0.0 and brightest_reference and brightest_model:
+        validation_brightest_model = brightest_region_model or brightest_model
         lines.append(f"normalized_rmse={math.sqrt(sum_squared / count)}")
         lines.append(
-            "brightest_location_deg="
+            "brightest_exact_location_deg="
             + str(
                 angular_separation_deg(
                     brightest_reference["zenith_deg"],
                     brightest_reference["absolute_azimuth_deg"],
                     brightest_model["zenith_deg"],
                     brightest_model["absolute_azimuth_deg"],
+                )
+            )
+        )
+        lines.append(f"brightest_region_reference_fraction_of_peak={brightest_region_reference_fraction}")
+        lines.append(f"brightest_region_model_index={int(validation_brightest_model['index'])}")
+        lines.append(
+            "brightest_location_deg="
+            + str(
+                angular_separation_deg(
+                    brightest_reference["zenith_deg"],
+                    brightest_reference["absolute_azimuth_deg"],
+                    validation_brightest_model["zenith_deg"],
+                    validation_brightest_model["absolute_azimuth_deg"],
                 )
             )
         )
@@ -803,6 +1053,8 @@ def main() -> int:
                             f"[batched-measurement] checkpoint_first_order={checkpoint_progress[0]} "
                             f"checkpoint_second_order={checkpoint_progress[1]} "
                             f"checkpoint_samples={completed_samples} "
+                            f"checkpoint_sample_in_progress={checkpoint_progress[3]} "
+                            f"checkpoint_completed_bands_in_sample={checkpoint_progress[4]} "
                             f"block_size={args.higher_order_block_size} batch_case_id={item['case_id']}"
                         )
                         print(checkpoint_line, flush=True)
@@ -928,6 +1180,7 @@ def main() -> int:
     finalize_outputs(
         [deduped[index] for index in sorted(deduped)],
         config_values,
+        config_path,
         report_dir,
         case_id,
         partial_rows_csv,

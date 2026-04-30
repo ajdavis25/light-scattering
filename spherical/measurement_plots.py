@@ -35,18 +35,24 @@ def find_measurement_runner() -> Path:
     raise FileNotFoundError("Could not find a built MeasurementCaseRunner.exe in build_current or build.")
 
 
-def measurement_case_paths(config_path: Path) -> tuple[str, Path, Path]:
+def measurement_case_paths(config_path: Path, report_case_id: str | None = None) -> tuple[str, Path, Path]:
     values = load_key_value_config(config_path)
-    case_id = values["case_id"]
+    case_id = report_case_id or values["case_id"]
     output_dir = (config_path.parent / values.get("output_dir", "../results")).resolve()
     report_dir = output_dir / "measurement_case_reports"
     return case_id, report_dir / f"{case_id}.txt", report_dir / f"{case_id}_comparison.csv"
 
 
-def ensure_measurement_case_report(config_path: Path) -> tuple[Path, Path]:
-    case_id, report_path, comparison_path = measurement_case_paths(config_path)
+def ensure_measurement_case_report(config_path: Path, report_case_id: str | None = None) -> tuple[Path, Path]:
+    case_id, report_path, comparison_path = measurement_case_paths(config_path, report_case_id=report_case_id)
     if report_path.exists() and comparison_path.exists():
         return report_path, comparison_path
+
+    if report_case_id is not None:
+        raise FileNotFoundError(
+            f"Precomputed measurement artifacts for {case_id} are missing: "
+            f"{report_path} and {comparison_path}"
+        )
 
     runner = find_measurement_runner()
     subprocess.run([str(runner), str(config_path)], cwd=ROOT, check=True)
@@ -131,13 +137,18 @@ def plot_measurement_scatter(
     plt.close(fig)
 
 
-def save_measurement_case_plots(config_path: Path, plot_root: Path) -> dict[str, str]:
-    report_path, comparison_path = ensure_measurement_case_report(config_path)
+def save_measurement_case_plots(
+    config_path: Path,
+    plot_root: Path,
+    report_case_id: str | None = None,
+) -> dict[str, str]:
+    report_path, comparison_path = ensure_measurement_case_report(config_path, report_case_id=report_case_id)
     config_values = load_key_value_config(config_path)
     report_values = load_measurement_report(report_path)
     comparison = load_measurement_comparison(comparison_path)
 
-    case_plot_dir = plot_root / config_values["case_id"]
+    plot_case_id = report_values.get("case_id", report_case_id or config_values["case_id"])
+    case_plot_dir = plot_root / plot_case_id
     case_plot_dir.mkdir(parents=True, exist_ok=True)
     sun_zenith_deg = float(config_values["solar_zenith_deg"])
     sun_azimuth_deg = float(config_values["solar_azimuth_deg"])
@@ -331,7 +342,9 @@ def save_measurement_case_plots(config_path: Path, plot_root: Path) -> dict[str,
         )
 
     summary = {
-        "case_id": config_values["case_id"],
+        "case_id": plot_case_id,
+        "config_case_id": config_values["case_id"],
+        "report_case_id": report_case_id,
         "config_path": str(config_path),
         "report_path": str(report_path),
         "comparison_path": str(comparison_path),

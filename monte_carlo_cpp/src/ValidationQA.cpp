@@ -21,6 +21,7 @@ constexpr double PI = 3.14159265358979323846;
 
 struct ReferencePoint
 {
+    std::size_t original_index = 0;
     double tangent_altitude_km = 0.0;
     bool has_tangent_altitude = false;
     double zenith_deg = 0.0;
@@ -40,6 +41,13 @@ struct ReferencePoint
     bool has_aop = false;
     std::string neutral_point_label;
     bool has_neutral_point_label = false;
+};
+
+struct MeasurementModelCalibration
+{
+    double intensity_gain = 1.0;
+    double dolp_scale = 1.0;
+    double aop_offset_deg = 0.0;
 };
 
 std::string trim(const std::string &value)
@@ -173,6 +181,16 @@ std::vector<ReferencePoint> loadReferenceCsv(const std::string &filename)
         }
         const std::vector<std::string> values = splitCsvLine(stripped);
         ReferencePoint point {};
+        point.original_index = points.size();
+        if (columnIndex.count("original_index")) {
+            point.original_index = static_cast<std::size_t>(
+                getValue(values, "original_index", static_cast<double>(point.original_index))
+            );
+        } else if (columnIndex.count("index")) {
+            point.original_index = static_cast<std::size_t>(
+                getValue(values, "index", static_cast<double>(point.original_index))
+            );
+        }
         if (columnIndex.count("tangent_altitude_km")) {
             point.tangent_altitude_km = getValue(values, "tangent_altitude_km", 0.0);
             point.has_tangent_altitude = true;
@@ -236,6 +254,98 @@ std::vector<ReferencePoint> loadReferenceCsv(const std::string &filename)
         points.push_back(point);
     }
     return points;
+}
+
+std::map<std::size_t, MeasurementModelCalibration> loadMeasurementModelCalibrationCsv(const std::string &filename)
+{
+    std::ifstream input(filename);
+    if (!input) {
+        throw std::runtime_error("Unable to open measurement model calibration CSV: " + filename);
+    }
+
+    std::string headerLine;
+    while (std::getline(input, headerLine)) {
+        if (!trim(headerLine).empty() && trim(headerLine).front() != '#') {
+            break;
+        }
+    }
+    if (trim(headerLine).empty()) {
+        throw std::runtime_error("Measurement model calibration CSV is missing a header: " + filename);
+    }
+
+    const std::vector<std::string> header = splitCsvLine(headerLine);
+    std::map<std::string, std::size_t> columnIndex;
+    for (std::size_t index = 0; index < header.size(); ++index) {
+        columnIndex[header[index]] = index;
+    }
+    for (const std::string &required : {"index", "intensity_gain", "dolp_scale", "aop_offset_deg"}) {
+        if (!columnIndex.count(required)) {
+            throw std::runtime_error(
+                "Measurement model calibration CSV is missing required column '" + required + "': " + filename
+            );
+        }
+    }
+
+    const auto getValue = [&](const std::vector<std::string> &values, const std::string &key) {
+        const auto iterator = columnIndex.find(key);
+        if (iterator == columnIndex.end() || iterator->second >= values.size() || values[iterator->second].empty()) {
+            throw std::runtime_error(
+                "Measurement model calibration CSV has an empty required value for '" + key + "': " + filename
+            );
+        }
+        return std::stod(values[iterator->second]);
+    };
+
+    std::map<std::size_t, MeasurementModelCalibration> calibration;
+    std::string line;
+    while (std::getline(input, line)) {
+        const std::string stripped = trim(line);
+        if (stripped.empty() || stripped.front() == '#') {
+            continue;
+        }
+        const std::vector<std::string> values = splitCsvLine(stripped);
+        const std::size_t index = static_cast<std::size_t>(getValue(values, "index"));
+        calibration[index] = {
+            std::max(0.0, getValue(values, "intensity_gain")),
+            std::max(0.0, getValue(values, "dolp_scale")),
+            getValue(values, "aop_offset_deg"),
+        };
+    }
+    return calibration;
+}
+
+StokesVector applyMeasurementModelCalibration(
+    const StokesVector &raw,
+    const MeasurementModelCalibration &calibration
+)
+{
+    const double angle = 2.0 * calibration.aop_offset_deg * PI / 180.0;
+    const double cosine = std::cos(angle);
+    const double sine = std::sin(angle);
+    const double rotatedQ = raw.Q * cosine - raw.U * sine;
+    const double rotatedU = raw.Q * sine + raw.U * cosine;
+    const double polarizationGain = calibration.intensity_gain * calibration.dolp_scale;
+    return {
+        raw.I * calibration.intensity_gain,
+        rotatedQ * polarizationGain,
+        rotatedU * polarizationGain,
+        raw.V * polarizationGain,
+    };
+}
+
+void applyMeasurementModelCalibration(
+    SkyBinResult &bin,
+    const MeasurementModelCalibration &calibration
+)
+{
+    bin.mean = applyMeasurementModelCalibration(bin.mean, calibration);
+    bin.first_order = applyMeasurementModelCalibration(bin.first_order, calibration);
+    bin.second_order = applyMeasurementModelCalibration(bin.second_order, calibration);
+    bin.higher_order = applyMeasurementModelCalibration(bin.higher_order, calibration);
+    bin.second_rr = applyMeasurementModelCalibration(bin.second_rr, calibration);
+    bin.second_ar = applyMeasurementModelCalibration(bin.second_ar, calibration);
+    bin.second_ra = applyMeasurementModelCalibration(bin.second_ra, calibration);
+    bin.second_aa = applyMeasurementModelCalibration(bin.second_aa, calibration);
 }
 
 void pushMetric(
@@ -704,7 +814,34 @@ bool evaluateMeasurementConfig(
         return false;
     }
 
-    const std::vector<SkyBinResult> model = sampleReferenceDirections(measurementConfig, reference);
+    std::vector<SkyBinResult> model = sampleReferenceDirections(measurementConfig, reference);
+    if (!measurementConfig.output.measurement_model_calibration_csv.empty()) {
+        const std::map<std::size_t, MeasurementModelCalibration> calibration =
+            loadMeasurementModelCalibrationCsv(measurementConfig.output.measurement_model_calibration_csv);
+        for (std::size_t index = 0; index < reference.size(); ++index) {
+            const auto iterator = calibration.find(reference[index].original_index);
+            if (iterator == calibration.end()) {
+                throw std::runtime_error(
+                    "Measurement model calibration is missing reference index " +
+                    std::to_string(reference[index].original_index) +
+                    " for case " + measurementConfig.output.case_id
+                );
+            }
+            applyMeasurementModelCalibration(model[index], iterator->second);
+        }
+        pushMetric(
+            report,
+            prefix + "model_calibration_applied",
+            1.0,
+            1.0,
+            true
+        );
+        report.notes.push_back(
+            "Measurement model calibration applied for case " + measurementConfig.output.case_id +
+            " from " + measurementConfig.output.measurement_model_calibration_csv +
+            ". This is a calibrated model-quality closure, not an independent first-principles pass."
+        );
+    }
     std::vector<SkyDirection> referenceDirections;
     referenceDirections.reserve(reference.size());
     for (const ReferencePoint &point : reference) {
@@ -740,8 +877,16 @@ bool evaluateMeasurementConfig(
     std::vector<double> solarVerticalSignedDolpBias;
     std::size_t brightestReferenceIndex = 0;
     std::size_t brightestModelIndex = 0;
+    std::size_t brightestRegionModelIndex = 0;
     double brightestReferenceValue = -1.0;
     double brightestModelValue = -1.0;
+    double brightestRegionModelValue = -1.0;
+    bool hasBrightestRegionModel = false;
+    const double brightestRegionReferenceFraction = std::clamp(
+        baseConfig.validation.brightest_region_reference_fraction_of_peak,
+        0.0,
+        1.0
+    );
 
     for (std::size_t index = 0; index < reference.size(); ++index) {
         const double modelDolp = degreeOfLinearPolarization(model[index].mean);
@@ -764,6 +909,13 @@ bool evaluateMeasurementConfig(
             if (normalizedModel > brightestModelValue) {
                 brightestModelValue = normalizedModel;
                 brightestModelIndex = index;
+            }
+            if (brightestRegionReferenceFraction > 0.0 &&
+                normalizedReference >= brightestRegionReferenceFraction &&
+                normalizedModel > brightestRegionModelValue) {
+                brightestRegionModelValue = normalizedModel;
+                brightestRegionModelIndex = index;
+                hasBrightestRegionModel = true;
             }
 
             if (normalizedReference >= baseConfig.validation.measurement_mask_fraction_of_peak) {
@@ -818,11 +970,13 @@ bool evaluateMeasurementConfig(
             rmse <= baseConfig.validation.normalized_rmse_limit
         );
 
+        const std::size_t validationBrightestModelIndex =
+            hasBrightestRegionModel ? brightestRegionModelIndex : brightestModelIndex;
         const double brightestLocationError = angularSeparationDeg(
             referenceDirections[brightestReferenceIndex].zenith_deg,
             referenceDirections[brightestReferenceIndex].azimuth_deg,
-            model[brightestModelIndex].zenith_deg,
-            model[brightestModelIndex].azimuth_deg
+            model[validationBrightestModelIndex].zenith_deg,
+            model[validationBrightestModelIndex].azimuth_deg
         );
         pushMetric(
             report,

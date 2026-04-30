@@ -1,10 +1,21 @@
 # Project Status
 
-Last updated: 2026-03-26
+Last updated: 2026-04-29
 
 This file tracks the repo state after the research-grade clear-sky twilight implementation pass that followed the earlier inspection report in [notebooks/notes.ipynb](/c:/Users/ashton/Desktop/projects/light-scattering/notebooks/notes.ipynb).
 
 Current physical and numerical model assumptions are documented in [MODEL_ASSUMPTIONS.md](/c:/Users/ashton/Desktop/projects/light-scattering/MODEL_ASSUMPTIONS.md).
+
+## April 29, 2026 addendum
+
+The current Marseille paper-facing result is no longer the earlier interactive/raw mismatch described below. The current frozen full-field Marseille artifact is a calibrated pipeline-validation result:
+
+- status note: [notebooks/MARSEILLE_CALIBRATED_VALIDATION_STATUS_2026-04-28.md](/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_VALIDATION_STATUS_2026-04-28.md)
+- paper package: [notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md](/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md)
+- report: [frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt](/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt)
+- figures: [plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2](/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2)
+
+This result passes the configured Marseille measurement gate only after applying the frozen row-wise measurement-model calibration. It should be cited as calibrated pipeline validation, not as independent raw first-principles closure.
 
 ## What changed
 
@@ -107,7 +118,7 @@ It now:
 - writes an NPZ bundle for downstream analysis
 - generates production fisheye plots
 - generates analytic-reference comparison plots
-- defaults its measurement-debug plot generation to the full-field interactive Marseille case instead of the older Gal case
+- defaults its measurement plot generation to the frozen calibrated full-field Marseille report instead of the older Gal or interactive Marseille cases
 - writes Marseille measurement-side DoLP, AoP, signed DoLP bias, normalized-intensity, and order-fraction plots from the exact comparison CSVs
 
 Key Python files:
@@ -153,7 +164,7 @@ Current plot set:
 - [plots/current/comparison_intensity_difference.png](/c:/Users/ashton/Desktop/projects/light-scattering/plots/current/comparison_intensity_difference.png)
 - [plots/current/comparison_dop_difference.png](/c:/Users/ashton/Desktop/projects/light-scattering/plots/current/comparison_dop_difference.png)
 - [plots/current/production_intensity_std.png](/c:/Users/ashton/Desktop/projects/light-scattering/plots/current/production_intensity_std.png)
-- [plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement_interactive](/c:/Users/ashton/Desktop/projects/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement_interactive)
+- [plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2](/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2)
 
 ## Verification that succeeded
 
@@ -201,7 +212,7 @@ Current validation report status:
 - the stronger published spherical-vector all-orders limb benchmark now also passes its smoke-run benchmark metrics with `median_intensity_rel = 0.00457567`, `p95_intensity_rel = 0.012131`, `median_dolp_abs = 0.0199496`, and `p95_dolp_abs = 0.0353911` in [benchmark_zawada_spherical_vector_multiple_smoke.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/validation/benchmark_zawada_spherical_vector_multiple_smoke.txt)
 - that stronger all-orders benchmark now relies on a benchmark-only heavier config in [monte_carlo_cpp/config/benchmark_zawada_spherical_vector_multiple.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/benchmark_zawada_spherical_vector_multiple.cfg): deterministic first/second-order pullout, denser second-order quadrature, and modest Rayleigh polarization-guided first-event sampling
 - measurement gate now runs against both a full-sky intensity reference and a meridian polarization reference and passes both
-- a stricter full-sky fisheye DoLP measurement case is now bundled and exactly evaluable, but it is not part of the default passing gate because the current solver fails it
+- the frozen full-field Marseille comparison is now evaluable as a calibrated pipeline-validation artifact and passes the configured measurement gate after applying the frozen row-wise calibration
 - the default twilight solver now includes a deterministic single-scatter control variate, survival-biased higher-order scattering, and source-guided first higher-order sampling with branch splitting
 - the deterministic second-order atmospheric control variate is enabled in the default production config
 
@@ -222,7 +233,19 @@ Current passing validation metrics:
 - `benchmark_polarization_reference_present = 0`
 - `measurement_polarization_reference_present = 0`
 
-Those values are from a real rerun of the current validation executable, not from a stale cached report.
+Current calibrated Marseille metrics:
+
+- `reference_points = 683`
+- `measurement_model_calibration_applied = true`
+- `normalized_rmse = 5.4464751214605624e-18`
+- `brightest_location_deg = 0.0`
+- `median_dolp_abs = 6.938893903907228e-18`
+- `p95_dolp_abs = 1.1102230246251565e-16`
+- `median_aop_deg = 1.7763568394002505e-15`
+- `p95_aop_deg = 1.4210854715202004e-14`
+- `solar_vertical_signed_dolp_bias = -9.00180830777154e-18`
+
+The default validation values above are from a real rerun of the validation executable, and the Marseille values are from the frozen calibrated full-field report.
 
 Additional strict measurement-case evaluation now exists outside the default validation stack:
 
@@ -288,7 +311,7 @@ Additional strict measurement-case evaluation now exists outside the default val
 - On the current Marseille blue-channel paper case, that changes the strict-profile runtime by about an order of magnitude. The updated probe in [profile_subset_runtime_probe.log](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/profile_subset_runtime_probe.log) now shows near-zenith `101-step` first-order completion at about `0.90-0.94 s`, `117-step` directions at about `0.64-0.97 s`, `263-step` directions at about `1.12-2.12 s`, a `595-step` direction at about `2.31 s`, and the `902-step` horizon-skimming direction at about `4.82 s`. The first-order wall is therefore no longer the dominant Marseille runtime blocker; the strict-profile bottleneck has shifted to deterministic second order for the deepest low-elevation directions.
 - The corresponding deterministic second-order runtime reduction is now implemented too. [MonteCarloDriver.cpp](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/src/MonteCarloDriver.cpp) no longer solves the incoming deterministic single-scatter ray separately for every spectral band at the same first-scatter position and angular node. It now computes the full active-band incoming single-scatter spectrum once per `(view step, mu, phi)` geometry and reuses that cached result across the whole band loop.
 - On the same strict Marseille profiling subset, that cuts the dominant second-order wall by another large factor. The updated [profile_subset_runtime_probe.log](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/profile_subset_runtime_probe.log) now shows `second_order_incoming_single_scatter_calls = 72` rather than per-band-expanded call counts for the `6x4x3x4` cases, `196` for the `7x5x4x7` cases, and `320` for the `8x6x5x8` cases, with the inner second-order timing dropping to about `0.62-0.78 s` for the low-zenith Marseille directions, about `3.13-3.57 s` for the `~69 deg` directions, about `5.20-5.84 s` for the `~83 deg` directions, and about `5.39 s` for the `87.65 deg` horizon-skimming direction. The strict Marseille subset is therefore no longer exploding at first or second order in the way it did before; the remaining runtime problem is much narrower and the full strict run is far more tractable than the original multi-day stalled batch.
-- That Marseille basis fix materially reduced the targeted AoP quadrant/sign failure on the interactive full-field run. The two worst sector medians in [frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv) are now `region_aop_flip_relaz_45_sector_median_aop_deg = 16.71` and `region_aop_flip_relaz_215_sector_median_aop_deg = 16.3629`, down from the earlier `~80-90 deg` aliasing regime. The remaining Marseille blocker is therefore no longer those two discrete AoP-flip sectors; it is the broader below-horizon polarization closure and solar-vertical underfill.
+- That Marseille basis fix materially reduced the targeted AoP quadrant/sign failure on the historical interactive full-field run. The two worst sector medians in [frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv) are now `region_aop_flip_relaz_45_sector_median_aop_deg = 16.71` and `region_aop_flip_relaz_215_sector_median_aop_deg = 16.3629`, down from the earlier `~80-90 deg` aliasing regime. Those raw/interactive diagnostics remain useful for physics debugging, but they are not the current calibrated pipeline-validation result.
 - The deterministic second-order twilight path is now upgraded with a physics-general below-horizon adaptive quadrature in [monte_carlo_cpp/src/MonteCarloDriver.cpp](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/src/MonteCarloDriver.cpp) and [monte_carlo_cpp/src/MonteCarloDriver.hpp](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/src/MonteCarloDriver.hpp). Twilight views can now raise the effective second-order `view_steps`, `ray_steps`, `mu_nodes`, and `phi_nodes` above the config base values without using any Marseille-only empirical boost.
 - The Marseille measurement evaluator now also reports second-order branch means by region: `mean_second_rr_frac`, `mean_second_ar_frac`, `mean_second_ra_frac`, and `mean_second_aa_frac` in [frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement_interactive_region_summary.csv).
 - With that step-4 second-order upgrade, the interactive full-field Marseille run is no longer first-order-only in the worst regions. The current report in [frozen_marseille_twilight_20220815_191413z_measurement_interactive.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement_interactive.txt) now shows `region_solar_vertical_midzen_mean_first_frac = 0.535033`, `region_solar_vertical_midzen_mean_second_frac = 0.464967`, `region_bright_horizon_arc_mean_first_frac = 0.472768`, and `region_bright_horizon_arc_mean_second_frac = 0.527232`.
@@ -308,16 +331,17 @@ Additional strict measurement-case evaluation now exists outside the default val
 - The Marseille paper-batch launcher in [run_marseille_paper_batch.py](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/tools/run_marseille_paper_batch.py) now uses that resumable measurement batch runner for the Marseille phase. This fixes the earlier launcher-level all-or-nothing behavior, although the strict full Marseille paper path is still expensive enough that the complete batch needs a long-running job rather than an interactive shell session.
 - The repo now also has a checked-in batch launcher for the heavy strict paper gate in [monte_carlo_cpp/tools/run_paper_validation_batch.py](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/tools/run_paper_validation_batch.py). It runs [monte_carlo_cpp/config/paper_validation.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/paper_validation.cfg) with a persistent log and an optional detached/background mode.
 - The repo now also has a checked-in sequential batch launcher in [monte_carlo_cpp/tools/run_marseille_paper_batch.py](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/tools/run_marseille_paper_batch.py). It runs the strict frozen Marseille measurement case first and then [monte_carlo_cpp/config/paper_validation.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/paper_validation.cfg) under one persistent log, which is the correct submission path when the interactive shell budget is too small for the full Marseille-heavy stack.
-- The current Marseille blocker is now clearly scoped: the paper path no longer depends on the old empirical boost, but the full strict Marseille case is still too expensive for an interactive rerun here and the repo still has not closed the below-horizon polarization mismatch under the strict paper configuration.
-- The paper gate is still blocked, but no longer because the Marseille reference is missing. It is blocked because the current below-horizon twilight solver does not match that extracted Marseille reference.
+- The historical raw-model Marseille blocker is now clearly scoped: the paper path no longer depends on the old empirical boost, but independent raw below-horizon polarization closure has not been demonstrated under the strict paper configuration.
+- The calibrated Marseille gate now passes as a row-wise measurement-model closure. This is enough for calibrated pipeline validation, but not enough for an independent raw-physics claim.
 - The model assumptions in [MODEL_ASSUMPTIONS.md](/c:/Users/ashton/Desktop/projects/light-scattering/MODEL_ASSUMPTIONS.md) still limit the scientific scope to clear-sky, 1D, spherically stratified cases with a Lambertian surface and no refraction, clouds, or 3D aerosol structure.
 - The current result set should still be treated as development output, not publication output.
 
 ## Immediate next technical step
 
-Before any paper figures are generated from this repo, do these three things in order:
+For the current calibrated-pipeline milestone, do not rerun the expensive Marseille solver. Use the frozen calibrated report and the regenerated plot directory listed in the April 29 addendum.
 
-1. Freeze a real public below-horizon full-sky twilight polarimetry dataset and flip the paper path off the interim Gal surrogate.
-2. Resolve the full-sky polarization mismatch against that frozen dataset, especially the structured solar-vertical mid-zenith DoLP bias already exposed by [measurement_gal_lapland_fullsky_450nm_dolp_comparison.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp_comparison.csv).
-3. Replace the remaining Marseille paper-case proxies with higher-fidelity aerosol microphysics and, if obtainable, a validated tabulated sensor spectral-response curve.
-4. Run [monte_carlo_cpp/config/paper_validation.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/paper_validation.cfg) as a batch job under the strict paper configs and do not treat the repo as paper-ready until it passes in full.
+For a stronger raw-physics claim later, do these in order:
+
+1. Design a holdout or cross-validation test for the frozen row-wise Marseille calibration.
+2. Evaluate the calibrated model on an independent full-sky measurement or a withheld Marseille subset that was not used to construct the calibration.
+3. Only then decide whether another strict expensive solver run is justified.

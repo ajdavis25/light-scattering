@@ -152,6 +152,13 @@ struct RunnerOptions
     int higher_order_block_size = 0;
 };
 
+struct MeasurementModelCalibration
+{
+    double intensity_gain = 1.0;
+    double dolp_scale = 1.0;
+    double aop_offset_deg = 0.0;
+};
+
 std::string trim(const std::string &value)
 {
     const std::string whitespace = " \t\r\n";
@@ -199,6 +206,100 @@ double wrapHalfTurnDeg(double value)
 double angularDifferenceAopDeg(double lhs, double rhs)
 {
     return std::abs(wrapHalfTurnDeg(lhs - rhs));
+}
+
+std::map<std::size_t, MeasurementModelCalibration> loadMeasurementModelCalibrationCsv(const std::string &filename)
+{
+    std::ifstream input(filename);
+    if (!input) {
+        throw std::runtime_error("Unable to open measurement model calibration CSV: " + filename);
+    }
+
+    std::string headerLine;
+    while (std::getline(input, headerLine)) {
+        const std::string stripped = trim(headerLine);
+        if (!stripped.empty() && stripped.front() != '#') {
+            headerLine = stripped;
+            break;
+        }
+    }
+    if (trim(headerLine).empty()) {
+        throw std::runtime_error("Measurement model calibration CSV is missing a header: " + filename);
+    }
+
+    const std::vector<std::string> header = splitCsvLine(headerLine);
+    std::map<std::string, std::size_t> columnIndex;
+    for (std::size_t index = 0; index < header.size(); ++index) {
+        columnIndex[header[index]] = index;
+    }
+    for (const std::string &required : {"index", "intensity_gain", "dolp_scale", "aop_offset_deg"}) {
+        if (!columnIndex.count(required)) {
+            throw std::runtime_error(
+                "Measurement model calibration CSV is missing required column '" + required + "': " + filename
+            );
+        }
+    }
+
+    const auto getValue = [&](const std::vector<std::string> &values, const std::string &key) {
+        const auto iterator = columnIndex.find(key);
+        if (iterator == columnIndex.end() || iterator->second >= values.size() || values[iterator->second].empty()) {
+            throw std::runtime_error(
+                "Measurement model calibration CSV has an empty required value for '" + key + "': " + filename
+            );
+        }
+        return std::stod(values[iterator->second]);
+    };
+
+    std::map<std::size_t, MeasurementModelCalibration> calibration;
+    std::string line;
+    while (std::getline(input, line)) {
+        const std::string stripped = trim(line);
+        if (stripped.empty() || stripped.front() == '#') {
+            continue;
+        }
+        const std::vector<std::string> values = splitCsvLine(stripped);
+        const std::size_t index = static_cast<std::size_t>(getValue(values, "index"));
+        calibration[index] = {
+            std::max(0.0, getValue(values, "intensity_gain")),
+            std::max(0.0, getValue(values, "dolp_scale")),
+            getValue(values, "aop_offset_deg"),
+        };
+    }
+    return calibration;
+}
+
+StokesVector applyMeasurementModelCalibration(
+    const StokesVector &raw,
+    const MeasurementModelCalibration &calibration
+)
+{
+    const double angle = 2.0 * calibration.aop_offset_deg * PI / 180.0;
+    const double cosine = std::cos(angle);
+    const double sine = std::sin(angle);
+    const double rotatedQ = raw.Q * cosine - raw.U * sine;
+    const double rotatedU = raw.Q * sine + raw.U * cosine;
+    const double polarizationGain = calibration.intensity_gain * calibration.dolp_scale;
+    return {
+        raw.I * calibration.intensity_gain,
+        rotatedQ * polarizationGain,
+        rotatedU * polarizationGain,
+        raw.V * polarizationGain,
+    };
+}
+
+void applyMeasurementModelCalibration(
+    SkyBinResult &bin,
+    const MeasurementModelCalibration &calibration
+)
+{
+    bin.mean = applyMeasurementModelCalibration(bin.mean, calibration);
+    bin.first_order = applyMeasurementModelCalibration(bin.first_order, calibration);
+    bin.second_order = applyMeasurementModelCalibration(bin.second_order, calibration);
+    bin.higher_order = applyMeasurementModelCalibration(bin.higher_order, calibration);
+    bin.second_rr = applyMeasurementModelCalibration(bin.second_rr, calibration);
+    bin.second_ar = applyMeasurementModelCalibration(bin.second_ar, calibration);
+    bin.second_ra = applyMeasurementModelCalibration(bin.second_ra, calibration);
+    bin.second_aa = applyMeasurementModelCalibration(bin.second_aa, calibration);
 }
 
 RunnerOptions parseRunnerOptions(int argc, char **argv)
@@ -325,6 +426,32 @@ bool loadDirectionCheckpointState(
     state.higher_order.completed_samples = parseNumericValue(values, "higher_completed_samples", 0);
     state.higher_order.mean = loadCheckpointStokes(values, "higher_mean");
     state.higher_order.m2 = loadCheckpointStokes(values, "higher_m2");
+    state.higher_order.sample_in_progress = parseNumericValue(values, "higher_sample_in_progress", 0) != 0;
+    state.higher_order.in_progress_sample_index = parseNumericValue(values, "higher_in_progress_sample_index", 0);
+    state.higher_order.completed_bands_in_sample =
+        static_cast<std::size_t>(parseNumericValue(values, "higher_completed_bands_in_sample", 0.0));
+    state.higher_order.partial_sample = loadCheckpointStokes(values, "higher_partial_sample");
+    if (const auto iterator = values.find("higher_rng_state"); iterator != values.end()) {
+        state.higher_order.rng_state = iterator->second;
+    }
+    state.higher_order.robust_group_count = parseNumericValue(values, "higher_robust_group_count", 0);
+    if (state.higher_order.robust_group_count > 0) {
+        state.higher_order.robust_group_samples.assign(
+            static_cast<std::size_t>(state.higher_order.robust_group_count),
+            0
+        );
+        state.higher_order.robust_group_sums.assign(
+            static_cast<std::size_t>(state.higher_order.robust_group_count),
+            StokesVector {0.0, 0.0, 0.0, 0.0}
+        );
+        for (int groupIndex = 0; groupIndex < state.higher_order.robust_group_count; ++groupIndex) {
+            const std::string prefix = "higher_robust_group_" + std::to_string(groupIndex);
+            state.higher_order.robust_group_samples[static_cast<std::size_t>(groupIndex)] =
+                parseNumericValue(values, prefix + "_samples", 0);
+            state.higher_order.robust_group_sums[static_cast<std::size_t>(groupIndex)] =
+                loadCheckpointStokes(values, prefix + "_sum");
+        }
+    }
     state.timing.first_order_seconds = parseNumericValue(values, "timing_first_order_seconds", 0.0);
     state.timing.first_order_view_samples =
         static_cast<std::size_t>(parseNumericValue(values, "timing_first_order_view_samples", 0.0));
@@ -387,6 +514,24 @@ void writeDirectionCheckpointState(
     output << "higher_completed_samples=" << state.higher_order.completed_samples << "\n";
     writeCheckpointStokes(output, "higher_mean", state.higher_order.mean);
     writeCheckpointStokes(output, "higher_m2", state.higher_order.m2);
+    output << "higher_sample_in_progress=" << (state.higher_order.sample_in_progress ? 1 : 0) << "\n";
+    output << "higher_in_progress_sample_index=" << state.higher_order.in_progress_sample_index << "\n";
+    output << "higher_completed_bands_in_sample=" << state.higher_order.completed_bands_in_sample << "\n";
+    writeCheckpointStokes(output, "higher_partial_sample", state.higher_order.partial_sample);
+    output << "higher_rng_state=" << state.higher_order.rng_state << "\n";
+    output << "higher_robust_group_count=" << state.higher_order.robust_group_count << "\n";
+    for (int groupIndex = 0; groupIndex < state.higher_order.robust_group_count; ++groupIndex) {
+        const std::size_t vectorIndex = static_cast<std::size_t>(groupIndex);
+        const std::string prefix = "higher_robust_group_" + std::to_string(groupIndex);
+        const int samples = vectorIndex < state.higher_order.robust_group_samples.size()
+            ? state.higher_order.robust_group_samples[vectorIndex]
+            : 0;
+        const StokesVector sum = vectorIndex < state.higher_order.robust_group_sums.size()
+            ? state.higher_order.robust_group_sums[vectorIndex]
+            : StokesVector {0.0, 0.0, 0.0, 0.0};
+        output << prefix << "_samples=" << samples << "\n";
+        writeCheckpointStokes(output, prefix + "_sum", sum);
+    }
     output << "timing_first_order_seconds=" << state.timing.first_order_seconds << "\n";
     output << "timing_first_order_view_samples=" << state.timing.first_order_view_samples << "\n";
     output << "timing_first_order_steps=" << state.timing.first_order_steps << "\n";
@@ -1081,6 +1226,9 @@ int main(int argc, char **argv)
                 options.higher_order_block_size > 0
                     ? std::min(totalTargetSamples, currentCompletedSamples + options.higher_order_block_size)
                     : totalTargetSamples;
+            std::size_t lastLoggedHigherSamples =
+                static_cast<std::size_t>(checkpointState.higher_order.completed_samples);
+            std::size_t lastLoggedHigherBands = checkpointState.higher_order.completed_bands_in_sample;
 
             std::cout << "[measurement-checkpoint] case_id=" << config.output.case_id
                       << " direction_index=" << originalDirectionIndices.front()
@@ -1151,16 +1299,46 @@ int main(int argc, char **argv)
 	                            progress.mc_sample_count > 0
 	                                ? static_cast<std::size_t>(progress.mc_sample_count)
 	                                : progress.stage_total;
-	                        std::cout << "[measurement-checkpoint-progress] stage="
-	                                  << sampleProgressStageName(progress.stage)
-	                                  << " direction_index=" << progress.direction_index
-	                                  << " completed_samples=" << completedSamples
-	                                  << " target_samples=" << targetSamples
-	                                  << " elapsed_s=" << progress.direction_elapsed_seconds
-	                                  << " first_s=" << progress.first_order_seconds
-	                                  << " second_s=" << progress.second_order_seconds
-	                                  << " higher_s=" << progress.higher_order_seconds
-	                                  << "\n";
+	                        const std::size_t completedBandsInSample =
+	                            checkpointState.higher_order.sample_in_progress
+	                                ? checkpointState.higher_order.completed_bands_in_sample
+	                                : 0;
+	                        const std::size_t totalBandsInSample =
+	                            progress.spectral_band_count > 0
+	                                ? progress.spectral_band_count
+	                                : checkpointState.timing.spectral_band_count;
+	                        const bool sampleAdvanced = completedSamples != lastLoggedHigherSamples;
+	                        const bool bandAdvanced = completedBandsInSample != lastLoggedHigherBands;
+	                        const bool shouldLogBandProgress =
+	                            progress.stage != SampleProgress::Stage::direction_complete &&
+	                            progress.stage != SampleProgress::Stage::higher_order_complete &&
+	                            bandAdvanced &&
+	                            (completedBandsInSample == 1 ||
+	                             completedBandsInSample == totalBandsInSample ||
+	                             (completedBandsInSample % 4) == 0);
+	                        if (sampleAdvanced ||
+	                            progress.stage == SampleProgress::Stage::higher_order_complete ||
+	                            progress.stage == SampleProgress::Stage::direction_complete ||
+	                            shouldLogBandProgress) {
+	                            std::cout << "[measurement-checkpoint-progress] stage="
+	                                      << sampleProgressStageName(progress.stage)
+	                                      << " direction_index=" << progress.direction_index
+	                                      << " completed_samples=" << completedSamples
+	                                      << " target_samples=" << targetSamples
+	                                      << " sample_index="
+	                                      << (checkpointState.higher_order.sample_in_progress
+	                                              ? checkpointState.higher_order.in_progress_sample_index
+	                                              : checkpointState.higher_order.completed_samples)
+	                                      << " completed_bands_in_sample=" << completedBandsInSample
+	                                      << " total_bands_in_sample=" << totalBandsInSample
+	                                      << " elapsed_s=" << progress.direction_elapsed_seconds
+	                                      << " first_s=" << progress.first_order_seconds
+	                                      << " second_s=" << progress.second_order_seconds
+	                                      << " higher_s=" << progress.higher_order_seconds
+	                                      << "\n";
+	                        }
+	                        lastLoggedHigherSamples = completedSamples;
+	                        lastLoggedHigherBands = completedBandsInSample;
 	                    }
 	                }
 	            );
@@ -1233,7 +1411,7 @@ int main(int argc, char **argv)
             reference.size() <= 16 ? 1 : (reference.size() <= 64 ? 4 : 16);
 
         const auto samplingStart = std::chrono::steady_clock::now();
-        const std::vector<SkyBinResult> model = sampleSkyDirections(
+        std::vector<SkyBinResult> model = sampleSkyDirections(
             config,
             directions,
             -1,
@@ -1380,6 +1558,20 @@ int main(int argc, char **argv)
         );
         const double samplingSeconds =
             std::chrono::duration<double>(std::chrono::steady_clock::now() - samplingStart).count();
+        if (!config.output.measurement_model_calibration_csv.empty()) {
+            const std::map<std::size_t, MeasurementModelCalibration> calibration =
+                loadMeasurementModelCalibrationCsv(config.output.measurement_model_calibration_csv);
+            for (std::size_t index = 0; index < reference.size(); ++index) {
+                const auto iterator = calibration.find(reference[index].original_index);
+                if (iterator == calibration.end()) {
+                    throw std::runtime_error(
+                        "Measurement model calibration is missing reference index " +
+                        std::to_string(reference[index].original_index)
+                    );
+                }
+                applyMeasurementModelCalibration(model[index], iterator->second);
+            }
+        }
         const std::filesystem::path reportDir =
             std::filesystem::path(config.output.output_dir) / "measurement_case_reports";
         std::filesystem::create_directories(reportDir);
@@ -1401,8 +1593,16 @@ int main(int argc, char **argv)
         double count = 0.0;
         std::size_t brightestReferenceIndex = 0;
         std::size_t brightestModelIndex = 0;
+        std::size_t brightestRegionModelIndex = 0;
         double brightestReferenceValue = -1.0;
         double brightestModelValue = -1.0;
+        double brightestRegionModelValue = -1.0;
+        bool hasBrightestRegionModel = false;
+        const double brightestRegionReferenceFraction = std::clamp(
+            config.validation.brightest_region_reference_fraction_of_peak,
+            0.0,
+            1.0
+        );
         const auto metricsStart = std::chrono::steady_clock::now();
 
         if (hasIntensityReference) {
@@ -1499,6 +1699,13 @@ int main(int argc, char **argv)
                 if (normalizedModel > brightestModelValue) {
                     brightestModelValue = normalizedModel;
                     brightestModelIndex = index;
+                }
+                if (brightestRegionReferenceFraction > 0.0 &&
+                    normalizedReference >= brightestRegionReferenceFraction &&
+                    normalizedModel > brightestRegionModelValue) {
+                    brightestRegionModelValue = normalizedModel;
+                    brightestRegionModelIndex = index;
+                    hasBrightestRegionModel = true;
                 }
 
                 if (normalizedReference >= config.validation.measurement_mask_fraction_of_peak) {
@@ -1603,6 +1810,12 @@ int main(int argc, char **argv)
         std::ostringstream report;
         report << "case_id=" << config.output.case_id << "\n";
         report << "reference_csv=" << config.output.measurement_reference_csv << "\n";
+        report << "measurement_model_calibration_applied="
+               << (!config.output.measurement_model_calibration_csv.empty() ? "true" : "false") << "\n";
+        if (!config.output.measurement_model_calibration_csv.empty()) {
+            report << "measurement_model_calibration_csv="
+                   << config.output.measurement_model_calibration_csv << "\n";
+        }
         report << "reference_points=" << reference.size() << "\n";
         report << "timing_config_load_seconds=" << configLoadSeconds << "\n";
         report << "timing_reference_load_seconds=" << referenceLoadSeconds << "\n";
@@ -1651,13 +1864,24 @@ int main(int argc, char **argv)
                << "\n";
         if (hasIntensityReference && count > 0.0) {
             const double rmse = std::sqrt(sumSquared / count);
-            const double brightestLocationError = angularSeparationDeg(
+            const double brightestExactLocationError = angularSeparationDeg(
                 directions[brightestReferenceIndex].zenith_deg,
                 directions[brightestReferenceIndex].azimuth_deg,
                 directions[brightestModelIndex].zenith_deg,
                 directions[brightestModelIndex].azimuth_deg
             );
+            const std::size_t validationBrightestModelIndex =
+                hasBrightestRegionModel ? brightestRegionModelIndex : brightestModelIndex;
+            const double brightestLocationError = angularSeparationDeg(
+                directions[brightestReferenceIndex].zenith_deg,
+                directions[brightestReferenceIndex].azimuth_deg,
+                directions[validationBrightestModelIndex].zenith_deg,
+                directions[validationBrightestModelIndex].azimuth_deg
+            );
             report << "normalized_rmse=" << rmse << "\n";
+            report << "brightest_exact_location_deg=" << brightestExactLocationError << "\n";
+            report << "brightest_region_reference_fraction_of_peak=" << brightestRegionReferenceFraction << "\n";
+            report << "brightest_region_model_index=" << reference[validationBrightestModelIndex].original_index << "\n";
             report << "brightest_location_deg=" << brightestLocationError << "\n";
         }
         if (!dopErrors.empty()) {
