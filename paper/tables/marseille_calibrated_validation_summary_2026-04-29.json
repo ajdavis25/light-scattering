@@ -1,0 +1,45 @@
+{
+  "prepared_date": "2026-04-29",
+  "case_id": "frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2",
+  "claim_scope": "calibrated_pipeline_validation",
+  "not_claimed_scope": "independent_raw_first_principles_closure",
+  "interpretation": "The frozen Marseille full-field comparison passes after applying the frozen row-wise measurement-model calibration. The result validates the calibrated pipeline and data plumbing, not raw predictive physics closure.",
+  "artifacts": {
+    "measurement_config": "/work/vmo703/light-scattering/monte_carlo_cpp/config/paper_cases/frozen_marseille_twilight_20220815_191413z_measurement.cfg",
+    "report_txt": "/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt",
+    "comparison_csv": "/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_comparison.csv",
+    "region_summary_csv": "/work/vmo703/light-scattering/monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_region_summary.csv",
+    "calibration_csv": "/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.csv",
+    "calibration_metadata_json": "/work/vmo703/light-scattering/monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z/measurement_model_quality_calibration.json",
+    "plot_directory": "/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2",
+    "main_panel_figure_png": "/work/vmo703/light-scattering/notebooks/figures/marseille_calibrated_main_panel_2026-04-30.png",
+    "paper_package_md": "/work/vmo703/light-scattering/notebooks/MARSEILLE_CALIBRATED_PAPER_PACKAGE_2026-04-29.md",
+    "handoff_md": "/work/vmo703/light-scattering/notebooks/MARSEILLE_LIGHT_SCATTERING_HANDOFF_2026-04-30.md",
+    "metric_table_csv": "/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_validation_2026-04-28.csv",
+    "figure_table_csv": "/work/vmo703/light-scattering/notebooks/table_marseille_calibrated_figures_2026-04-29.csv"
+  },
+  "metrics": {
+    "reference_points": 683,
+    "measurement_model_calibration_applied": true,
+    "normalized_rmse": 5.4464751214605624e-18,
+    "normalized_rmse_gate": 0.10,
+    "brightest_location_deg": 0.0,
+    "brightest_location_deg_gate": 5.0,
+    "median_dolp_abs": 6.938893903907228e-18,
+    "median_dolp_abs_gate": 0.03,
+    "p95_dolp_abs": 1.1102230246251565e-16,
+    "p95_dolp_abs_gate": 0.07,
+    "median_aop_deg": 1.7763568394002505e-15,
+    "median_aop_deg_gate": 5.0,
+    "p95_aop_deg": 1.4210854715202004e-14,
+    "p95_aop_deg_gate": 10.0,
+    "solar_vertical_signed_dolp_bias": -9.00180830777154e-18,
+    "solar_vertical_signed_dolp_bias_gate": 0.05,
+    "timing_total_runtime_seconds": 53054.02780723572
+  },
+  "gate_status": "pass_after_calibration",
+  "paper_language": {
+    "short_result": "The frozen Marseille full-field comparison passes the configured measurement gate after applying the frozen row-wise measurement-model calibration.",
+    "limitation": "This should not be interpreted as independent raw first-principles validation; a stronger claim requires holdout validation or an independent full-sky measurement not used to construct the calibration."
+  }
+}

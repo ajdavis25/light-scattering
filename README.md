@@ -12,6 +12,8 @@ Use `notebooks/MARSEILLE_CALIBRATED_VALIDATION_STATUS_2026-04-28.md` as the down
 
 For fresh-thread or collaborator handoff, start with `notebooks/MARSEILLE_LIGHT_SCATTERING_HANDOFF_2026-04-30.md`. It lists the canonical frozen artifacts, claim boundary, immediate work policy, future holdout-validation path, and verification commands.
 
+For publication-facing packaging, start with `paper/README.md`. The `paper/` package verifies frozen artifacts, exports paper figures/tables, and enforces the calibrated-pipeline claim boundary without rerunning the expensive Marseille solver.
+
 
 ## SMOOTHIE BINGUS
 ## SUIT BINGUS

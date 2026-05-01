@@ -1,0 +1,15 @@
+{
+  "case_id": "frozen_marseille_twilight_20220815_191413z_measurement",
+  "created_utc_date": "2026-04-27",
+  "calibration_csv": "measurement_model_quality_calibration.csv",
+  "source_comparison_csv": "monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2_comparison.csv",
+  "source_report_txt": "monte_carlo_cpp/results/measurement_case_reports/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2.txt",
+  "source_case_id": "frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2",
+  "calibration_type": "rowwise_model_quality_closure",
+  "calibration_builder": "monte_carlo_cpp/tools/build_measurement_model_calibration.py",
+  "notes": [
+    "This calibration is a frozen post-model closure for the Marseille measurement grid.",
+    "It maps raw model intensity, DoLP, and AoP to the extracted measurement reference at each emitted sky bin.",
+    "It is not an independent first-principles validation result."
+  ]
+}
