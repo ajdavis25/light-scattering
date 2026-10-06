@@ -1,0 +1,2 @@
+/usr/bin/ar qc librt_core.a CMakeFiles/rt_core.dir/src/Atmosphere.cpp.o CMakeFiles/rt_core.dir/src/WavelengthHandling.cpp.o CMakeFiles/rt_core.dir/src/PhaseFunctions.cpp.o CMakeFiles/rt_core.dir/src/Polarization.cpp.o CMakeFiles/rt_core.dir/src/SurfaceReflection.cpp.o CMakeFiles/rt_core.dir/src/MonteCarloDriver.cpp.o CMakeFiles/rt_core.dir/src/ValidationQA.cpp.o
+/usr/bin/ranlib librt_core.a

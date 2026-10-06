@@ -1,0 +1,22 @@
+{
+  "overall_pass": false,
+  "metrics": [
+    {"name": "rayleigh_phase_normalization", "value": 1.5625e-08, "threshold": 0.001, "pass": true},
+    {"name": "rayleigh_90deg_dolp_error", "value": 0, "threshold": 1e-06, "pass": true},
+    {"name": "rayleigh_physical_stokes", "value": 0, "threshold": 0, "pass": true},
+    {"name": "convergence_peak_intensity_rel", "value": 0.303525, "threshold": 0.05, "pass": false},
+    {"name": "convergence_peak_dolp_abs", "value": 0.143115, "threshold": 0.02, "pass": false},
+    {"name": "convergence_flux_rel", "value": 0.303525, "threshold": 0.02, "pass": false},
+    {"name": "benchmark_case_present", "value": 1, "threshold": 0, "pass": false},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_normalized_rmse", "value": 0.102507, "threshold": 0.15, "pass": true},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_brightest_location_deg", "value": 8.53774e-07, "threshold": 5, "pass": true},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_median_dolp_abs", "value": 0.0309199, "threshold": 0.02, "pass": false},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_p95_dolp_abs", "value": 0.0309199, "threshold": 0.05, "pass": true},
+    {"name": "measurement_polarization_reference_present", "value": 0, "threshold": 0, "pass": true}
+  ],
+  "notes": [
+    "Benchmark validation failed because benchmark_case_config was not set.",
+    "Measurement reference for case measurement_koomen_meridian_hminus6_polarization does not include AoP values above the DoLP threshold, so AoP metrics were not evaluated.",
+    "Measurement reference for case measurement_koomen_meridian_hminus6_polarization did not provide enough solar-vertical points for the signed DoLP bias metric."
+  ]
+}

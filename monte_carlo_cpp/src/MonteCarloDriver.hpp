@@ -107,7 +107,46 @@ struct MonteCarloConfig
     double twilight_higher_order_horizon_cone_half_angle_deg = 24.0;
     double twilight_higher_order_horizon_elevation_deg = 7.0;
     int higher_order_robust_groups = 0;
+    // Estimator used for the reported higher-order component when robust
+    // groups are enabled: "median_of_means" (historical default; biased low
+    // for heavy-tailed samples) or "mean" (unbiased sample mean).
+    std::string higher_order_estimator = "median_of_means";
     bool twilight_order_depolarization = false;
+    // Applies the incoming-frame rotation in eventMuellerMatrix with the sign
+    // consistent with the outgoing-frame rotation (both angles are measured
+    // about the backward ray axes). The historical chain used R(-chi_in),
+    // which is the forward-propagation-convention rotation, while R(+chi_out)
+    // is the backward-convention one; the mismatch misorients any POLARIZED
+    // input Stokes at a scattering event (unpolarized inputs are unaffected,
+    // so single scatter is identical either way). Verified against an
+    // independent dipole double-scatter ground truth 2026-08-01. Default
+    // false to preserve frozen-artifact reproducibility.
+    bool event_frame_chi_sign_fix = false;
+    // Molecular (King-factor) depolarization for Rayleigh scattering events.
+    // 0.0 = the historical pure-Rayleigh matrix, bit-identical legacy path.
+    // Physical air is ~0.028-0.030 (Bates 1984), giving the textbook
+    // DoLP(90 deg) = (1-rho)/(1+rho) ~ 0.945. Applied only where the phase
+    // matrix enters as physics (eventMuellerMatrix); direction samplers and
+    // pdf functions stay pure-Rayleigh as importance-sampling proposals.
+    double rayleigh_depolarization_factor = 0.0;
+    // Nonsphericity-style aerosol depolarization: the bundled aerosol phase
+    // matrices are perfect-sphere Mie (f22 = f11 exactly at every wavelength
+    // and angle), so aerosol events transmit linear polarization losslessly.
+    // Values < 1 scale the transmitted-polarization channels (f22/f33/f44)
+    // at aerosol scattering events, leaving f11 (energy, phase
+    // normalization) and f12 (polarization generation from unpolarized
+    // input — i.e. single scatter) untouched. Real urban/marine aerosol has
+    // f22/f11 ~ 0.5-0.8 in side/backscatter. 1.0 = legacy, bit-identical.
+    double aerosol_depolarization_f22_ratio = 1.0;
+    // Validation-gate convergence metric hardening (2026-08-10): when true,
+    // the convergence family's peak-intensity and peak-DoLP comparisons are
+    // computed from the first+second-order Stokes components instead of the
+    // total field. The plain-mean higher-order estimator is heavy-tailed at
+    // twilight geometries (per-bin sd GROWS with photon budget; peak-bin
+    // migration between budgets), so a total-field peak comparison measures
+    // tail luck rather than convergence. The hemispheric-flux metric still
+    // tests the total field. Default false = legacy metric, bit-identical.
+    bool convergence_low_order_metric = false;
     double twilight_second_order_polarization_scale = 1.0;
     double twilight_higher_order_polarization_scale = 1.0;
     double twilight_second_order_intensity_boost = 1.0;
@@ -127,6 +166,13 @@ struct OutputConfig
     std::string measurement_case_config;
     std::string measurement_reference_csv;
     std::string measurement_model_calibration_csv;
+    // Polarization frame used when comparing model Stokes to a measurement
+    // reference: "legacy_outward_ray" (historical behavior: solver's backward-
+    // tracing outward-ray basis, uncorrected) or "incoming_light" (applies
+    // Q -> -Q, i.e. AoP -> 90deg - AoP, converting to the reduced-measurement
+    // convention; validated offline on the frozen Marseille field, where it
+    // lowers the raw median AoP error from 43.0 to 14.4 deg).
+    std::string measurement_model_polarization_convention = "legacy_outward_ray";
     std::string measurement_metadata_json;
     std::string paper_primary_measurement_case_config;
     bool paper_primary_measurement_frozen = false;

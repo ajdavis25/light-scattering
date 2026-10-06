@@ -302,6 +302,30 @@ void applyMeasurementModelCalibration(
     bin.second_aa = applyMeasurementModelCalibration(bin.second_aa, calibration);
 }
 
+// Converts model Stokes from the solver's backward-tracing outward-ray frame
+// to the reduced-measurement ("incoming light") polarization convention.
+// Net transform: Q -> -Q (equivalently AoP -> 90deg - AoP), a single
+// reflection combining the outward->incoming handedness flip with the
+// reducer's 90deg comparison-basis offset. Validated offline against the
+// frozen Marseille field (raw median AoP error 43.0 -> 14.4 deg). DoLP and
+// intensity are invariant. Mirrors the identical helper in ValidationQA.cpp.
+StokesVector toIncomingLightConvention(const StokesVector &raw)
+{
+    return {raw.I, -raw.Q, raw.U, raw.V};
+}
+
+void applyIncomingLightConvention(SkyBinResult &bin)
+{
+    bin.mean = toIncomingLightConvention(bin.mean);
+    bin.first_order = toIncomingLightConvention(bin.first_order);
+    bin.second_order = toIncomingLightConvention(bin.second_order);
+    bin.higher_order = toIncomingLightConvention(bin.higher_order);
+    bin.second_rr = toIncomingLightConvention(bin.second_rr);
+    bin.second_ar = toIncomingLightConvention(bin.second_ar);
+    bin.second_ra = toIncomingLightConvention(bin.second_ra);
+    bin.second_aa = toIncomingLightConvention(bin.second_aa);
+}
+
 RunnerOptions parseRunnerOptions(int argc, char **argv)
 {
     if (argc < 2) {
@@ -1364,11 +1388,15 @@ int main(int argc, char **argv)
                 return 0;
             }
 
+            SkyBinResult comparisonModel = model;
+            if (config.output.measurement_model_polarization_convention == "incoming_light") {
+                applyIncomingLightConvention(comparisonModel);
+            }
             writeSingleDirectionComparisonOutputs(
                 config,
                 reference.front(),
                 directions.front(),
-                model,
+                comparisonModel,
                 checkpointState,
                 reportDir
             );
@@ -1558,6 +1586,11 @@ int main(int argc, char **argv)
         );
         const double samplingSeconds =
             std::chrono::duration<double>(std::chrono::steady_clock::now() - samplingStart).count();
+        if (config.output.measurement_model_polarization_convention == "incoming_light") {
+            for (SkyBinResult &bin : model) {
+                applyIncomingLightConvention(bin);
+            }
+        }
         if (!config.output.measurement_model_calibration_csv.empty()) {
             const std::map<std::size_t, MeasurementModelCalibration> calibration =
                 loadMeasurementModelCalibrationCsv(config.output.measurement_model_calibration_csv);
@@ -1816,6 +1849,8 @@ int main(int argc, char **argv)
             report << "measurement_model_calibration_csv="
                    << config.output.measurement_model_calibration_csv << "\n";
         }
+        report << "measurement_model_polarization_convention="
+               << config.output.measurement_model_polarization_convention << "\n";
         report << "reference_points=" << reference.size() << "\n";
         report << "timing_config_load_seconds=" << configLoadSeconds << "\n";
         report << "timing_reference_load_seconds=" << referenceLoadSeconds << "\n";

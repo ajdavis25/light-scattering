@@ -19,6 +19,14 @@ The current Marseille paper-facing result is no longer the earlier interactive/r
 
 This result passes the configured Marseille measurement gate only after applying the frozen row-wise measurement-model calibration. It should be cited as calibrated pipeline validation, not as independent raw first-principles closure.
 
+## 2026-08-11 addendum — V2 physics-only frozen tier (current)
+
+A second frozen tier now exists at `monte_carlo_cpp/data/paper_cases/frozen_marseille_twilight_20220815_191413z_v2/` (v1 untouched); its README is the canonical description. Stack (every non-default traces to physics or measurement): `event_frame_chi_sign_fix=true` (2026-08-01 handedness fix), `rayleigh_depolarization_factor=0.0279` (King factor), and an AERONET-constrained day profile (column AOD550 = 0.155 from the at-site Marseille_ATMO evening plateau/bracket, boundary-layer-weighted; v1's 0.1379 was already day-informed via a 0.75/0.25 AERONET/Open-Meteo blend — the v2 value is a refinement of the same station's data, not a missing-data correction). The aerosol f22 nonsphericity knob is EXCLUDED (no dust that day; documented sensitivity only). Runs: Slurm 788181 (48-dir subset + 683-dir full field, pinned binary `build_v2freeze`), gate 788184.
+
+Headline numbers (comparison-CSV metric family, `tools/score_measurement_comparison.py`): full-field signed DoLP bias median +0.2068 → **+0.1736**, AoP median 16.96°, shape RMSE 0.0827 → 0.0940; subset +0.1938 → **+0.1678** with AoP 23.4° → 18.0°. **The residual ≈ +0.17 over-polarization is a declared open discrepancy and is NOT input-side** — the AERONET-licensed loading correction is ±10–15% in column and contributes only ≈ −0.003 of DoLP beyond King (three-station verdict archived in `paper/tables/reproducibility/aeronet_20220815/`; the ×2–×4 loading scans of 2026-08-10 were compensation, not physics). Prime suspect for the residual: the Marseille-vs-Koomen bias asymmetry (reduction-side), sharpened by the V2 gate result below.
+
+V2 validation gate (`validation_default_capped_v2.cfg`, report archived in `paper/tables/reproducibility/`): **22/23 metrics pass**. Both twilight measurement cases now carry the true h⁻⁶ profile plus King (the 2026-08-09 Rozenberg input archaeology applied coherently to the whole h⁻⁶ scenario family): Rozenberg `normalized_rmse = 0.0851` ≈ the historical claim 0.0849, and **Koomen fully passes for the first time** (`normalized_rmse = 0.040` vs prior ~0.10; `median_dolp_abs = 0.0160` vs prior failing 0.0515/0.0309) — evidence the Koomen claim-era numbers also came from the unrecorded h⁻⁶-type profile. The convergence family uses the hardened metric (`convergence_low_order_metric=true`: peak intensity/DoLP compared on the deterministic first+second-order components; flux stays total-field; photon budget 1024). The single failing metric is a **declared deviation**: `convergence_flux_rel = 0.0247` vs threshold 0.02, caused by the characterized heavy-tailed higher-order estimator and proven budget-independent (0.0240 at a 4×-smaller budget, run 788183) — the legacy chain's 0.006 was an artifact of its own higher-order suppression.
+
 ## What changed
 
 ### 0. Paper-path case assembly now exists
@@ -201,39 +209,74 @@ Current default production metadata:
 
 ## Validation status
 
-The checked-in validation suite now passes, but that is **not the same thing as full paper safety**.
+The checked-in validation suite passed in the April/May 2026 Windows-build runs quoted below, but a 2026-07-29/30 revalidation on the Linux cluster (GCC 8 build, per-case split wrappers; full narrative in `notebooks/PLAN_IMPLEMENTATION_PROGRESS_2026-07-26.md`, archived per-case reports in `paper/tables/reproducibility/`) showed that two case families no longer pass and that the IPRT vector quotes cannot be reproduced even at the commit that recorded them. Passing the suite was never the same thing as full paper safety; the reconciled per-family status below supersedes the older "everything passes" summary.
 
 Current validation report status:
 
 - analytic phase and Rayleigh polarization sanity checks pass
 - internal unit-style tests pass
 - convergence gate passes
-- external benchmark gate now runs against both a scalar Rayleigh reference and a vector Rayleigh reference and passes both
+- external benchmark gate runs against both a scalar Rayleigh reference and a vector Rayleigh reference; 2026-07-29 revalidation: the DISORT scalar case reproduces its quoted metrics to five significant figures, but the IPRT A1 vector case **fails** its DoLP thresholds (see the reconciled metric block below)
 - the benchmark-specific aerosol extinction generation bug is now fixed in [monte_carlo_cpp/tools/generate_reference_cases.py](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/tools/generate_reference_cases.py): benchmark aerosol extinction is now converted from `cm^-1` to `m^-1` with `1e2`, not `1e-2`
-- the stricter published spherical-vector single-scatter limb benchmark now passes its smoke run with `median_intensity_rel = 0.000459695`, `p95_intensity_rel = 0.00140769`, `median_dolp_abs = 3.37895e-05`, and `p95_dolp_abs = 0.000292954` in [benchmark_zawada_spherical_vector_single_smoke.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/validation/benchmark_zawada_spherical_vector_single_smoke.txt)
-- the stronger published spherical-vector all-orders limb benchmark now also passes its smoke-run benchmark metrics with `median_intensity_rel = 0.00457567`, `p95_intensity_rel = 0.012131`, `median_dolp_abs = 0.0199496`, and `p95_dolp_abs = 0.0353911` in [benchmark_zawada_spherical_vector_multiple_smoke.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/validation/benchmark_zawada_spherical_vector_multiple_smoke.txt)
+- the stricter published spherical-vector single-scatter limb benchmark now passes its smoke run with `median_intensity_rel = 0.000459695`, `p95_intensity_rel = 0.00140769`, `median_dolp_abs = 3.37895e-05`, and `p95_dolp_abs = 0.000292954` in [benchmark_zawada_spherical_vector_single_smoke.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/validation/benchmark_zawada_spherical_vector_single_smoke.txt) (reproduced within Monte Carlo noise in the 2026-07-27 Linux rerun)
+- the stronger published spherical-vector all-orders limb benchmark now also passes its smoke-run benchmark metrics with `median_intensity_rel = 0.00457567`, `p95_intensity_rel = 0.012131`, `median_dolp_abs = 0.0199496`, and `p95_dolp_abs = 0.0353911` in [benchmark_zawada_spherical_vector_multiple_smoke.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/validation/benchmark_zawada_spherical_vector_multiple_smoke.txt) (reproduced within Monte Carlo noise in the 2026-07-27 Linux rerun)
 - that stronger all-orders benchmark now relies on a benchmark-only heavier config in [monte_carlo_cpp/config/benchmark_zawada_spherical_vector_multiple.cfg](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/config/benchmark_zawada_spherical_vector_multiple.cfg): deterministic first/second-order pullout, denser second-order quadrature, and modest Rayleigh polarization-guided first-event sampling
-- measurement gate now runs against both a full-sky intensity reference and a meridian polarization reference and passes both
+- measurement gate runs against both a full-sky intensity reference and a meridian polarization reference; 2026-07-29 revalidation: the Rozenberg intensity case **fails** its RMSE threshold and the Koomen polarization case fails its median-DoLP criterion (details below); both twilight cases now carry a declared `higher_order_recursive_branch_cap = 1` deviation because the uncapped claim-era configs are non-terminating
 - the frozen full-field Marseille comparison is now evaluable as a calibrated pipeline-validation artifact and passes the configured measurement gate after applying the frozen row-wise calibration
 - the default twilight solver now includes a deterministic single-scatter control variate, survival-biased higher-order scattering, and source-guided first higher-order sampling with branch splitting
 - the deterministic second-order atmospheric control variate is enabled in the default production config
 
-Current passing validation metrics:
+Validation metrics, reconciled 2026-07-29/30 (Linux-cluster revalidation; per-case reports, comparison CSVs, and `reconcile_snapshot_2026-07-30.txt` archived in `paper/tables/reproducibility/`):
 
-- `convergence_peak_intensity_rel = 0.0382187`
-- `convergence_peak_dolp_abs = 0.00138362`
-- `convergence_flux_rel = 0.00211343`
-- `benchmark_benchmark_disort_scalar_median_intensity_rel = 0.0188119`
-- `benchmark_benchmark_disort_scalar_p95_intensity_rel = 0.0250578`
-- `benchmark_benchmark_iprt_a1_vector_median_intensity_rel = 0.00561889`
-- `benchmark_benchmark_iprt_a1_vector_p95_intensity_rel = 0.0176791`
-- `benchmark_benchmark_iprt_a1_vector_median_dolp_abs = 0.0055043`
-- `benchmark_benchmark_iprt_a1_vector_p95_dolp_abs = 0.0286531`
-- `measurement_measurement_rozenberg_hminus6_normalized_rmse = 0.0849321`
-- `measurement_measurement_koomen_meridian_hminus6_polarization_normalized_rmse = 0.0470789`
-- `measurement_measurement_koomen_meridian_hminus6_polarization_p95_dolp_abs = 0.0366844`
+- convergence — **passes under a declared deviation; the recorded claim configuration is non-terminating**. The recorded `default_clear_sky.cfg` carries no `higher_order_recursive_branch_cap` line, so its own convergence skies (sun at SZA ~97 deg) run the uncapped twilight branching that is runtime-confirmed non-terminating: the unmodified gate (Slurm job 779982) ran to its full 9-day walltime and was killed by the scheduler on 2026-08-07 without completing a single stage or writing a report, while the identical gate with `higher_order_recursive_branch_cap = 1` declared in-file (`monte_carlo_cpp/config/validation_default_capped.cfg`, Slurm job 783441, 2026-08-03) finished all stages in 21 seconds on the same binary. Fresh capped values, all passing:
+  - `convergence_peak_intensity_rel = 0.0251017` (threshold `0.05`; historical quote `0.0382187`)
+  - `convergence_peak_dolp_abs = 0.0146482` (threshold `0.02`; historical quote `0.00138362`)
+  - `convergence_flux_rel = 0.00645125` (threshold `0.02`; historical quote `0.00211343`)
+  - The historical April 2026 values could not have been produced from the recorded configuration (it never terminates), so the convergence claims sit in the same bucket as the IPRT claims: real numbers from an unrecorded claim-era local code state. The capped report's four case stages reproduce the 2026-07-29 split-rerun values digit-for-digit, confirming the same code path.
+- DISORT scalar benchmark — **reproduced** to five significant figures:
+  - `benchmark_benchmark_disort_scalar_median_intensity_rel = 0.0188114` (historical `0.0188119`)
+  - `benchmark_benchmark_disort_scalar_p95_intensity_rel = 0.0250572` (historical `0.0250578`)
+- IPRT A1 vector benchmark — **fails, and the historical quotes are unreproducible**:
+  - `benchmark_benchmark_iprt_a1_vector_median_intensity_rel = 0.0220254` (passes threshold `0.05`; historical quote `0.00561889`)
+  - `benchmark_benchmark_iprt_a1_vector_p95_intensity_rel = 0.0710573` (passes threshold `0.1`; historical quote `0.0176791`)
+  - `benchmark_benchmark_iprt_a1_vector_median_dolp_abs = 0.0922075` (**fails** threshold `0.02`; historical quote `0.0055043`)
+  - `benchmark_benchmark_iprt_a1_vector_p95_dolp_abs = 0.231859` (**fails** threshold `0.05`; historical quote `0.0286531`)
+  - The failing values are bit-identical across four independent builds, including a from-source rebuild at the claim-era commit, so the historical IPRT numbers could not have been produced by the recorded code + config + reference data. Single scatter is analytically exact (DoLP to four decimals, absolute intensity to under 1%); the error is isolated to multiple-scatter polarization, which is anti-aligned with the MYSTIC reference (model roughly -0.22 vs reference +0.48). Investigation open; see `notebooks/PLAN_IMPLEMENTATION_PROGRESS_2026-07-26.md`.
+- Rozenberg twilight intensity — **fails with the recorded profile; explained 2026-08-09**:
+  - `measurement_measurement_rozenberg_hminus6_normalized_rmse = 0.264325` (**fails** threshold `0.15`; historical quote `0.0849321`)
+  - 2026-08-09 resolution: the case is named after Rozenberg's Table-1 **h^-6 aerosol scenario**, but the recorded config loads the generic `clear_sky_midlatitude.csv`, whose aerosol falls far slower aloft than h^-6; along SZA-96 tangent paths the excess high-altitude extinction over-attenuates the twilight illumination and collapses the diffuse sky (model/reference profile ratios 0.09-0.38). Substituting a true h^-6 profile (aerosol ∝ h^-6 above 5 km, anchored at the recorded profile's 5 km value) gives `normalized_rmse = 0.079095` — **passing**, and essentially at the historical quote. The claim-era run evidently used an h^-6-type profile that was never recorded; this joins the IPRT code state and the non-terminating convergence configuration as the third recorded-versus-actual provenance gap. Diagnostic reports archived as `validation_report__split_rozenberg_{noguide,noo3,noaero,aerox4,refrbound,trueh6}.json`.
+- Koomen meridian twilight polarization — **mixed**:
+  - `measurement_measurement_koomen_meridian_hminus6_polarization_normalized_rmse = 0.102507` (passes threshold `0.15`; 2.2x the historical quote `0.0470789`)
+  - `measurement_measurement_koomen_meridian_hminus6_polarization_p95_dolp_abs = 0.0309199` (passes threshold `0.05`; better than the historical quote `0.0366844`)
+  - `measurement_measurement_koomen_meridian_hminus6_polarization_median_dolp_abs = 0.0309199` (**fails** threshold `0.02`; this metric was not among the historically quoted values)
+- Declared deviation for both twilight measurement cases: `higher_order_recursive_branch_cap = 1` was appended to their configs on 2026-07-29 because the uncapped configs are non-terminating under the default twilight branching (roughly 2^61 recursive paths per direction). The cap knob did not exist at the claim-era commit, so the historical Rozenberg/Koomen quotes could not have been produced from the recorded configuration either.
 - `benchmark_polarization_reference_present = 0`
 - `measurement_polarization_reference_present = 0`
+
+2026-08-01 development — IPRT failure root-caused, fixed, and the historical claims vindicated:
+the multiple-scatter anti-polarization is a handedness inconsistency between the incoming and
+outgoing frame rotations in `eventMuellerMatrix` (both chi angles are measured about the backward
+ray axes, but the chain applied `R(-chi_in)` with `R(+chi_out)`). Proven against an independent
+dipole double-scatter ground truth over 45 geometries; harmless for unpolarized inputs, which is
+why single scatter was always correct. The fix is knob-gated as `event_frame_chi_sign_fix`
+(default false, so every frozen/legacy result reproduces bit-identically; verified). With the
+knob on, all four IPRT metrics pass and equal the historically quoted values to 4+ significant
+figures (`median_dolp_abs = 0.0055043` exactly), so the historical IPRT numbers were evidently
+produced by a local claim-era code state with the consistent rotation that never entered the
+committed history. The published Zawada all-orders spherical benchmark also improves ~3x in DoLP
+under the fix (single-scatter case bit-identical, as required). The fix does NOT rescue Rozenberg
+(unchanged), Koomen (median DoLP worsens to 0.0515), or the Marseille DoLP bias (worsens
++0.143 -> +0.194 on the 48-direction subset): the twilight over-polarization is a separate open
+physics gap. Full evidence chain and per-run artifacts: `notebooks/PLAN_IMPLEMENTATION_PROGRESS_2026-07-26.md`
+(2026-08-01 sections) and `paper/tables/reproducibility/` (`*_chifix*` files).
+
+2026-08-11 supersession note: the chi-fix (with the King factor and the day-specific profile) is now
+ADOPTED in the V2 frozen tier and V2 gate — see the "2026-08-11 addendum" near the top. Under that
+stack the Rozenberg and Koomen bullets above are superseded (Rozenberg 0.0851 passes ≈ claim;
+Koomen fully passes including median DoLP 0.0160), and the convergence family runs the hardened
+low-order metric with one declared deviation (`convergence_flux_rel` 0.0247 vs 0.02,
+budget-independent heavy-tail effect). The reconciled per-family text above is retained as the
+historical record of the legacy-default configuration.
 
 Current calibrated Marseille metrics:
 
@@ -247,7 +290,7 @@ Current calibrated Marseille metrics:
 - `p95_aop_deg = 1.4210854715202004e-14`
 - `solar_vertical_signed_dolp_bias = -9.00180830777154e-18`
 
-The default validation values above are from a real rerun of the validation executable, and the Marseille values are from the frozen calibrated full-field report.
+Provenance: the DISORT/IPRT/Rozenberg/Koomen values above are from the 2026-07-29 per-case split reruns on the Linux cluster (Slurm jobs 780007/779981; GCC 8 build; wrapper configs `monte_carlo_cpp/config/validation_split_*.cfg`, which isolate one case each while the case configs are loaded fresh). The convergence values are from the 2026-08-03 capped-deviation full gate (Slurm job 783441, report `validation_report__default_clear_sky_capped.json`, archived with the side-by-side reconciliation `reconcile_validation_numbers_2026-08-03.txt` in `paper/tables/reproducibility/`). The Marseille values are from the frozen calibrated full-field report.
 
 Additional strict measurement-case evaluation now exists outside the default validation stack:
 
@@ -336,6 +379,7 @@ Additional strict measurement-case evaluation now exists outside the default val
 - The historical raw-model Marseille blocker is now clearly scoped: the paper path no longer depends on the old empirical boost, but independent raw below-horizon polarization closure has not been demonstrated under the strict paper configuration.
 - The calibrated Marseille gate now passes as a row-wise measurement-model closure. This is enough for calibrated pipeline validation, but not enough for an independent raw-physics claim.
 - The model assumptions in [MODEL_ASSUMPTIONS.md](/c:/Users/ashton/Desktop/projects/light-scattering/MODEL_ASSUMPTIONS.md) still limit the scientific scope to clear-sky, 1D, spherically stratified cases with a Lambertian surface and no refraction, clouds, or 3D aerosol structure.
+- The 2026-07 revalidation (see "Validation status") found that the IPRT A1 vector benchmark and the Rozenberg twilight measurement case currently fail the checked-in gate (with default/legacy settings), that Koomen fails its median-DoLP criterion, and that the historical IPRT/Rozenberg/Koomen quotes are unreproducible from their recorded code/config state. The IPRT defect was root-caused and fixed on 2026-08-01 (`event_frame_chi_sign_fix`, default off; with it on the IPRT claims reproduce to 4+ significant figures and Zawada all-orders improves ~3x) — but the default gate still runs legacy, and adopting the fix as production default is an open Phase E decision. The Marseille DoLP over-polarization (+0.14 signed median on the 2026-07-30 subset run) is NOT that bug — it worsens to +0.19 under the corrected chain — and remains the primary open physics gap, with Rozenberg's intensity mismatch similarly unexplained.
 - The current result set should still be treated as development output, not publication output.
 
 ## Immediate next technical step

@@ -1,0 +1,37 @@
+{
+  "overall_pass": false,
+  "metrics": [
+    {"name": "rayleigh_phase_normalization", "value": 1.5625e-08, "threshold": 0.001, "pass": true},
+    {"name": "rayleigh_90deg_dolp_error", "value": 0, "threshold": 1e-06, "pass": true},
+    {"name": "rayleigh_physical_stokes", "value": 0, "threshold": 0, "pass": true},
+    {"name": "convergence_peak_intensity_rel", "value": 0, "threshold": 0.05, "pass": true},
+    {"name": "convergence_peak_dolp_abs", "value": 0, "threshold": 0.02, "pass": true},
+    {"name": "convergence_flux_rel", "value": 0.0247044, "threshold": 0.02, "pass": false},
+    {"name": "benchmark_benchmark_disort_scalar_median_intensity_rel", "value": 0.0188114, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_benchmark_disort_scalar_p95_intensity_rel", "value": 0.0250572, "threshold": 0.1, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_median_intensity_rel", "value": 0.00546554, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_p95_intensity_rel", "value": 0.0178296, "threshold": 0.1, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_diag_signed_qn_median_abs", "value": 0.00548519, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_diag_signed_un_median_abs", "value": 0.00139323, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_diag_q_sign_agreement_frac", "value": 1, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_median_dolp_abs", "value": 0.0055043, "threshold": 0.02, "pass": true},
+    {"name": "benchmark_benchmark_iprt_a1_vector_chifix_p95_dolp_abs", "value": 0.0286162, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_polarization_reference_present", "value": 0, "threshold": 0, "pass": true},
+    {"name": "measurement_measurement_rozenberg_hminus6_v2_normalized_rmse", "value": 0.0851442, "threshold": 0.15, "pass": true},
+    {"name": "measurement_measurement_rozenberg_hminus6_v2_brightest_location_deg", "value": 0, "threshold": 5, "pass": true},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_v2_normalized_rmse", "value": 0.040091, "threshold": 0.15, "pass": true},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_v2_brightest_location_deg", "value": 8.53774e-07, "threshold": 5, "pass": true},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_v2_median_dolp_abs", "value": 0.0160022, "threshold": 0.02, "pass": true},
+    {"name": "measurement_measurement_koomen_meridian_hminus6_polarization_v2_p95_dolp_abs", "value": 0.0160022, "threshold": 0.05, "pass": true},
+    {"name": "measurement_polarization_reference_present", "value": 0, "threshold": 0, "pass": true}
+  ],
+  "notes": [
+    "convergence_low_order_metric=true: peak intensity/DoLP metrics computed on first+second-order components (heavy-tailed higher-order estimator excluded); flux metric remains total-field.",
+    "Benchmark reference for case benchmark_disort_scalar does not include polarization, so DoLP benchmark metrics were not evaluated.",
+    "Measurement reference for case measurement_rozenberg_hminus6_v2 does not include polarization, so DoLP measurement metrics were not evaluated.",
+    "Measurement reference for case measurement_rozenberg_hminus6_v2 does not include AoP values above the DoLP threshold, so AoP metrics were not evaluated.",
+    "Measurement reference for case measurement_rozenberg_hminus6_v2 did not provide enough solar-vertical points for the signed DoLP bias metric.",
+    "Measurement reference for case measurement_koomen_meridian_hminus6_polarization_v2 does not include AoP values above the DoLP threshold, so AoP metrics were not evaluated.",
+    "Measurement reference for case measurement_koomen_meridian_hminus6_polarization_v2 did not provide enough solar-vertical points for the signed DoLP bias metric."
+  ]
+}

@@ -803,12 +803,30 @@ MuellerMatrix eventMuellerMatrix(
     const Vec3 &incomingDirection,
     const Vec3 &outgoingDirection,
     bool isRayleigh,
-    const PhaseMatrixCoefficients &aerosolCoefficients
+    const PhaseMatrixCoefficients &aerosolCoefficients,
+    bool chiInSignFix = false,
+    double rayleighDepolarizationFactor = 0.0,
+    double aerosolF22Ratio = 1.0
 )
 {
-    const MuellerMatrix scatterMatrix = isRayleigh
-        ? rayleighMuellerMatrix(dot(incomingDirection, outgoingDirection))
-        : aerosolMuellerMatrix(aerosolCoefficients);
+    MuellerMatrix scatterMatrix;
+    if (isRayleigh) {
+        scatterMatrix = rayleighMuellerMatrix(dot(incomingDirection, outgoingDirection), rayleighDepolarizationFactor);
+    } else if (aerosolF22Ratio < 1.0) {
+        // Nonsphericity-style depolarization: the bundled aerosol matrices are
+        // perfect-sphere Mie (f22 = f11 exactly), so aerosol events transmit
+        // linear polarization losslessly. Scaling the transmitted-polarization
+        // channels (f22/f33/f44) while keeping f11 (energy) and f12
+        // (polarization generation from unpolarized input) models real
+        // nonspherical aerosol without touching intensity or single scatter.
+        PhaseMatrixCoefficients coefficients = aerosolCoefficients;
+        coefficients.f22 *= aerosolF22Ratio;
+        coefficients.f33 *= aerosolF22Ratio;
+        coefficients.f44 *= aerosolF22Ratio;
+        scatterMatrix = aerosolMuellerMatrix(coefficients);
+    } else {
+        scatterMatrix = aerosolMuellerMatrix(aerosolCoefficients);
+    }
     const Vec3 scatteringNormal = normalize(cross(incomingDirection, outgoingDirection));
     if (norm(scatteringNormal) < 1.0e-12) {
         return scatterMatrix;
@@ -822,7 +840,14 @@ MuellerMatrix eventMuellerMatrix(
     const double chiIn = signedAngleAboutAxis(referenceIncoming, scatteringBasisIncoming, incomingDirection);
     const double chiOut = signedAngleAboutAxis(scatteringBasisOutgoing, referenceOutgoing, outgoingDirection);
 
-    return multiply(rotationMueller(chiOut), multiply(scatterMatrix, rotationMueller(-chiIn)));
+    // Both chi angles are measured about the BACKWARD ray axes. Under that
+    // convention the incoming-frame rotation must be applied as R(+chiIn) to
+    // be consistent with the R(+chiOut) outgoing rotation; the historical
+    // R(-chiIn) silently mixed conventions, misorienting polarized inputs
+    // (harmless for unpolarized inputs, i.e. single scatter). Gated by
+    // event_frame_chi_sign_fix so frozen configs reproduce legacy behavior.
+    const double chiInApplied = chiInSignFix ? chiIn : -chiIn;
+    return multiply(rotationMueller(chiOut), multiply(scatterMatrix, rotationMueller(chiInApplied)));
 }
 
 double minimumAltitudeAlongSegment(const Vec3 &origin, const Vec3 &direction, double distance);
@@ -1993,7 +2018,10 @@ SingleScatterBreakdown deterministicSingleScatterBandAlongRayBreakdown(
                         sunSample.direction,
                         outgoingDirection,
                         true,
-                        aerosolCoefficients
+                        aerosolCoefficients,
+                        config.monte_carlo.event_frame_chi_sign_fix,
+                        config.monte_carlo.rayleigh_depolarization_factor,
+                        config.monte_carlo.aerosol_depolarization_f22_ratio
                     );
                     contribution.rayleigh = addStokes(
                         contribution.rayleigh,
@@ -2012,7 +2040,10 @@ SingleScatterBreakdown deterministicSingleScatterBandAlongRayBreakdown(
                         sunSample.direction,
                         outgoingDirection,
                         false,
-                        aerosolCoefficients
+                        aerosolCoefficients,
+                        config.monte_carlo.event_frame_chi_sign_fix,
+                        config.monte_carlo.rayleigh_depolarization_factor,
+                        config.monte_carlo.aerosol_depolarization_f22_ratio
                     );
                     contribution.aerosol = addStokes(
                         contribution.aerosol,
@@ -2142,7 +2173,10 @@ std::vector<SingleScatterBreakdown> deterministicSingleScatterAlongRayBreakdownA
                         sunSample.direction,
                         outgoingDirection,
                         true,
-                        aerosolCoefficients
+                        aerosolCoefficients,
+                        config.monte_carlo.event_frame_chi_sign_fix,
+                        config.monte_carlo.rayleigh_depolarization_factor,
+                        config.monte_carlo.aerosol_depolarization_f22_ratio
                     );
                     contributions[bandIndex].rayleigh = addStokes(
                         contributions[bandIndex].rayleigh,
@@ -2161,7 +2195,10 @@ std::vector<SingleScatterBreakdown> deterministicSingleScatterAlongRayBreakdownA
                         sunSample.direction,
                         outgoingDirection,
                         false,
-                        aerosolCoefficients
+                        aerosolCoefficients,
+                        config.monte_carlo.event_frame_chi_sign_fix,
+                        config.monte_carlo.rayleigh_depolarization_factor,
+                        config.monte_carlo.aerosol_depolarization_f22_ratio
                     );
                     contributions[bandIndex].aerosol = addStokes(
                         contributions[bandIndex].aerosol,
@@ -2351,7 +2388,10 @@ SecondOrderBreakdown deterministicSecondScatterContribution(
                             incomingDirection,
                             outgoingDirection,
                             true,
-                            aerosolCoefficients
+                            aerosolCoefficients,
+                            config.monte_carlo.event_frame_chi_sign_fix,
+                            config.monte_carlo.rayleigh_depolarization_factor,
+                            config.monte_carlo.aerosol_depolarization_f22_ratio
                         );
                         if (
                             std::abs(incomingSingleScatter.rayleigh.I) +
@@ -2391,7 +2431,10 @@ SecondOrderBreakdown deterministicSecondScatterContribution(
                             incomingDirection,
                             outgoingDirection,
                             false,
-                            aerosolCoefficients
+                            aerosolCoefficients,
+                            config.monte_carlo.event_frame_chi_sign_fix,
+                            config.monte_carlo.rayleigh_depolarization_factor,
+                            config.monte_carlo.aerosol_depolarization_f22_ratio
                         );
                         if (
                             std::abs(incomingSingleScatter.rayleigh.I) +
@@ -2614,7 +2657,10 @@ StokesVector deterministicSingleScatterContribution(
                         sunSample.direction,
                         outgoingDirection,
                         true,
-                        aerosolCoefficients
+                        aerosolCoefficients,
+                        config.monte_carlo.event_frame_chi_sign_fix,
+                        config.monte_carlo.rayleigh_depolarization_factor,
+                        config.monte_carlo.aerosol_depolarization_f22_ratio
                     );
                     totalContribution = addStokes(
                         totalContribution,
@@ -2633,7 +2679,10 @@ StokesVector deterministicSingleScatterContribution(
                         sunSample.direction,
                         outgoingDirection,
                         false,
-                        aerosolCoefficients
+                        aerosolCoefficients,
+                        config.monte_carlo.event_frame_chi_sign_fix,
+                        config.monte_carlo.rayleigh_depolarization_factor,
+                        config.monte_carlo.aerosol_depolarization_f22_ratio
                     );
                     totalContribution = addStokes(
                         totalContribution,
@@ -2681,7 +2730,10 @@ StokesVector traceBandPath(
     std::mt19937 &rng
 )
 {
-    if (eventIndex >= std::max(8, config.monte_carlo.max_events_guard)) {
+    // Floor lowered 8 -> 2 (2026-08-09) so a max_events_guard ladder can probe
+    // low scattering orders; bit-identical for every recorded config (all use
+    // guard >= 8).
+    if (eventIndex >= std::max(2, config.monte_carlo.max_events_guard)) {
         return {0.0, 0.0, 0.0, 0.0};
     }
 
@@ -2773,7 +2825,10 @@ StokesVector traceBandPath(
                 sunSample.direction,
                 outgoingDirection,
                 interaction.is_rayleigh,
-                aerosolCoefficients
+                aerosolCoefficients,
+                config.monte_carlo.event_frame_chi_sign_fix,
+                config.monte_carlo.rayleigh_depolarization_factor,
+                config.monte_carlo.aerosol_depolarization_f22_ratio
             );
             const StokesVector directSun = initUnpolarized(
                 band.solar_irradiance_w_m2_nm * sunSample.weight * std::exp(-tauSun)
@@ -2948,7 +3003,10 @@ StokesVector traceBandPath(
             sample.incoming_direction,
             outgoingDirection,
             interaction.is_rayleigh,
-            aerosolCoefficients
+            aerosolCoefficients,
+            config.monte_carlo.event_frame_chi_sign_fix,
+            config.monte_carlo.rayleigh_depolarization_factor,
+            config.monte_carlo.aerosol_depolarization_f22_ratio
         );
 
         MuellerMatrix branchThroughput = multiply(
@@ -3330,7 +3388,9 @@ DirectionEstimate estimateDirectionMoments(
         }
     }
     updateHigherOrderTiming();
-    estimate.higher_order = robustGroups.medianOfMeans(moments.mean);
+    estimate.higher_order = config.monte_carlo.higher_order_estimator == "mean"
+        ? moments.mean
+        : robustGroups.medianOfMeans(moments.mean);
     estimate.higher_variance = moments.variance();
     if (checkpointState != nullptr) {
         clearHigherOrderInProgress();
@@ -3411,6 +3471,11 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
     setIfPresent(values, "measurement_case_config", config.output.measurement_case_config);
     setIfPresent(values, "measurement_reference_csv", config.output.measurement_reference_csv);
     setIfPresent(values, "measurement_model_calibration_csv", config.output.measurement_model_calibration_csv);
+    setIfPresent(
+        values,
+        "measurement_model_polarization_convention",
+        config.output.measurement_model_polarization_convention
+    );
     setIfPresent(values, "measurement_metadata_json", config.output.measurement_metadata_json);
     setIfPresent(values, "paper_primary_measurement_case_config", config.output.paper_primary_measurement_case_config);
     setIfPresent(values, "paper_case_provenance_json", config.output.paper_case_provenance_json);
@@ -3443,6 +3508,10 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
     setBoolIfPresent(values, "single_scatter_only", config.monte_carlo.single_scatter_only);
     setBoolIfPresent(values, "deterministic_single_scatter", config.monte_carlo.deterministic_single_scatter);
     setBoolIfPresent(values, "deterministic_second_scatter", config.monte_carlo.deterministic_second_scatter);
+    setBoolIfPresent(values, "event_frame_chi_sign_fix", config.monte_carlo.event_frame_chi_sign_fix);
+    setNumericIfPresent(values, "rayleigh_depolarization_factor", config.monte_carlo.rayleigh_depolarization_factor);
+    setNumericIfPresent(values, "aerosol_depolarization_f22_ratio", config.monte_carlo.aerosol_depolarization_f22_ratio);
+    setBoolIfPresent(values, "convergence_low_order_metric", config.monte_carlo.convergence_low_order_metric);
     setNumericIfPresent(values, "second_scatter_view_steps", config.monte_carlo.second_scatter_view_steps);
     setNumericIfPresent(values, "second_scatter_ray_steps", config.monte_carlo.second_scatter_ray_steps);
     setNumericIfPresent(values, "second_scatter_mu_nodes", config.monte_carlo.second_scatter_mu_nodes);
@@ -3586,6 +3655,11 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
         "higher_order_robust_groups",
         config.monte_carlo.higher_order_robust_groups
     );
+    setIfPresent(
+        values,
+        "higher_order_estimator",
+        config.monte_carlo.higher_order_estimator
+    );
     setBoolIfPresent(
         values,
         "twilight_order_depolarization",
@@ -3719,6 +3793,21 @@ SimulationConfig loadSimulationConfig(const std::string &config_path)
             "strict_paper_mode=true rejects empirical twilight tuning fields. "
             "Disable twilight_order_depolarization and reset twilight_*_polarization_scale and "
             "twilight_*_intensity_boost to 1.0 in paper configs."
+        );
+    }
+
+    if (config.monte_carlo.higher_order_estimator != "median_of_means" &&
+        config.monte_carlo.higher_order_estimator != "mean") {
+        throw std::runtime_error(
+            "higher_order_estimator must be 'median_of_means' or 'mean', got: " +
+            config.monte_carlo.higher_order_estimator
+        );
+    }
+    if (config.output.measurement_model_polarization_convention != "legacy_outward_ray" &&
+        config.output.measurement_model_polarization_convention != "incoming_light") {
+        throw std::runtime_error(
+            "measurement_model_polarization_convention must be 'legacy_outward_ray' or 'incoming_light', got: " +
+            config.output.measurement_model_polarization_convention
         );
     }
 
@@ -4128,6 +4217,10 @@ void writeSkyResult(const SkyResult &result)
     json << "  \"single_scatter_only\": " << (result.config.monte_carlo.single_scatter_only ? "true" : "false") << ",\n";
     json << "  \"deterministic_single_scatter\": " << (result.config.monte_carlo.deterministic_single_scatter ? "true" : "false") << ",\n";
     json << "  \"deterministic_second_scatter\": " << (result.config.monte_carlo.deterministic_second_scatter ? "true" : "false") << ",\n";
+    json << "  \"event_frame_chi_sign_fix\": " << (result.config.monte_carlo.event_frame_chi_sign_fix ? "true" : "false") << ",\n";
+    json << "  \"rayleigh_depolarization_factor\": " << result.config.monte_carlo.rayleigh_depolarization_factor << ",\n";
+    json << "  \"aerosol_depolarization_f22_ratio\": " << result.config.monte_carlo.aerosol_depolarization_f22_ratio << ",\n";
+    json << "  \"convergence_low_order_metric\": " << (result.config.monte_carlo.convergence_low_order_metric ? "true" : "false") << ",\n";
     json << "  \"second_scatter_view_steps\": " << result.config.monte_carlo.second_scatter_view_steps << ",\n";
     json << "  \"second_scatter_ray_steps\": " << result.config.monte_carlo.second_scatter_ray_steps << ",\n";
     json << "  \"second_scatter_mu_nodes\": " << result.config.monte_carlo.second_scatter_mu_nodes << ",\n";
@@ -4162,6 +4255,9 @@ void writeSkyResult(const SkyResult &result)
     json << "  \"twilight_higher_order_horizon_cone_half_angle_deg\": " << result.config.monte_carlo.twilight_higher_order_horizon_cone_half_angle_deg << ",\n";
     json << "  \"twilight_higher_order_horizon_elevation_deg\": " << result.config.monte_carlo.twilight_higher_order_horizon_elevation_deg << ",\n";
     json << "  \"higher_order_robust_groups\": " << result.config.monte_carlo.higher_order_robust_groups << ",\n";
+    json << "  \"higher_order_estimator\": \"" << result.config.monte_carlo.higher_order_estimator << "\",\n";
+    json << "  \"measurement_model_polarization_convention\": \""
+         << result.config.output.measurement_model_polarization_convention << "\",\n";
     json << "  \"twilight_order_depolarization\": " << (result.config.monte_carlo.twilight_order_depolarization ? "true" : "false") << ",\n";
     json << "  \"twilight_second_order_polarization_scale\": " << result.config.monte_carlo.twilight_second_order_polarization_scale << ",\n";
     json << "  \"twilight_higher_order_polarization_scale\": " << result.config.monte_carlo.twilight_higher_order_polarization_scale << ",\n";

@@ -129,6 +129,7 @@ This is a calibrated pipeline-validation result. It should not be cited as indep
   - `convergence_peak_intensity_rel <= 0.05`
   - `convergence_peak_dolp_abs <= 0.02`
   - `convergence_flux_rel <= 0.02`
+- 2026-08-03 revalidation status: all three convergence metrics **pass** (`0.0251017`, `0.0146482`, `0.00645125`), but only under a declared deviation — `higher_order_recursive_branch_cap = 1` (`config/validation_default_capped.cfg`, Slurm job 783441). The recorded `default_clear_sky.cfg` has no cap line, and its SZA-97 convergence skies are non-terminating under the default uncapped twilight branching (the unmodified gate, job 779982, timed out at its full 9-day walltime on 2026-08-07 with no stage completed; the capped gate completed in 21 s on the same binary). The historical April 2026 convergence quotes therefore could not have come from the recorded configuration.
 - Benchmark and measurement validation currently use normalized field comparisons, not a full absolute radiometric closure study.
 - The frozen Marseille full-field pass uses a row-wise measurement-model calibration. That gate validates calibrated pipeline closure, not raw predictive closure.
 
@@ -136,17 +137,20 @@ This is a calibrated pipeline-validation result. It should not be cited as indep
 
 ### External Benchmark
 
-- The default passing benchmark suite includes:
+- The default benchmark suite includes:
   - a scalar principal-plane Rayleigh case generated with PythonicDISORT
   - a vector Rayleigh case from the IPRT A1 intercomparison
-- Those benchmark cases validate transport normalization and vector polarization handling under controlled assumptions.
+- 2026-07-29 revalidation status: the DISORT scalar case reproduces its historical metrics to five significant figures, but the IPRT A1 vector case **fails** its DoLP thresholds (`median_dolp_abs = 0.0922` vs `0.02`, `p95_dolp_abs = 0.2319` vs `0.05`) under default/legacy settings. Single scatter is analytically exact; the failure is isolated to multiple-scatter polarization.
+- 2026-08-01: that failure was root-caused to a frame-rotation handedness inconsistency in the scattering-event Mueller chain and fixed behind `event_frame_chi_sign_fix` (default false to preserve frozen reproducibility). With the fix enabled the IPRT case passes and matches its historical quotes to 4+ significant figures, and the Zawada all-orders case improves ~3x in DoLP — see STATUS_README.md "Validation status".
+- Those benchmark cases exercise transport normalization and vector polarization handling under controlled assumptions, but the vector case does not currently validate multiple-scatter polarization.
 - The bundled vector benchmark is still a **plane-parallel Rayleigh** benchmark, not a full spherical twilight multiple-scattering benchmark.
 
 ### Public Measurement Cases
 
-- The default passing measurement suite includes:
+- The default measurement suite includes:
   - the Rozenberg (1952) twilight intensity pattern
   - the Koomen et al. (1952) meridian twilight polarization subset
+- 2026-07-29 revalidation status: both twilight cases now run under a declared `higher_order_recursive_branch_cap = 1` deviation (the uncapped claim-era configs are non-terminating); Rozenberg **fails** its RMSE threshold (`0.264` vs `0.15`) and Koomen fails its median-DoLP criterion (`0.031` vs `0.02`) while passing RMSE and p95 DoLP.
 - An additional stricter measurement case is bundled:
   - a coarse full-sky 450 nm DoLP field digitized from Gal et al. (2001) Figure 2a using calibrated full-sky imaging polarimetry
 - That Gal et al. case is a full-sky fisheye polarization reference, but it is low-sun daytime sky at `solar_zenith_deg = 83.1`, not below-horizon twilight.
@@ -157,7 +161,8 @@ This is a calibrated pipeline-validation result. It should not be cited as indep
 
 The current solver is not paper-safe yet because of the following gaps:
 
-- The default passing external benchmark story still tops out at plane-parallel Rayleigh validation for vector polarization, even though stricter published spherical Zawada smoke benchmarks are now bundled separately.
+- Vector-polarization validation currently rests on the spherical Zawada benchmarks (reproduced 2026-07) and analytic single-scatter checks: the plane-parallel IPRT A1 vector case fails its multiple-scatter DoLP thresholds under the DEFAULT (legacy) configuration, so the default gate presently contains no passing multiple-scatter vector benchmark. With the 2026-08-01 `event_frame_chi_sign_fix` knob enabled the IPRT case passes at its historically quoted accuracy; promoting that fix to the production default is an open decision.
+- 2026-08-11 resolution: the V2 frozen tier and V2 gate adopt `event_frame_chi_sign_fix=true` plus `rayleigh_depolarization_factor=0.0279` (King molecular depolarization — physical air is not a pure-Rayleigh depolarization-free medium; the samplers stay pure-Rayleigh as importance-sampling proposals, so the change enters only through the event Mueller matrices and is unbiased). The bundled aerosol matrices are perfect-sphere Mie with f22 ≡ f11 (aerosol events cannot depolarize); the `aerosol_depolarization_f22_ratio` knob exists but is EXCLUDED from V2 defaults because the 2022-08-15 day was fine-mode without dust (AERONET α ≈ 1.2–1.5) — it remains a documented sensitivity (DoLP −0.008, AoP −3° at 0.7). Molecular-profile, loading, chain-depth, estimator, and profile-shape explanations of the remaining Marseille twilight over-polarization (≈ +0.17 signed median under V2) are eliminated; the residual is declared open, with the Marseille-vs-Koomen reduction asymmetry the prime lead.
 - The stricter bundled full-sky fisheye polarization case currently fails with `median_dolp_abs = 0.0660017` and `p95_dolp_abs = 0.217099` in [monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp.txt](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp.txt).
 - Exact pointwise diagnostics for that case now exist in [measurement_gal_lapland_fullsky_450nm_dolp_comparison.csv](/c:/Users/ashton/Desktop/projects/light-scattering/monte_carlo_cpp/results/measurement_case_reports/measurement_gal_lapland_fullsky_450nm_dolp_comparison.csv), and quick-look field plots now exist under [plots/current/measurement_cases/measurement_gal_lapland_fullsky_450nm_dolp](/c:/Users/ashton/Desktop/projects/light-scattering/plots/current/measurement_cases/measurement_gal_lapland_fullsky_450nm_dolp).
 - The frozen Marseille calibrated plot set now exists under [plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2](/work/vmo703/light-scattering/plots/current/measurement_cases/frozen_marseille_twilight_20220815_191413z_measurement__full_branchcap_robust_r2).

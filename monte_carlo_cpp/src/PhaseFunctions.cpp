@@ -333,6 +333,27 @@ PhaseMatrixCoefficients rayleighPhaseMatrix(double cosTheta)
     };
 }
 
+PhaseMatrixCoefficients rayleighPhaseMatrix(double cosTheta, double depolarizationFactor)
+{
+    if (depolarizationFactor <= 0.0) {
+        return rayleighPhaseMatrix(cosTheta);
+    }
+    const double rho = std::min(depolarizationFactor, 0.49);
+    const double cos2 = cosTheta * cosTheta;
+    const double factor = 3.0 / (16.0 * PI);
+    const double delta = (1.0 - rho) / (1.0 + 0.5 * rho);
+    const double deltaPrime = (1.0 - 2.0 * rho) / (1.0 - rho);
+    const double isotropic = (1.0 - delta) / (4.0 * PI);
+    return {
+        delta * factor * (1.0 + cos2) + isotropic,
+        -delta * factor * (1.0 - cos2),
+        delta * factor * (1.0 + cos2),
+        delta * factor * (2.0 * cosTheta),
+        0.0,
+        delta * deltaPrime * factor * (2.0 * cosTheta),
+    };
+}
+
 ScatteringSample sampleRayleighDirection(std::mt19937 &rng)
 {
     std::uniform_real_distribution<double> uniform01(0.0, 1.0);

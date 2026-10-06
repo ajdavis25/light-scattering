@@ -1,0 +1,6 @@
+phasefunctions 1 0.00447997
+surface 1 0.00309184
+polarization 1 0.00253554
+atmosphere 1 0.00308569
+wavelength 1 0.022664
+---

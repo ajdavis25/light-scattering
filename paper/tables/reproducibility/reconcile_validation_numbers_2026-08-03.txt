@@ -1,0 +1,43 @@
+
+=== convergence ===
+  from validation_report__default_clear_sky_capped.json (overall_pass=False)
+  convergence_flux_rel                                                   fresh=0.00645125 claimed=0.00211343 ratio=3.053 pass=True
+  convergence_peak_dolp_abs                                              fresh=0.0146482 claimed=0.00138362 ratio=10.587 pass=True
+  convergence_peak_intensity_rel                                         fresh=0.0251017 claimed=0.0382187 ratio=0.657 pass=True
+
+=== disort_scalar ===
+  from validation_report__split_disort.json (overall_pass=False)
+  benchmark_benchmark_disort_scalar_median_intensity_rel                 fresh=0.0188114 claimed=0.0188119 ratio=1.000 pass=True
+  benchmark_benchmark_disort_scalar_p95_intensity_rel                    fresh=0.0250572 claimed=0.0250578 ratio=1.000 pass=True
+
+=== iprt_a1_vector ===
+  from validation_report__split_iprt.json (overall_pass=False)
+  benchmark_benchmark_iprt_a1_vector_median_dolp_abs                     fresh=0.0922075 claimed=0.0055043 ratio=16.752 pass=False
+  benchmark_benchmark_iprt_a1_vector_median_intensity_rel                fresh=0.0220254 claimed=0.00561889 ratio=3.920 pass=True
+  benchmark_benchmark_iprt_a1_vector_p95_dolp_abs                        fresh=0.231859 claimed=0.0286531 ratio=8.092 pass=False
+  benchmark_benchmark_iprt_a1_vector_p95_intensity_rel                   fresh=0.0710573 claimed=0.0176791 ratio=4.019 pass=True
+
+=== rozenberg ===
+  from validation_report__split_rozenberg.json (overall_pass=False)
+  measurement_measurement_rozenberg_hminus6_normalized_rmse              fresh=0.264325 claimed=0.0849321 ratio=3.112 pass=False
+
+=== koomen ===
+  from validation_report__split_koomen.json (overall_pass=False)
+  measurement_measurement_koomen_meridian_hminus6_polarization_normalized_rmse fresh=0.102507 claimed=0.0470789 ratio=2.177 pass=True
+  measurement_measurement_koomen_meridian_hminus6_polarization_p95_dolp_abs fresh=0.0309199 claimed=0.0366844 ratio=0.843 pass=True
+
+=== zawada_single ===
+  from validation_report__split_zawada_base_legacy.json (overall_pass=False)
+  benchmark_benchmark_zawada_spherical_vector_single_median_dolp_abs     fresh=3.52057e-05 claimed=3.37895e-05 ratio=1.042 pass=True
+  benchmark_benchmark_zawada_spherical_vector_single_median_intensity_rel fresh=0.00054524 claimed=0.000459695 ratio=1.186 pass=True
+  benchmark_benchmark_zawada_spherical_vector_single_p95_dolp_abs        fresh=0.000292516 claimed=0.000292954 ratio=0.999 pass=True
+  benchmark_benchmark_zawada_spherical_vector_single_p95_intensity_rel   fresh=0.00149286 claimed=0.00140769 ratio=1.061 pass=True
+
+=== zawada_multiple ===
+  from validation_report__split_zawada_base_legacy.json (overall_pass=False)
+  benchmark_benchmark_zawada_spherical_vector_multiple_median_dolp_abs   fresh=0.0199564 claimed=0.0199496 ratio=1.000 pass=True
+  benchmark_benchmark_zawada_spherical_vector_multiple_median_intensity_rel fresh=0.00452673 claimed=0.00457567 ratio=0.989 pass=True
+  benchmark_benchmark_zawada_spherical_vector_multiple_p95_dolp_abs      fresh=0.035393 claimed=0.0353911 ratio=1.000 pass=True
+  benchmark_benchmark_zawada_spherical_vector_multiple_p95_intensity_rel fresh=0.0120461 claimed=0.012131 ratio=0.993 pass=True
+
+families missing: 0/7

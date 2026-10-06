@@ -1,0 +1,19 @@
+{
+  "overall_pass": false,
+  "metrics": [
+    {"name": "rayleigh_phase_normalization", "value": 1.5625e-08, "threshold": 0.001, "pass": true},
+    {"name": "rayleigh_90deg_dolp_error", "value": 0, "threshold": 1e-06, "pass": true},
+    {"name": "rayleigh_physical_stokes", "value": 0, "threshold": 0, "pass": true},
+    {"name": "convergence_peak_intensity_rel", "value": 0.303525, "threshold": 0.05, "pass": false},
+    {"name": "convergence_peak_dolp_abs", "value": 0.143115, "threshold": 0.02, "pass": false},
+    {"name": "convergence_flux_rel", "value": 0.303525, "threshold": 0.02, "pass": false},
+    {"name": "benchmark_benchmark_disort_scalar_median_intensity_rel", "value": 0.0188114, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_benchmark_disort_scalar_p95_intensity_rel", "value": 0.0250572, "threshold": 0.1, "pass": true},
+    {"name": "benchmark_polarization_reference_present", "value": 1, "threshold": 0, "pass": false},
+    {"name": "measurement_case_present", "value": 1, "threshold": 0, "pass": false}
+  ],
+  "notes": [
+    "Benchmark reference for case benchmark_disort_scalar does not include polarization, so DoLP benchmark metrics were not evaluated.",
+    "Measurement validation failed because measurement_case_config was not set."
+  ]
+}

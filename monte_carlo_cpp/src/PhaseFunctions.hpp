@@ -46,6 +46,12 @@ private:
 double rayleighPhase(double cosTheta);
 double rayleighPolarizationFraction(double cosTheta);
 PhaseMatrixCoefficients rayleighPhaseMatrix(double cosTheta);
+// Depolarized (King-factor) Rayleigh phase matrix after Hansen & Travis
+// (1974): delta = (1-rho)/(1+rho/2) scales the anisotropic part, an isotropic
+// unpolarized term (1-delta)/(4 pi) keeps f11 normalized, and f44 carries the
+// extra delta' = (1-2 rho)/(1-rho). rho = 0 reproduces the pure matrix
+// bit-identically.
+PhaseMatrixCoefficients rayleighPhaseMatrix(double cosTheta, double depolarizationFactor);
 ScatteringSample sampleRayleighDirection(std::mt19937 &rng);
 double henyeyGreenstein(double cosTheta, double g);
 

@@ -1,0 +1,16 @@
+# Marseille 48-direction corrected-chain subset (chi-fix on, cap=1, mean estimator,
+# incoming_light convention): depolarization-lever scan summary, 2026-08-09/10.
+# signed_dolp_bias medians; AoP = median |AoP error| deg; shapeRMSE = unmasked normalized RMSE.
+# Jobs: baseline 781658, king 787262, f22 scan 787296, loading x4 787301, x2/x3/combo 787304.
+case,sgn_bias_med,sgn_bias_zen_lt45,aop_med_deg,shape_rmse,model_dolp_med,abs_bias_med
+baseline,+0.1938,+0.2617,23.37,0.1731,0.3877,0.2288
+king_0.0279,+0.1705,+0.2327,23.33,0.1738,0.3707,0.1929
+f22_0.9,+0.1937,+0.2630,22.60,0.1731,,0.2337
+f22_0.8,+0.1910,+0.2585,21.63,0.1731,,0.2325
+f22_0.7,+0.1884,+0.2553,20.70,0.1731,,0.2313
+f22_0.6,+0.1857,+0.2538,20.01,0.1731,,0.2231
+f22_0.7_plus_king,+0.1671,+0.2246,20.63,0.1740,0.3675,0.1893
+aerosol_x2,+0.1110,+0.1611,23.40,0.2388,0.3378,0.1537
+aerosol_x3,+0.1140,+0.2125,20.77,0.1946,0.4224,0.1362
+aerosol_x4,+0.0306,+0.0578,25.44,0.2641,0.2507,0.0935
+aerosol_x3_plus_king_plus_f22_0.7,+0.0646,+0.1450,20.65,0.1954,0.3745,0.1126

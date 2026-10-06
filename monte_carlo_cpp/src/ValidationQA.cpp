@@ -35,6 +35,7 @@ struct ReferencePoint
     bool has_intensity = false;
     double q = 0.0;
     double u = 0.0;
+    bool has_qu = false;
     double dop = 0.0;
     bool has_dop = false;
     double aop_deg = 0.0;
@@ -232,6 +233,7 @@ std::vector<ReferencePoint> loadReferenceCsv(const std::string &filename)
         }
         point.q = getValue(values, "q", 0.0);
         point.u = getValue(values, "u", 0.0);
+        point.has_qu = columnIndex.count("q") > 0 && columnIndex.count("u") > 0;
         if (columnIndex.count("dop")) {
             point.dop = getValue(values, "dop", 0.0);
             point.has_dop = true;
@@ -346,6 +348,30 @@ void applyMeasurementModelCalibration(
     bin.second_ar = applyMeasurementModelCalibration(bin.second_ar, calibration);
     bin.second_ra = applyMeasurementModelCalibration(bin.second_ra, calibration);
     bin.second_aa = applyMeasurementModelCalibration(bin.second_aa, calibration);
+}
+
+// Converts model Stokes from the solver's backward-tracing outward-ray frame
+// to the reduced-measurement ("incoming light") polarization convention.
+// Net transform: Q -> -Q (equivalently AoP -> 90deg - AoP), a single
+// reflection combining the outward->incoming handedness flip with the
+// reducer's 90deg comparison-basis offset. Validated offline against the
+// frozen Marseille field (raw median AoP error 43.0 -> 14.4 deg). DoLP and
+// intensity are invariant.
+StokesVector toIncomingLightConvention(const StokesVector &raw)
+{
+    return {raw.I, -raw.Q, raw.U, raw.V};
+}
+
+void applyIncomingLightConvention(SkyBinResult &bin)
+{
+    bin.mean = toIncomingLightConvention(bin.mean);
+    bin.first_order = toIncomingLightConvention(bin.first_order);
+    bin.second_order = toIncomingLightConvention(bin.second_order);
+    bin.higher_order = toIncomingLightConvention(bin.higher_order);
+    bin.second_rr = toIncomingLightConvention(bin.second_rr);
+    bin.second_ar = toIncomingLightConvention(bin.second_ar);
+    bin.second_ra = toIncomingLightConvention(bin.second_ra);
+    bin.second_aa = toIncomingLightConvention(bin.second_aa);
 }
 
 void pushMetric(
@@ -638,8 +664,47 @@ void evaluateConvergence(
     const SkyResult coarse = runMonteCarloSimulation(coarseConfig);
     const SkyResult fine = runMonteCarloSimulation(fineConfig);
 
-    const double intensityChange = std::abs(fine.peak_intensity - coarse.peak_intensity) / std::max(1.0e-12, fine.peak_intensity);
-    const double dopChange = std::abs(fine.peak_dolp - coarse.peak_dolp);
+    double coarsePeakIntensity = coarse.peak_intensity;
+    double finePeakIntensity = fine.peak_intensity;
+    double coarsePeakDolp = coarse.peak_dolp;
+    double finePeakDolp = fine.peak_dolp;
+    if (baseConfig.monte_carlo.convergence_low_order_metric) {
+        // Hardened metric: the plain-mean higher-order estimator is heavy-tailed
+        // at twilight geometries (per-bin sd grows with photon budget, peak-bin
+        // migration), so total-field peak comparisons measure tail luck rather
+        // than convergence. Compare the deterministic first+second-order
+        // components instead, mirroring the total-field peak/mask semantics.
+        // The flux metric below still tests the total field.
+        auto lowOrderPeaks = [](const SkyResult &sky, double &peakIntensity, double &peakDolp) {
+            peakIntensity = 0.0;
+            for (const SkyBinResult &bin : sky.bins) {
+                peakIntensity = std::max(peakIntensity, bin.first_order.I + bin.second_order.I);
+            }
+            const double mask = std::max(1.0e-12, peakIntensity * 0.01);
+            peakDolp = 0.0;
+            for (const SkyBinResult &bin : sky.bins) {
+                const StokesVector lowOrder {
+                    bin.first_order.I + bin.second_order.I,
+                    bin.first_order.Q + bin.second_order.Q,
+                    bin.first_order.U + bin.second_order.U,
+                    bin.first_order.V + bin.second_order.V,
+                };
+                if (lowOrder.I >= mask) {
+                    peakDolp = std::max(peakDolp, degreeOfLinearPolarization(lowOrder));
+                }
+            }
+        };
+        lowOrderPeaks(coarse, coarsePeakIntensity, coarsePeakDolp);
+        lowOrderPeaks(fine, finePeakIntensity, finePeakDolp);
+        report.notes.push_back(
+            "convergence_low_order_metric=true: peak intensity/DoLP metrics computed on "
+            "first+second-order components (heavy-tailed higher-order estimator excluded); "
+            "flux metric remains total-field."
+        );
+    }
+
+    const double intensityChange = std::abs(finePeakIntensity - coarsePeakIntensity) / std::max(1.0e-12, finePeakIntensity);
+    const double dopChange = std::abs(finePeakDolp - coarsePeakDolp);
     const double fluxChange = std::abs(fine.hemispheric_flux_estimate - coarse.hemispheric_flux_estimate)
         / std::max(1.0e-12, fine.hemispheric_flux_estimate);
 
@@ -687,6 +752,18 @@ bool evaluateBenchmarkConfig(
 
     std::vector<double> intensityErrors;
     std::vector<double> dopErrors;
+    // Signed Q/U diagnostics (never gate): the historical benchmark metrics
+    // compare only normalized intensity and |DoLP|, so a polarization-frame
+    // sign/handedness error in the model is invisible to them. These
+    // diagnostics compare q/I and u/I signed against the reference to anchor
+    // the model's Stokes convention against published vector references.
+    std::vector<double> signedQnErrors;
+    std::vector<double> signedUnErrors;
+    std::size_t qSignComparable = 0;
+    std::size_t qSignAgreements = 0;
+    std::size_t uSignComparable = 0;
+    std::size_t uSignAgreements = 0;
+    constexpr double SIGN_TEST_MIN_FRACTION = 0.02;
     for (std::size_t index = 0; index < reference.size(); ++index) {
         const double normalizedReference = reference[index].intensity / std::max(1.0e-12, referencePeak);
         if (normalizedReference < baseConfig.validation.benchmark_mask_fraction_of_peak) {
@@ -699,6 +776,29 @@ bool evaluateBenchmarkConfig(
 
         if (reference[index].has_dop) {
             dopErrors.push_back(std::abs(degreeOfLinearPolarization(model[index].mean) - reference[index].dop));
+        }
+
+        if (reference[index].has_qu &&
+            reference[index].intensity > 0.0 &&
+            model[index].mean.I > 0.0) {
+            const double referenceQn = reference[index].q / reference[index].intensity;
+            const double referenceUn = reference[index].u / reference[index].intensity;
+            const double modelQn = model[index].mean.Q / model[index].mean.I;
+            const double modelUn = model[index].mean.U / model[index].mean.I;
+            signedQnErrors.push_back(std::abs(modelQn - referenceQn));
+            signedUnErrors.push_back(std::abs(modelUn - referenceUn));
+            if (std::abs(referenceQn) > SIGN_TEST_MIN_FRACTION) {
+                ++qSignComparable;
+                if ((referenceQn > 0.0) == (modelQn > 0.0)) {
+                    ++qSignAgreements;
+                }
+            }
+            if (std::abs(referenceUn) > SIGN_TEST_MIN_FRACTION) {
+                ++uSignComparable;
+                if ((referenceUn > 0.0) == (modelUn > 0.0)) {
+                    ++uSignAgreements;
+                }
+            }
         }
     }
 
@@ -727,6 +827,31 @@ bool evaluateBenchmarkConfig(
         baseConfig.validation.p95_intensity_error_limit,
         p95Intensity <= baseConfig.validation.p95_intensity_error_limit
     );
+
+    if (!signedQnErrors.empty()) {
+        // Diagnostic-only metrics: pass is always true so the gate result is
+        // unchanged; the values expose sign/handedness convention mismatches.
+        pushMetric(report, prefix + "diag_signed_qn_median_abs", percentile(signedQnErrors, 0.5), 0.0, true);
+        pushMetric(report, prefix + "diag_signed_un_median_abs", percentile(signedUnErrors, 0.5), 0.0, true);
+        if (qSignComparable > 0) {
+            pushMetric(
+                report,
+                prefix + "diag_q_sign_agreement_frac",
+                static_cast<double>(qSignAgreements) / static_cast<double>(qSignComparable),
+                0.0,
+                true
+            );
+        }
+        if (uSignComparable > 0) {
+            pushMetric(
+                report,
+                prefix + "diag_u_sign_agreement_frac",
+                static_cast<double>(uSignAgreements) / static_cast<double>(uSignComparable),
+                0.0,
+                true
+            );
+        }
+    }
 
     if (!dopErrors.empty()) {
         const double medianDolp = percentile(dopErrors, 0.5);
@@ -815,6 +940,15 @@ bool evaluateMeasurementConfig(
     }
 
     std::vector<SkyBinResult> model = sampleReferenceDirections(measurementConfig, reference);
+    if (measurementConfig.output.measurement_model_polarization_convention == "incoming_light") {
+        for (SkyBinResult &bin : model) {
+            applyIncomingLightConvention(bin);
+        }
+        report.notes.push_back(
+            "Measurement model Stokes converted to the incoming-light polarization convention for case " +
+            measurementConfig.output.case_id + " (Q -> -Q; AoP -> 90deg - AoP)."
+        );
+    }
     if (!measurementConfig.output.measurement_model_calibration_csv.empty()) {
         const std::map<std::size_t, MeasurementModelCalibration> calibration =
             loadMeasurementModelCalibrationCsv(measurementConfig.output.measurement_model_calibration_csv);

@@ -90,6 +90,12 @@ MuellerMatrix rayleighMuellerMatrix(double cosTheta)
     return aerosolMuellerMatrix(coefficients);
 }
 
+MuellerMatrix rayleighMuellerMatrix(double cosTheta, double depolarizationFactor)
+{
+    const PhaseMatrixCoefficients coefficients = rayleighPhaseMatrix(cosTheta, depolarizationFactor);
+    return aerosolMuellerMatrix(coefficients);
+}
+
 MuellerMatrix aerosolMuellerMatrix(const PhaseMatrixCoefficients &coefficients)
 {
     MuellerMatrix matrix = makeZeroMatrix();

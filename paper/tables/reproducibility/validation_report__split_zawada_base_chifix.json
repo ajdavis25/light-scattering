@@ -1,0 +1,32 @@
+{
+  "overall_pass": false,
+  "metrics": [
+    {"name": "rayleigh_phase_normalization", "value": 1.5625e-08, "threshold": 0.001, "pass": true},
+    {"name": "rayleigh_90deg_dolp_error", "value": 0, "threshold": 1e-06, "pass": true},
+    {"name": "rayleigh_physical_stokes", "value": 0, "threshold": 0, "pass": true},
+    {"name": "convergence_peak_intensity_rel", "value": 0.303525, "threshold": 0.05, "pass": false},
+    {"name": "convergence_peak_dolp_abs", "value": 0.143115, "threshold": 0.02, "pass": false},
+    {"name": "convergence_flux_rel", "value": 0.303525, "threshold": 0.02, "pass": false},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_median_intensity_rel", "value": 0.00054524, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_p95_intensity_rel", "value": 0.00149286, "threshold": 0.1, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_diag_signed_qn_median_abs", "value": 0.000200267, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_diag_signed_un_median_abs", "value": 4.9619e-05, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_diag_q_sign_agreement_frac", "value": 1, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_diag_u_sign_agreement_frac", "value": 1, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_median_dolp_abs", "value": 3.52057e-05, "threshold": 0.02, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_single_chifix_p95_dolp_abs", "value": 0.000292516, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_median_intensity_rel", "value": 0.00284544, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_p95_intensity_rel", "value": 0.0125841, "threshold": 0.1, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_diag_signed_qn_median_abs", "value": 0.0103404, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_diag_signed_un_median_abs", "value": 0.00266548, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_diag_q_sign_agreement_frac", "value": 1, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_diag_u_sign_agreement_frac", "value": 1, "threshold": 0, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_median_dolp_abs", "value": 0.00705505, "threshold": 0.02, "pass": true},
+    {"name": "benchmark_benchmark_zawada_spherical_vector_multiple_chifix_p95_dolp_abs", "value": 0.00981025, "threshold": 0.05, "pass": true},
+    {"name": "benchmark_polarization_reference_present", "value": 0, "threshold": 0, "pass": true},
+    {"name": "measurement_case_present", "value": 1, "threshold": 0, "pass": false}
+  ],
+  "notes": [
+    "Measurement validation failed because measurement_case_config was not set."
+  ]
+}

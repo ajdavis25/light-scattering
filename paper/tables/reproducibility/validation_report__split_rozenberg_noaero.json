@@ -1,0 +1,21 @@
+{
+  "overall_pass": false,
+  "metrics": [
+    {"name": "rayleigh_phase_normalization", "value": 1.5625e-08, "threshold": 0.001, "pass": true},
+    {"name": "rayleigh_90deg_dolp_error", "value": 0, "threshold": 1e-06, "pass": true},
+    {"name": "rayleigh_physical_stokes", "value": 0, "threshold": 0, "pass": true},
+    {"name": "convergence_peak_intensity_rel", "value": 0.303525, "threshold": 0.05, "pass": false},
+    {"name": "convergence_peak_dolp_abs", "value": 0.143115, "threshold": 0.02, "pass": false},
+    {"name": "convergence_flux_rel", "value": 0.303525, "threshold": 0.02, "pass": false},
+    {"name": "benchmark_case_present", "value": 1, "threshold": 0, "pass": false},
+    {"name": "measurement_measurement_rozenberg_hminus6_noaero_normalized_rmse", "value": 0.243581, "threshold": 0.15, "pass": false},
+    {"name": "measurement_measurement_rozenberg_hminus6_noaero_brightest_location_deg", "value": 0, "threshold": 5, "pass": true},
+    {"name": "measurement_polarization_reference_present", "value": 1, "threshold": 0, "pass": false}
+  ],
+  "notes": [
+    "Benchmark validation failed because benchmark_case_config was not set.",
+    "Measurement reference for case measurement_rozenberg_hminus6_noaero does not include polarization, so DoLP measurement metrics were not evaluated.",
+    "Measurement reference for case measurement_rozenberg_hminus6_noaero does not include AoP values above the DoLP threshold, so AoP metrics were not evaluated.",
+    "Measurement reference for case measurement_rozenberg_hminus6_noaero did not provide enough solar-vertical points for the signed DoLP bias metric."
+  ]
+}

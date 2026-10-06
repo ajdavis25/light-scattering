@@ -25,6 +25,7 @@ StokesVector multiply(const MuellerMatrix &matrix, const StokesVector &vector);
 StokesVector rotateStokes(const StokesVector &vector, double angle_rad);
 
 MuellerMatrix rayleighMuellerMatrix(double cosTheta);
+MuellerMatrix rayleighMuellerMatrix(double cosTheta, double depolarizationFactor);
 MuellerMatrix aerosolMuellerMatrix(const PhaseMatrixCoefficients &coefficients);
 StokesVector applyRayleighMueller(const StokesVector &in, double cosTheta);
 StokesVector applyAerosolMueller(const StokesVector &in, const PhaseMatrixCoefficients &coefficients);
